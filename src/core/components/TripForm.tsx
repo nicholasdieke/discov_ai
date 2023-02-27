@@ -8,14 +8,14 @@ import {
   InputLeftElement,
   VStack,
 } from "@chakra-ui/react"
-import { faCalendarDays, faLocationDot } from "@fortawesome/free-solid-svg-icons"
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Select } from "chakra-react-select"
 import { useFormik } from "formik"
+import { useEffect, useRef } from "react"
+import MyDateRangePicker from "./MyDateRangePicker"
 
 function TripForm() {
-  //   const theme = useSelector((state) => state.theme)
-
   const groupOptions = [
     {
       label: "Friends",
@@ -82,6 +82,28 @@ function TripForm() {
     // },
   })
 
+  const autoCompleteRef = useRef()
+  const inputRef = useRef()
+
+  useEffect(() => {
+    autoCompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current)
+    autoCompleteRef.current.addListener("place_changed", async function () {
+      const place = await autoCompleteRef.current.getPlace()
+      for (let i = 0; i < place.address_components.length; i++) {
+        let comp = place.address_components[i]
+        if (["locality", "postal_town", "country"].some((code) => comp.types.includes(code))) {
+          formik.setFieldValue("destination", comp.long_name)
+          break
+        }
+      }
+    })
+  }, [])
+
+  const script =
+    "https://maps.googleapis.com/maps/api/js?key=" +
+    process.env.GOOGLE_MAPS_API_KEY +
+    "&libraries=places"
+
   return (
     <Box
       bg="gray.200"
@@ -92,15 +114,16 @@ function TripForm() {
       whiteSpace="nowrap"
       alignItems="center"
     >
+      <script src={script} async></script>
       <form autoComplete="off" onSubmit={formik.handleSubmit}>
         <VStack spacing="0.5rem">
           <FormControl>
             <FormLabel htmlFor="Where?">Where?</FormLabel>
-
             <InputGroup>
               <InputLeftElement
+                color="gray.500"
                 pointerEvents="none"
-                children={<FontAwesomeIcon icon={faLocationDot} size="lg" />}
+                children={<FontAwesomeIcon icon={faLocationDot} size="1x" />}
               />
               <Input
                 id="destination"
@@ -108,15 +131,16 @@ function TripForm() {
                 type="text"
                 placeholder="City, State or Country"
                 variant="filled"
-                onChange={formik.handleChange}
                 value={formik.values.destination}
+                onChange={formik.handleChange}
+                ref={inputRef}
               />
             </InputGroup>
           </FormControl>
 
           <FormControl>
             <FormLabel htmlFor="When?">When?</FormLabel>
-            <InputGroup>
+            {/* <InputGroup>
               <InputLeftElement
                 pointerEvents="none"
                 children={<FontAwesomeIcon icon={faCalendarDays} size="lg" />}
@@ -129,7 +153,8 @@ function TripForm() {
                 onChange={formik.handleChange}
                 value={formik.values.daterange}
               />
-            </InputGroup>
+            </InputGroup> */}
+            <MyDateRangePicker />
           </FormControl>
 
           <FormControl>
