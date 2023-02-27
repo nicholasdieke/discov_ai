@@ -1,3 +1,5 @@
+// File to generate the prompt for OpenAI API
+
 import { Configuration, OpenAIApi } from "openai"
 
 const configuration = new Configuration({
