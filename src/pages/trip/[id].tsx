@@ -58,15 +58,21 @@ const TripPage: BlitzPage = () => {
   const [photoUrl, setPhotoUrl] = useState("")
 
   const getPhoto = async (destination) => {
-    const response = await fetch("/api/getDestPhoto?destination=" + destination)
-    const data = await response.json()
-    setPhotoUrl(data.result[0].urls.full || "")
+    await fetch("/api/getDestPhoto?destination=" + destination)
+      .then((response) => response.json())
+      .then((response) => setPhotoUrl(response.result[0].urls.full || ""))
+      .catch((e) => console.log(e))
+    // const data = await response.json()
+    // setPhotoUrl(data.result[0].urls.full || "")
   }
 
   const getDetails = async (tripId) => {
-    const trip = await invoke(getTrip, { id: tripId })
-    setMyTrip(trip as Trip)
-    getPhoto(trip?.destination || "city")
+    await invoke(getTrip, { id: tripId })
+      .then((trip) => {
+        setMyTrip(trip as Trip)
+        getPhoto(trip?.destination || "city")
+      })
+      .catch((e) => console.log(e))
   }
 
   useEffect(() => {
@@ -120,7 +126,7 @@ const TripPage: BlitzPage = () => {
             </Heading>
             <Flex justifyContent="space-between">
               <HStack spacing="1rem" mb="2rem">
-                <a href="https://www.skyscanner.net/" target="_blank">
+                <a href="https://www.skyscanner.net/" target="_blank" rel="noreferrer">
                   <Button
                     leftIcon={<FontAwesomeIcon icon={faPlaneDeparture} size="1x" />}
                     rightIcon={<FontAwesomeIcon icon={faChevronRight} size="1x" />}
@@ -130,7 +136,7 @@ const TripPage: BlitzPage = () => {
                   </Button>
                 </a>
 
-                <a href="https://www.booking.com/" target="_blank">
+                <a href="https://www.booking.com/" target="_blank" rel="noreferrer">
                   <Button
                     leftIcon={<FontAwesomeIcon icon={faBed} size="1x" />}
                     rightIcon={<FontAwesomeIcon icon={faChevronRight} size="1x" />}
@@ -147,6 +153,7 @@ const TripPage: BlitzPage = () => {
                     monthNames[(myTrip.daterange[0] as Date).getMonth()]
                   }
                   target="_blank"
+                  rel="noreferrer"
                 >
                   <Button
                     leftIcon={<FontAwesomeIcon icon={faCloudSun} size="1x" />}
@@ -187,7 +194,7 @@ const TripPage: BlitzPage = () => {
                   .split("Day")
                   .slice(1)
                   .map((day, index) => (
-                    <AccordionItem>
+                    <AccordionItem key={"Trip-Day" + index}>
                       <AccordionButton>
                         <Box
                           as="span"

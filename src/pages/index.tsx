@@ -9,7 +9,6 @@ import Header from "src/core/components/Header"
 import TripForm from "src/core/components/TripForm"
 import styles from "src/styles/Home.module.css"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-
 const UserInfo = () => {
   const currentUser = useCurrentUser()
   const [logoutMutation] = useMutation(logout)
@@ -50,10 +49,16 @@ const Home: BlitzPage = () => {
   const [photoUrl, setPhotoUrl] = useState("")
 
   const getPhoto = async () => {
-    const response = await fetch("/api/getHomePhotos")
-    const data = await response.json()
-    const random = Math.floor(Math.random() * 10)
-    setPhotoUrl(data.result[random].urls.full || "")
+    await fetch("/api/getHomePhotos")
+      .then((response) => response.json())
+      .then((response) => {
+        const random = Math.floor(Math.random() * 10)
+        setPhotoUrl(response.result[random].urls.full || "")
+      })
+      .catch((e) => console.log(e))
+    // const data = await response.json()
+    // const random = Math.floor(Math.random() * 10)
+    // setPhotoUrl(data.result[random].urls.full || "")
   }
 
   useEffect(() => {

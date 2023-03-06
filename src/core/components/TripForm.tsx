@@ -95,23 +95,26 @@ function TripForm() {
       values.destination +
       ".  Write in an engaging, descriptive style with a friendly tone and correct grammar. Split each day into Morning, Afternoon, Evening."
 
-    const response = await fetch("/api/generate", {
+    await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(prompt),
     })
-    const data = await response.json()
-
-    values = {
-      ...values,
-      group: values.group.value,
-      activity: values.activity.value,
-      itinerary: data.result,
-    }
-    const trip = await createTrip(values)
-    router.push(Routes.TripPage({ id: trip.id }))
+      .then((response) => response.json())
+      .then(async (response) => {
+        values = {
+          ...values,
+          group: values.group.value,
+          activity: values.activity.value,
+          itinerary: response.result,
+        }
+        await createTrip(values)
+          .then((trip) => router.push(Routes.TripPage({ id: trip.id })))
+          .catch((e) => console.log(e))
+      })
+      .catch((e) => console.log(e))
   }
 
   const formik = useFormik({
