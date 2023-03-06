@@ -57,17 +57,15 @@ const TripPage: BlitzPage = () => {
 
   const [photoUrl, setPhotoUrl] = useState("")
 
-  const getPhoto = async (destination) => {
-    await fetch("/api/getDestPhoto?destination=" + destination)
+  const getPhoto = (destination) => {
+    fetch("/api/getDestPhoto?destination=" + destination)
       .then((response) => response.json())
       .then((response) => setPhotoUrl(response.result[0].urls.full || ""))
       .catch((e) => console.log(e))
-    // const data = await response.json()
-    // setPhotoUrl(data.result[0].urls.full || "")
   }
 
-  const getDetails = async (tripId) => {
-    await invoke(getTrip, { id: tripId })
+  const getDetails = (tripId) => {
+    invoke(getTrip, { id: tripId })
       .then((trip) => {
         setMyTrip(trip as Trip)
         getPhoto(trip?.destination || "city")

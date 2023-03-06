@@ -48,17 +48,14 @@ const UserInfo = () => {
 const Home: BlitzPage = () => {
   const [photoUrl, setPhotoUrl] = useState("")
 
-  const getPhoto = async () => {
-    await fetch("/api/getHomePhotos")
+  const getPhoto = () => {
+    fetch("/api/getHomePhotos")
       .then((response) => response.json())
       .then((response) => {
         const random = Math.floor(Math.random() * 10)
         setPhotoUrl(response.result[random].urls.full || "")
       })
       .catch((e) => console.log(e))
-    // const data = await response.json()
-    // const random = Math.floor(Math.random() * 10)
-    // setPhotoUrl(data.result[random].urls.full || "")
   }
 
   useEffect(() => {

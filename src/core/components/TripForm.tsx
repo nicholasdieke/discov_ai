@@ -173,7 +173,7 @@ function TripForm() {
                   "country",
                 ].some((code) => comp!.types.includes(code))
               ) {
-                formik.setFieldValue("destination", comp.long_name)
+                await formik.setFieldValue("destination", comp.long_name)
                 break
               }
             }
@@ -222,9 +222,9 @@ function TripForm() {
                 When?
               </FormLabel>
               <MyDateRangePicker
-                onChange={(update) => {
+                onChange={async (update) => {
                   setDateRange(update)
-                  formik.setFieldValue("daterange", update)
+                  await formik.setFieldValue("daterange", update)
                 }}
                 startDate={startDate}
                 endDate={endDate}
