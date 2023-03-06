@@ -129,7 +129,12 @@ function TripForm() {
     },
     onSubmit: sendPrompt,
     validate: (values) => {
-      let errors = {}
+      let errors: Partial<{
+        destination: string
+        daterange: string
+        group: string
+        activity: string
+      }> = {}
       if (!values.destination) {
         errors.destination = "Destination Required"
       }
@@ -145,17 +150,6 @@ function TripForm() {
       return errors
     },
   })
-
-  // useEffect(() => {
-  //   const scriptTag = document.createElement("script")
-  //   scriptTag.src =
-  //     "https://maps.googleapis.com/maps/api/js?key=" +
-  //     process.env.GOOGLE_MAPS_API_KEY +
-  //     "&libraries=places"
-
-  //   scriptTag.addEventListener("load", () => setLoaded(true))
-  //   document.body.appendChild(scriptTag)
-  // }, [])
 
   useEffect(() => {
     autoCompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current)
