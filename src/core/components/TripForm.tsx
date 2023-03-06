@@ -159,7 +159,7 @@ function TripForm() {
       autoCompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current)
       autoCompleteRef.current.addListener("place_changed", async function () {
         if (autoCompleteRef.current) {
-          const place = await autoCompleteRef.current.getPlace()
+          const place = autoCompleteRef.current.getPlace()
           if (place && place.address_components) {
             for (let i = 0; i < place.address_components.length; i++) {
               let comp = place.address_components[i]
@@ -199,11 +199,9 @@ function TripForm() {
                 Where?
               </FormLabel>
               <InputGroup>
-                <InputLeftElement
-                  color="white"
-                  pointerEvents="none"
-                  children={<FontAwesomeIcon icon={faLocationDot} size="1x" />}
-                />
+                <InputLeftElement color="white" pointerEvents="none">
+                  <FontAwesomeIcon icon={faLocationDot} size="1x" />
+                </InputLeftElement>
                 <Input
                   id="destination"
                   name="destination"

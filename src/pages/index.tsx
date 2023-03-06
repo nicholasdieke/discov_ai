@@ -19,7 +19,7 @@ const UserInfo = () => {
         <button
           className={styles.button}
           onClick={async () => {
-            await logoutMutation()
+            // await logoutMutation()
           }}
         >
           Logout
