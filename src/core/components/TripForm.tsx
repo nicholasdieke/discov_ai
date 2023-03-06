@@ -22,8 +22,8 @@ import createTrip from "../mutations/createTrip"
 import MyDateRangePicker from "./MyDateRangePicker"
 
 function TripForm() {
-  const autoCompleteRef = useRef()
-  const inputRef = useRef()
+  const autoCompleteRef = useRef<google.maps.places.Autocomplete>()
+  const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
   const [dateRange, setDateRange] = useState([null, null])
@@ -152,25 +152,32 @@ function TripForm() {
   })
 
   useEffect(() => {
-    autoCompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current)
-    autoCompleteRef.current.addListener("place_changed", async function () {
-      const place = await autoCompleteRef.current.getPlace()
-      for (let i = 0; i < place.address_components.length; i++) {
-        let comp = place.address_components[i]
-        if (
-          [
-            "locality",
-            "postal_town",
-            "administrative_area_level_1",
-            "administrative_area_level_2",
-            "country",
-          ].some((code) => comp.types.includes(code))
-        ) {
-          formik.setFieldValue("destination", comp.long_name)
-          break
+    if (inputRef.current instanceof HTMLInputElement) {
+      autoCompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current)
+      autoCompleteRef.current.addListener("place_changed", async function () {
+        if (autoCompleteRef.current) {
+          const place = await autoCompleteRef.current.getPlace()
+          if (place && place.address_components) {
+            for (let i = 0; i < place.address_components.length; i++) {
+              let comp = place.address_components[i]
+              if (
+                comp?.types &&
+                [
+                  "locality",
+                  "postal_town",
+                  "administrative_area_level_1",
+                  "administrative_area_level_2",
+                  "country",
+                ].some((code) => comp!.types.includes(code))
+              ) {
+                formik.setFieldValue("destination", comp.long_name)
+                break
+              }
+            }
+          }
         }
-      }
-    })
+      })
+    }
   }, [loaded])
 
   const script =
