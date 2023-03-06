@@ -73,7 +73,11 @@ const TripPage: BlitzPage = () => {
     getDetails(tripId)
   }, [tripId])
 
-  const dateOptions = { day: "2-digit", month: "short", year: "numeric" }
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }
 
   return (
     <Box backgroundColor="#0F1014" color="white">
@@ -102,8 +106,8 @@ const TripPage: BlitzPage = () => {
                 <HStack fontSize="18px">
                   <FontAwesomeIcon icon={faCalendarDays} size="1x" />
                   <Text>
-                    {myTrip.daterange[0].toLocaleDateString("en-US", dateOptions)} -{" "}
-                    {myTrip.daterange[1].toLocaleDateString("en-US", dateOptions)}
+                    {myTrip.daterange[0]?.toLocaleDateString("en-US", dateOptions)} -{" "}
+                    {myTrip.daterange[1]?.toLocaleDateString("en-US", dateOptions)}
                   </Text>
                 </HStack>
               </VStack>
@@ -140,7 +144,7 @@ const TripPage: BlitzPage = () => {
                     "https://www.meteoprog.com/weather/" +
                     myTrip.destination.replaceAll(" ", "") +
                     "/month/" +
-                    monthNames[myTrip.daterange[0].getMonth()]
+                    monthNames[(myTrip.daterange[0] as Date).getMonth()]
                   }
                   target="_blank"
                 >
@@ -172,7 +176,10 @@ const TripPage: BlitzPage = () => {
             </Heading>
             <VStack spacing="3rem">
               <Accordion
-                defaultIndex={[...Array(myTrip.itinerary.split("Day").slice(1).length).keys()]}
+                defaultIndex={Array.from(
+                  { length: myTrip.itinerary.split("Day").slice(1).length },
+                  (_, i) => i
+                )}
                 allowMultiple
                 w="100%"
               >
@@ -204,7 +211,7 @@ const TripPage: BlitzPage = () => {
                               <Text>Morning</Text>
                             </HStack>
                             <Text fontSize="18px" pl="8rem">
-                              {day.substring(3).split("Morning:")[1].split("Afternoon:")[0]}
+                              {day.substring(3).split("Morning:")[1]?.split("Afternoon:")[0]}
                             </Text>
                           </HStack>
                           <HStack alignItems="start">
@@ -213,7 +220,7 @@ const TripPage: BlitzPage = () => {
                               <Text>Afternoon</Text>
                             </HStack>
                             <Text fontSize="18px" pl="8rem">
-                              {day.substring(3).split("Afternoon:")[1].split("Evening:")[0]}
+                              {day.substring(3).split("Afternoon:")[1]?.split("Evening:")[0]}
                             </Text>
                           </HStack>
                           <HStack alignItems="start">
@@ -228,7 +235,6 @@ const TripPage: BlitzPage = () => {
                           </HStack>
                         </VStack>
                       </AccordionPanel>
-                      {/* </HStack> */}
                     </AccordionItem>
                   ))}
               </Accordion>
