@@ -64,8 +64,8 @@ const TripPage: BlitzPage = () => {
       .catch((e) => console.log(e))
   }
 
-  const getDetails = async (tripId) => {
-    await invoke(getTrip, { id: tripId })
+  const getDetails = (tripId) => {
+    invoke(getTrip, { id: tripId })
       .then((trip) => {
         setMyTrip(trip as Trip)
         getPhoto(trip?.destination || "city")
