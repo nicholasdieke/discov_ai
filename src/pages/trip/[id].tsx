@@ -37,7 +37,6 @@ import getTrip from "src/core/queries/getTrip"
 const TripPage: BlitzPage = () => {
   const router = useRouter()
   const tripId = router.query.id
-  console.log(tripId)
 
   const [myTrip, setMyTrip] = useState<Trip | null>(null)
 
@@ -66,12 +65,12 @@ const TripPage: BlitzPage = () => {
   }
 
   const getDetails = async (tripId) => {
-    const trip = await invoke(getTrip, { id: tripId })
-    // .then((trip) => {
-    setMyTrip(trip as Trip)
-    getPhoto(trip?.destination || "city")
-    // })
-    // .catch((e) => console.log(e))
+    await invoke(getTrip, { id: tripId })
+      .then((trip) => {
+        setMyTrip(trip as Trip)
+        getPhoto(trip?.destination || "city")
+      })
+      .catch((e) => console.log(e))
   }
 
   useEffect(() => {
