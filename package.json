@@ -41,6 +41,7 @@
     "dotenv": "16.0.3",
     "formik": "2.2.9",
     "framer-motion": "5.x",
+    "git-filter-repo": "0.0.30",
     "lottie-react": "2.4.0",
     "next": "13.1",
     "openai": "3.2.1",

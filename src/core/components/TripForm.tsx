@@ -205,7 +205,7 @@ function TripForm() {
                 />
               </InputGroup>
               {formik.errors.destination ? (
-                <div className="errors">{formik.errors.destination}</div>
+                <div className="errors">{formik.errors.destination as string}</div>
               ) : null}
             </FormControl>
 
@@ -222,7 +222,7 @@ function TripForm() {
                 endDate={endDate}
               />
               {formik.errors.destination ? (
-                <div className="errors">{formik.errors.daterange}</div>
+                <div className="errors">{formik.errors.daterange as string}</div>
               ) : null}
             </FormControl>
 
@@ -239,7 +239,7 @@ function TripForm() {
                 options={groupOptions}
               />
               {formik.errors.destination ? (
-                <div className="errors">{formik.errors.group}</div>
+                <div className="errors">{formik.errors.group as string}</div>
               ) : null}
             </FormControl>
 
@@ -257,7 +257,7 @@ function TripForm() {
                 options={styleOptions}
               />
               {formik.errors.destination ? (
-                <div className="errors">{formik.errors.activity}</div>
+                <div className="errors">{formik.errors.activity as string}</div>
               ) : null}
             </FormControl>
           </VStack>
