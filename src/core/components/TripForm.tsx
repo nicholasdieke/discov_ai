@@ -1,3 +1,4 @@
+import { Routes } from "@blitzjs/next"
 import {
   Box,
   Button,
@@ -6,84 +7,155 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Text,
   VStack,
 } from "@chakra-ui/react"
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Select } from "chakra-react-select"
 import { useFormik } from "formik"
-import { useEffect, useRef } from "react"
+import Lottie from "lottie-react"
+import { useRouter } from "next/router"
+import loading_animation from "public/plane_loading.json"
+import { useEffect, useRef, useState } from "react"
+import createTrip from "../mutations/createTrip"
 import MyDateRangePicker from "./MyDateRangePicker"
 
 function TripForm() {
+  const autoCompleteRef = useRef()
+  const inputRef = useRef()
+  const router = useRouter()
+
+  const [dateRange, setDateRange] = useState([null, null])
+  const [isLoading, setIsLoading] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+  const [startDate, endDate] = dateRange
+
+  const dateDiffInDays = (a, b) => {
+    const _MS_PER_DAY = 1000 * 60 * 60 * 24
+    // Discard the time and time-zone information.
+    const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())
+    const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate())
+
+    return Math.floor((utc2 - utc1) / _MS_PER_DAY)
+  }
+
   const groupOptions = [
     {
-      label: "Friends",
+      label: "👫 Friends",
       value: "friends",
     },
     {
-      label: "Family",
+      label: "👪 Family",
       value: "family",
     },
     {
-      label: "Solo",
+      label: "🤸 Solo",
       value: "solo",
     },
     {
-      label: "Couple",
+      label: "💑 Couple",
       value: "couple",
     },
   ]
-
   const styleOptions = [
     {
-      label: "Adventure",
-      value: "adventure",
+      label: "🤪 Everything",
+      value: "",
     },
     {
-      label: "Romance",
-      value: "romance",
+      label: "⛰️ Adventure",
+      value: "adventurous",
     },
     {
-      label: "History",
-      value: "history",
+      label: "🌹 Romance",
+      value: "romantic",
     },
     {
-      label: "Food",
+      label: "🏺 History",
+      value: "historic",
+    },
+    {
+      label: "🍜 Food",
       value: "food",
     },
   ]
+
+  const sendPrompt = async (values) => {
+    setIsLoading(true)
+    const days = Math.max(dateDiffInDays(values.daterange[0], values.daterange[1]), 1)
+    const prompt =
+      "Create a personalised " +
+      days +
+      "-day itinerary for a " +
+      values.activity.value +
+      " " +
+      values.group.value +
+      " trip to " +
+      values.destination +
+      ".  Write in an engaging, descriptive style with a friendly tone and correct grammar. Split each day into Morning, Afternoon, Evening."
+
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(prompt),
+    })
+    const data = await response.json()
+
+    values = {
+      ...values,
+      group: values.group.value,
+      activity: values.activity.value,
+      itinerary: data.result,
+    }
+    const trip = await createTrip(values)
+    router.push(Routes.TripPage({ id: trip.id }))
+  }
 
   const formik = useFormik({
     initialValues: {
       destination: "",
       daterange: "",
-      group: "",
-      activity: "",
+      group: {
+        label: "👫 Friends",
+        value: "friends",
+      },
+      activity: {
+        label: "🤪 Everything",
+        value: "",
+      },
     },
-    onSubmit: (values) => {
-      console.log("form submit", values)
+    onSubmit: sendPrompt,
+    validate: (values) => {
+      let errors = {}
+      if (!values.destination) {
+        errors.destination = "Destination Required"
+      }
+      if (!values.daterange) {
+        errors.daterange = "Daterange Required"
+      }
+      if (!values.group) {
+        errors.group = "Group Required"
+      }
+      if (!values.activity) {
+        errors.activity = "Activity Required"
+      }
+      return errors
     },
-    // validate: (values) => {
-    //   let errors = {}
-    //   if (!values.destination) {
-    //     errors.destination = "Destination Rquired"
-    //   }
-    //   if (!values.daterange) {
-    //     errors.daterange = "Daterange Rquired"
-    //   }
-    //   if (!values.group) {
-    //     errors.group = "Group Rquired"
-    //   }
-    //   if (!values.activity) {
-    //     errors.activity = "Activity Rquired"
-    //   }
-    //   return errors
-    // },
   })
 
-  const autoCompleteRef = useRef()
-  const inputRef = useRef()
+  // useEffect(() => {
+  //   const scriptTag = document.createElement("script")
+  //   scriptTag.src =
+  //     "https://maps.googleapis.com/maps/api/js?key=" +
+  //     process.env.GOOGLE_MAPS_API_KEY +
+  //     "&libraries=places"
+
+  //   scriptTag.addEventListener("load", () => setLoaded(true))
+  //   document.body.appendChild(scriptTag)
+  // }, [])
 
   useEffect(() => {
     autoCompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current)
@@ -91,13 +163,21 @@ function TripForm() {
       const place = await autoCompleteRef.current.getPlace()
       for (let i = 0; i < place.address_components.length; i++) {
         let comp = place.address_components[i]
-        if (["locality", "postal_town", "country"].some((code) => comp.types.includes(code))) {
+        if (
+          [
+            "locality",
+            "postal_town",
+            "administrative_area_level_1",
+            "administrative_area_level_2",
+            "country",
+          ].some((code) => comp.types.includes(code))
+        ) {
           formik.setFieldValue("destination", comp.long_name)
           break
         }
       }
     })
-  }, [])
+  }, [loaded])
 
   const script =
     "https://maps.googleapis.com/maps/api/js?key=" +
@@ -105,94 +185,111 @@ function TripForm() {
     "&libraries=places"
 
   return (
-    <Box
-      bg="gray.200"
-      w="350px"
-      borderRadius="5px"
-      className="reveal"
-      p="1rem"
-      whiteSpace="nowrap"
-      alignItems="center"
-    >
-      <script src={script} async></script>
-      <form autoComplete="off" onSubmit={formik.handleSubmit}>
-        <VStack spacing="0.5rem">
-          <FormControl>
-            <FormLabel htmlFor="Where?">Where?</FormLabel>
-            <InputGroup>
-              <InputLeftElement
-                color="gray.500"
-                pointerEvents="none"
-                children={<FontAwesomeIcon icon={faLocationDot} size="1x" />}
+    <Box className="reveal tripform">
+      <script src={script} onLoad={() => setLoaded(true)}></script>
+      {!isLoading && (
+        <form autoComplete="off" onSubmit={formik.handleSubmit}>
+          <VStack spacing="0.75rem" color="white">
+            <FormControl>
+              <FormLabel className="tripformlabel" htmlFor="Where?">
+                Where?
+              </FormLabel>
+              <InputGroup>
+                <InputLeftElement
+                  color="white"
+                  pointerEvents="none"
+                  children={<FontAwesomeIcon icon={faLocationDot} size="1x" />}
+                />
+                <Input
+                  id="destination"
+                  name="destination"
+                  type="text"
+                  placeholder="City, State or Country"
+                  value={formik.values.destination}
+                  onChange={formik.handleChange}
+                  ref={inputRef}
+                />
+              </InputGroup>
+              {formik.errors.destination ? (
+                <div className="errors">{formik.errors.destination}</div>
+              ) : null}
+            </FormControl>
+
+            <FormControl>
+              <FormLabel className="tripformlabel" htmlFor="When?">
+                When?
+              </FormLabel>
+              <MyDateRangePicker
+                onChange={(update) => {
+                  setDateRange(update)
+                  formik.setFieldValue("daterange", update)
+                }}
+                startDate={startDate}
+                endDate={endDate}
               />
-              <Input
-                id="destination"
-                name="destination"
-                type="text"
-                placeholder="City, State or Country"
-                variant="filled"
-                value={formik.values.destination}
-                onChange={formik.handleChange}
-                ref={inputRef}
+              {formik.errors.destination ? (
+                <div className="errors">{formik.errors.daterange}</div>
+              ) : null}
+            </FormControl>
+
+            <FormControl>
+              <FormLabel className="tripformlabel" htmlFor="Who?">
+                Who?
+              </FormLabel>
+              <Select
+                id="group"
+                name="group"
+                onChange={(e) => formik.setFieldValue("group", e)}
+                value={formik.values.group}
+                placeholder="e.g. Friends, Family, Couple"
+                options={groupOptions}
               />
-            </InputGroup>
-          </FormControl>
+              {formik.errors.destination ? (
+                <div className="errors">{formik.errors.group}</div>
+              ) : null}
+            </FormControl>
 
-          <FormControl>
-            <FormLabel htmlFor="When?">When?</FormLabel>
-            {/* <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                children={<FontAwesomeIcon icon={faCalendarDays} size="lg" />}
+            <FormControl>
+              <FormLabel className="tripformlabel" htmlFor="What?">
+                What?
+              </FormLabel>
+              <Select
+                classNamePrefix="react-select"
+                id="activity"
+                name="activity"
+                onChange={(e) => formik.setFieldValue("activity", e)}
+                value={formik.values.activity}
+                placeholder="e.g. Relax, History, Adventure"
+                options={styleOptions}
               />
-              <Input
-                id="daterange"
-                name="daterange"
-                type="text"
-                variant="filled"
-                onChange={formik.handleChange}
-                value={formik.values.daterange}
-              />
-            </InputGroup> */}
-            <MyDateRangePicker />
-          </FormControl>
+              {formik.errors.destination ? (
+                <div className="errors">{formik.errors.activity}</div>
+              ) : null}
+            </FormControl>
+          </VStack>
 
-          <FormControl>
-            <FormLabel htmlFor="Who?">Who?</FormLabel>
-            <Select
-              id="group"
-              name="group"
-              variant="filled"
-              onChange={formik.handleChange}
-              value={formik.values.group}
-              placeholder="e.g. Friends, Family, Couple"
-              options={groupOptions}
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel htmlFor="What?">What?</FormLabel>
-            <Select
-              id="activity"
-              name="activity"
-              variant="filled"
-              onChange={formik.handleChange}
-              value={formik.values.activity}
-              placeholder="e.g. Relax, History, Adventure"
-              options={styleOptions}
-            />
-          </FormControl>
-        </VStack>
-
-        {/* {formik.errors.destination ? (
-          <div className="errors">{formik.errors.destination}</div>
-        ) : null}
-        <br /> */}
-
-        <Button type="submit" mt="1rem" colorScheme="purple" width="full">
-          Build Itinerary!
-        </Button>
-      </form>
+          <Button type="submit" variant="primary" mt="1rem" width="full">
+            Build Itinerary!
+          </Button>
+        </form>
+      )}
+      {isLoading && (
+        <Box>
+          <Lottie
+            animationData={loading_animation}
+            style={{
+              height: "200px",
+              width: "100%",
+              position: "relative",
+            }}
+            loop={true}
+            autoplay={true}
+          />
+          <Text textAlign="center" fontWeight="600" mt="-2rem" mb="2rem" color="white">
+            Building Your Itinerary...
+          </Text>
+        </Box>
+      )}
     </Box>
   )
 }

@@ -1,24 +1,19 @@
 import { InputGroup, InputLeftElement } from "@chakra-ui/react"
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useState } from "react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 
-function MyDateRangePicker() {
-  const [dateRange, setDateRange] = useState([null, null])
-  const [startDate, endDate] = dateRange
+function MyDateRangePicker({ onChange, startDate, endDate }) {
   return (
     <InputGroup>
       <InputLeftElement
-        color="gray.500"
+        color="white"
         children={<FontAwesomeIcon icon={faCalendarDays} size="1x" />}
       />
       <DatePicker
         className="react-datapicker__input-text"
-        onChange={(update) => {
-          setDateRange(update)
-        }}
+        onChange={onChange}
         startDate={startDate}
         endDate={endDate}
         selectsRange

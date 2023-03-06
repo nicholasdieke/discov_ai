@@ -1045,7 +1045,7 @@
 
 "@blitzjs/rpc@2.0.0-beta.23":
   version "2.0.0-beta.23"
-  resolved "https://registry.npmjs.org/@blitzjs/rpc/-/rpc-2.0.0-beta.23.tgz"
+  resolved "https://registry.yarnpkg.com/@blitzjs/rpc/-/rpc-2.0.0-beta.23.tgz#18a73bf23d24ef257b92655b9eebf79e33446eec"
   integrity sha512-qJMmx+lmxQaLcg3zid9TU5RPoiIcrneUKlRl6tCyp/QqisBP3j+QiOzwr56ImhE+dNw1LY1JVJyAUz4/WfQ8Bw==
   dependencies:
     "@swc/core" "1.3.7"
@@ -2381,6 +2381,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/content-type@^1.1.3":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@types/content-type/-/content-type-1.1.5.tgz#aa02dca40864749a9e2bf0161a6216da57e3ede5"
+  integrity sha512-dgMN+syt1xb7Hk8LU6AODOfPlvz5z1CbXpPuJE5ZrX9STfBOIXF09pEB8N7a97WT9dbngt3ksDCm6GW6yMrxfQ==
+
 "@types/cookie-session@2.0.44":
   version "2.0.44"
   resolved "https://registry.npmjs.org/@types/cookie-session/-/cookie-session-2.0.44.tgz"
@@ -3691,6 +3696,11 @@ constantinople@^4.0.1:
     "@babel/parser" "^7.6.0"
     "@babel/types" "^7.6.1"
 
+content-type@^1.0.4:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.5.tgz#8b773162656d1d1086784c8f23a54ce6d73d7918"
+  integrity sha512-nTjqfcBFEipKdXCv4YDQWCfmcLZKm81ldF0pAopTvyrFGVbcR6P/VAAd5G7N+0tTr8QqiU0tFadD6FK4NtJwOA==
+
 convert-source-map@^1.5.0, convert-source-map@^1.7.0:
   version "1.9.0"
   resolved "https://registry.npmjs.org/convert-source-map/-/convert-source-map-1.9.0.tgz"
@@ -4139,6 +4149,11 @@ dotenv@16.0.0:
   version "16.0.0"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-16.0.0.tgz"
   integrity sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==
+
+dotenv@16.0.3:
+  version "16.0.3"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.3.tgz#115aec42bac5053db3c456db30cc243a5a836a07"
+  integrity sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==
 
 duplexer@^0.1.2:
   version "0.1.2"
@@ -6607,6 +6622,18 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
+lottie-react@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/lottie-react/-/lottie-react-2.4.0.tgz#f7249eee2b1deee70457a2d142194fdf2456e4bd"
+  integrity sha512-pDJGj+AQlnlyHvOHFK7vLdsDcvbuqvwPZdMlJ360wrzGFurXeKPr8SiRCjLf3LrNYKANQtSsh5dz9UYQHuqx4w==
+  dependencies:
+    lottie-web "^5.10.2"
+
+lottie-web@^5.10.2:
+  version "5.10.2"
+  resolved "https://registry.yarnpkg.com/lottie-web/-/lottie-web-5.10.2.tgz#a1c952b6734759fcd369eba73b6b7e3d9a76ce0b"
+  integrity sha512-d0PFIGiwuMsJYaF4uPo+qG8dEorlI+xFI2zrrFtE1bGO4WoLIz+NjremxEq1swpR7juR10aeOtmNh3d6G3ub0A==
+
 loupe@^2.3.1:
   version "2.3.6"
   resolved "https://registry.npmjs.org/loupe/-/loupe-2.3.6.tgz"
@@ -7223,10 +7250,10 @@ open@7:
     is-docker "^2.0.0"
     is-wsl "^2.1.1"
 
-openai@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/openai/-/openai-3.1.0.tgz"
-  integrity sha512-v5kKFH5o+8ld+t0arudj833Mgm3GcgBnbyN9946bj6u7bvel4Yg6YFz2A4HLIYDzmMjIo0s6vSG9x73kOwvdCg==
+openai@3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/openai/-/openai-3.2.1.tgz#1fa35bdf979cbde8453b43f2dd3a7d401ee40866"
+  integrity sha512-762C9BNlJPbjjlWZi4WYK9iM2tAVAv0uUp1UmI34vb0CN5T2mjB/qM6RYBmNKMh/dN9fC+bxqPwWJZUTWW052A==
   dependencies:
     axios "^0.26.0"
     form-data "^4.0.0"
@@ -9206,6 +9233,14 @@ unset-value@^1.0.0:
   dependencies:
     has-value "^0.3.1"
     isobject "^3.0.0"
+
+unsplash-js@7.0.15:
+  version "7.0.15"
+  resolved "https://registry.yarnpkg.com/unsplash-js/-/unsplash-js-7.0.15.tgz#9eee0ce552e2c2ee70fd30a767c59b159e004753"
+  integrity sha512-WGqKp9wl2m2tAUPyw2eMZs/KICR+A52tCaRapzVXWxkA4pjHqsaGwiJXTEW7hBy4Pu0QmP6KxTt2jST3tluawA==
+  dependencies:
+    "@types/content-type" "^1.1.3"
+    content-type "^1.0.4"
 
 update-browserslist-db@^1.0.10:
   version "1.0.10"

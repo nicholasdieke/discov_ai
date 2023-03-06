@@ -2,6 +2,7 @@
   "name": "discovai",
   "version": "1.0.0",
   "scripts": {
+    "predev": "docker-compose up -d",
     "dev": "blitz dev",
     "build": "blitz build",
     "start": "blitz start",
@@ -37,16 +38,19 @@
     "@prisma/client": "4.6.0",
     "blitz": "2.0.0-beta.23",
     "chakra-react-select": "4.5.0",
+    "dotenv": "16.0.3",
     "formik": "2.2.9",
     "framer-motion": "5.x",
+    "lottie-react": "2.4.0",
     "next": "13.1",
-    "openai": "3.1.0",
+    "openai": "3.2.1",
     "prisma": "4.6.0",
     "react": "18.2.0",
     "react-datepicker": "4.10.0",
     "react-dom": "18.2.0",
     "react-google-autocomplete": "2.7.3",
     "secure-password": "4.0.0",
+    "unsplash-js": "7.0.15",
     "zod": "3.20.2"
   },
   "devDependencies": {
