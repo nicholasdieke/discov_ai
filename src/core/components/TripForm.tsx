@@ -155,7 +155,11 @@ function TripForm() {
   })
 
   useEffect(() => {
-    if (inputRef.current instanceof HTMLInputElement) {
+    if (
+      typeof window !== "undefined" &&
+      window.google &&
+      inputRef.current instanceof HTMLInputElement
+    ) {
       autoCompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current)
       autoCompleteRef.current.addListener("place_changed", async function () {
         if (autoCompleteRef.current) {

@@ -90,7 +90,7 @@ const TripPage: BlitzPage = () => {
         <Box px={{ base: "2rem", lg: "7.5rem" }} py={{ base: "0.25rem", lg: "0.5rem" }}>
           <Header theme="white" />
           <Flex
-            h="300px"
+            h={{ base: "200px", lg: "300px" }}
             bgPos="center"
             bgRepeat="no-repeat"
             bgImage={photoUrl}
@@ -101,12 +101,12 @@ const TripPage: BlitzPage = () => {
               p="1rem"
               alignItems="center"
               justifyContent="center"
-              h="300px"
+              h={{ base: "200px", lg: "300px" }}
               bgColor="rgb(0,0,0,0.5)"
               w="100%"
             >
-              <VStack spacing="1rem" color="white">
-                <Heading size="4xl">{myTrip.destination}</Heading>
+              <VStack spacing="1rem" color="white" textAlign="center">
+                <Heading fontSize={{ base: "40px", lg: "70px" }}>{myTrip.destination}</Heading>
                 <Divider />
                 <HStack fontSize="18px">
                   <FontAwesomeIcon icon={faCalendarDays} size="1x" />
@@ -124,7 +124,7 @@ const TripPage: BlitzPage = () => {
               Before You Go
             </Heading>
             <Flex justifyContent="space-between">
-              <HStack spacing="1rem" mb="2rem">
+              <Flex gap="1rem" flexDir={{ base: "column", md: "row" }} mb="2rem">
                 <a href="https://www.skyscanner.net/" target="_blank" rel="noreferrer">
                   <Button
                     leftIcon={<FontAwesomeIcon icon={faPlaneDeparture} size="1x" />}
@@ -162,7 +162,7 @@ const TripPage: BlitzPage = () => {
                     See Weather
                   </Button>
                 </a>
-              </HStack>
+              </Flex>
 
               <Button
                 leftIcon={<FontAwesomeIcon icon={faClipboard} size="1x" />}
@@ -211,34 +211,34 @@ const TripPage: BlitzPage = () => {
 
                       <AccordionPanel>
                         <VStack spacing="1rem">
-                          <HStack alignItems="start">
-                            <HStack className="dayTimeBox">
+                          <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
+                            <HStack className="dayTimeBox" mb="1rem">
                               <FontAwesomeIcon icon={faMugSaucer} size="1x" />
                               <Text>Morning</Text>
                             </HStack>
-                            <Text fontSize="18px" pl="8rem">
+                            <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>
                               {day.substring(3).split("Morning:")[1]?.split("Afternoon:")[0]}
                             </Text>
-                          </HStack>
-                          <HStack alignItems="start">
-                            <HStack className="dayTimeBox">
+                          </Flex>
+                          <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
+                            <HStack className="dayTimeBox" mb="1rem">
                               <FontAwesomeIcon icon={faSun} size="1x" />
                               <Text>Afternoon</Text>
                             </HStack>
-                            <Text fontSize="18px" pl="8rem">
+                            <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>
                               {day.substring(3).split("Afternoon:")[1]?.split("Evening:")[0]}
                             </Text>
-                          </HStack>
-                          <HStack alignItems="start">
-                            <HStack className="dayTimeBox">
+                          </Flex>
+                          <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
+                            <HStack className="dayTimeBox" mb="1rem">
                               <FontAwesomeIcon icon={faMoon} size="1x" />
                               <Text>Evening</Text>
                             </HStack>
 
-                            <Text fontSize="18px" pl="8rem">
+                            <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>
                               {day.substring(3).split("Evening:")[1]}
                             </Text>
-                          </HStack>
+                          </Flex>
                         </VStack>
                       </AccordionPanel>
                     </AccordionItem>

@@ -69,14 +69,16 @@ const Home: BlitzPage = () => {
           <Header theme="white" />
           <Flex alignItems={"center"} h="90%" w="100%" flexDir={{ base: "column", md: "row" }}>
             <VStack
-              w={{ base: "100%", lg: "50%" }}
-              mb={{ base: "1rem", lg: "0rem" }}
-              alignItems={"start"}
+              w={{ base: "100%", md: "50%" }}
+              mb={{ base: "1rem", md: "0rem" }}
+              textAlign={{ base: "center", md: "start" }}
+              alignItems={{ base: "center", md: "start" }}
               color="white"
+              mt={{ base: "2rem", md: "0rem" }}
             >
               <Heading
-                fontSize={{ base: "40px", lg: "70px" }}
-                textAlign={"start"}
+                fontSize={{ base: "35px", md: "55px", lg: "60px", xl: "70px" }}
+                textAlign={{ base: "center", md: "start" }}
                 pb={"0.5rem"}
                 px="0.5rem"
                 fontWeight="700"
@@ -86,12 +88,16 @@ const Home: BlitzPage = () => {
                 <br /> In Seconds.
               </Heading>
 
-              <Text textAlign={"start"} fontSize={{ base: "14px", lg: "22px" }} pb={"1rem"}>
+              <Text
+                textAlign={{ base: "center", md: "start" }}
+                fontSize={{ base: "16px", md: "22px" }}
+                pb={"1rem"}
+              >
                 Discover a world of travel possibilities with <br /> our AI-powered itinerary
                 builder.
               </Text>
             </VStack>
-            <VStack w={{ base: "100%", lg: "50%" }} className="fadeUp">
+            <VStack w={{ base: "100%", md: "50%" }} className="fadeUp">
               <TripForm />
             </VStack>
           </Flex>
