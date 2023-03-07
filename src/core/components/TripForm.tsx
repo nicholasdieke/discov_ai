@@ -117,6 +117,7 @@ function TripForm() {
       .catch((e) => console.log(e))
   }
 
+  // Handling the form
   const formik = useFormik({
     initialValues: {
       destination: "",
