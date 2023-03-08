@@ -102,7 +102,7 @@ const Home: BlitzPage = () => {
                 builder.
               </Text>
             </VStack>
-            <VStack w={{ base: "100%", md: "50%" }} mb="5rem" p className="fadeUp">
+            <VStack w={{ base: "100%", md: "50%" }} mb="5rem" className="fadeUp">
               <TripForm />
             </VStack>
           </Flex>

@@ -96,6 +96,12 @@ function TripForm() {
       values.destination +
       ".  Write in an engaging, descriptive style with a friendly tone and correct grammar. Split each day into Morning, Afternoon, Evening."
 
+    setTimeout(async () => {
+      setIsLoadingText("Picking out the best spots...")
+    }, 5000)
+    setTimeout(async () => {
+      setIsLoadingText("Almost Ready..")
+    }, 10000)
     await fetch("/api/generate", {
       method: "POST",
       headers: {
@@ -105,7 +111,7 @@ function TripForm() {
     })
       .then((response) => response.json())
       .then(async (response) => {
-        setIsLoadingText("Almost Ready...")
+        // setIsLoadingText("Almost Ready...")
         values = {
           ...values,
           group: values.group.value,
@@ -167,6 +173,7 @@ function TripForm() {
       autoCompleteRef.current.addListener("place_changed", async function () {
         if (autoCompleteRef.current) {
           const place = autoCompleteRef.current.getPlace()
+          console.log(place)
           if (place && place.address_components) {
             for (let i = 0; i < place.address_components.length; i++) {
               let comp = place.address_components[i]
@@ -178,6 +185,7 @@ function TripForm() {
                   "administrative_area_level_1",
                   "administrative_area_level_2",
                   "country",
+                  "continent",
                 ].some((code) => comp!.types.includes(code))
               ) {
                 await formik.setFieldValue("destination", comp.long_name)
