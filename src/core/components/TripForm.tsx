@@ -28,6 +28,7 @@ function TripForm() {
 
   const [dateRange, setDateRange] = useState([null, null])
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingText, setIsLoadingText] = useState("Building Your Itinerary...")
   const [loaded, setLoaded] = useState(false)
   const [startDate, endDate] = dateRange
 
@@ -104,6 +105,7 @@ function TripForm() {
     })
       .then((response) => response.json())
       .then(async (response) => {
+        setIsLoadingText("Almost Ready...")
         values = {
           ...values,
           group: values.group.value,
@@ -293,7 +295,7 @@ function TripForm() {
             autoplay={true}
           />
           <Text textAlign="center" fontWeight="600" mt="-2rem" mb="2rem" color="white">
-            Building Your Itinerary...
+            {isLoadingText}
           </Text>
         </Box>
       )}

@@ -63,11 +63,16 @@ const Home: BlitzPage = () => {
   }, [])
 
   return (
-    <Box className="App" height="100vh" overflow="hidden">
+    <Box className="App" h="100%" minH="100vh" overflow="hidden">
       <Box bgImage={photoUrl} bgPos="top" bgRepeat="no-repeat" bgSize="cover" h="100%">
-        <Box h="100%" px={{ base: "2rem", lg: "7.5rem" }} bgColor="#00000087">
+        <Box h="100%" minH="100vh" px={{ base: "2rem", lg: "7.5rem" }} bgColor="#00000087">
           <Header theme="white" />
-          <Flex alignItems={"center"} h="90%" w="100%" flexDir={{ base: "column", md: "row" }}>
+          <Flex
+            alignItems={"center"}
+            mt={{ base: "1rem", md: "6rem" }}
+            w="100%"
+            flexDir={{ base: "column", md: "row" }}
+          >
             <VStack
               w={{ base: "100%", md: "50%" }}
               mb={{ base: "1rem", md: "0rem" }}
@@ -97,7 +102,7 @@ const Home: BlitzPage = () => {
                 builder.
               </Text>
             </VStack>
-            <VStack w={{ base: "100%", md: "50%" }} className="fadeUp">
+            <VStack w={{ base: "100%", md: "50%" }} mb="5rem" p className="fadeUp">
               <TripForm />
             </VStack>
           </Flex>

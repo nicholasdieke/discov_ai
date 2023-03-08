@@ -168,7 +168,7 @@ const TripPage: BlitzPage = () => {
                 leftIcon={<FontAwesomeIcon icon={faClipboard} size="1x" />}
                 onClick={() =>
                   navigator.clipboard.writeText(
-                    "Check out my trip made on DiscovAI! " + router.asPath
+                    "Check out my trip made on DiscovAI! www.discovai.com" + router.asPath
                   )
                 }
                 variant="outline"
