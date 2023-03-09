@@ -7,12 +7,7 @@ function Header({ theme }) {
 
   return (
     <Flex justifyContent="space-between" pb="1rem" pt="1.5rem" alignItems="center" color={theme}>
-      <Text
-        fontWeight="800"
-        fontSize="20px"
-        onClick={() => router.push(Routes.Home())}
-        cursor="pointer"
-      >
+      <Text onClick={() => router.push(Routes.Home())} className="logo-text">
         DiscovAI
       </Text>
       <HStack spacing="1rem">

@@ -85,7 +85,7 @@ function TripForm() {
   const sendPrompt = async (values) => {
     setIsLoading(true)
     const days = Math.max(dateDiffInDays(values.daterange[0], values.daterange[1]), 1)
-    const prompt =
+    let prompt =
       "Create a personalised " +
       days +
       "-day itinerary for a " +
@@ -94,7 +94,11 @@ function TripForm() {
       values.group.value +
       " trip to " +
       values.destination +
-      ".  Write in an engaging, descriptive style with a friendly tone and correct grammar. Split each day into Morning, Afternoon, Evening."
+      ".  Write in an engaging, descriptive style with a friendly tone and correct grammar."
+
+    if (days < 10) {
+      prompt = prompt + "Split each day into Morning, Afternoon, Evening."
+    }
 
     setTimeout(async () => {
       setIsLoadingText("Picking out the best spots...")

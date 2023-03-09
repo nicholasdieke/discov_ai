@@ -38,6 +38,7 @@ const TripPage: BlitzPage = () => {
   const router = useRouter()
   const tripId = router.query.id || ""
   const [loading, setLoading] = useState(true)
+  const [longTrip, setLongTrip] = useState(false)
 
   const [myTrip, setMyTrip] = useState<Trip | null | undefined>(undefined)
 
@@ -58,6 +59,15 @@ const TripPage: BlitzPage = () => {
 
   const [photoUrl, setPhotoUrl] = useState("")
 
+  const dateDiffInDays = (a, b) => {
+    const _MS_PER_DAY = 1000 * 60 * 60 * 24
+    // Discard the time and time-zone information.
+    const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())
+    const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate())
+
+    return Math.floor((utc2 - utc1) / _MS_PER_DAY)
+  }
+
   const getPhoto = (destination) => {
     fetch("/api/getDestPhoto?destination=" + destination)
       .then((response) => response.json())
@@ -69,10 +79,11 @@ const TripPage: BlitzPage = () => {
     // Gets the info from db and then gets an image from unsplash
     invoke(getTrip, { id: tripId })
       .then((trip) => {
-        console.log(trip)
         setMyTrip(trip as Trip)
+
         getPhoto(trip?.destination || "city")
         setLoading(false)
+        if (!!trip) setLongTrip(dateDiffInDays(trip.daterange[0], trip.daterange[1]) >= 10)
       })
       .catch((e) => console.log(e))
   }
@@ -196,10 +207,11 @@ const TripPage: BlitzPage = () => {
                     w="100%"
                   >
                     {myTrip.itinerary
-                      .split("Day")
+                      .trim()
+                      .split("Day ")
                       .slice(1)
                       .map((day, index) => (
-                        <AccordionItem key={"Trip-Day" + index}>
+                        <AccordionItem key={"Day-Accordion-" + index}>
                           <AccordionButton>
                             <Box
                               as="span"
@@ -210,41 +222,52 @@ const TripPage: BlitzPage = () => {
                               flex="1"
                               textAlign="left"
                             >
-                              Day {index + 1}
+                              Day {day.substring(0, day.indexOf(":"))}
                             </Box>
                             <AccordionIcon />
                           </AccordionButton>
 
                           <AccordionPanel>
-                            <VStack spacing="1rem">
-                              <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
-                                <HStack className="dayTimeBox" mb="1rem">
-                                  <FontAwesomeIcon icon={faMugSaucer} size="1x" />
-                                  <Text>Morning</Text>
-                                </HStack>
-                                <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>
-                                  {day.substring(3).split("Morning:")[1]?.split("Afternoon:")[0]}
-                                </Text>
-                              </Flex>
-                              <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
-                                <HStack className="dayTimeBox" mb="1rem">
-                                  <FontAwesomeIcon icon={faSun} size="1x" />
-                                  <Text>Afternoon</Text>
-                                </HStack>
-                                <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>
-                                  {day.substring(3).split("Afternoon:")[1]?.split("Evening:")[0]}
-                                </Text>
-                              </Flex>
-                              <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
-                                <HStack className="dayTimeBox" mb="1rem">
-                                  <FontAwesomeIcon icon={faMoon} size="1x" />
-                                  <Text>Evening</Text>
-                                </HStack>
+                            <VStack spacing="1rem" alignItems="start">
+                              {!longTrip && (
+                                <>
+                                  <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
+                                    <HStack className="dayTimeBox" mb="1rem">
+                                      <FontAwesomeIcon icon={faMugSaucer} size="1x" />
+                                      <Text>Morning</Text>
+                                    </HStack>
+                                    <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>
+                                      {day
+                                        .substring(day.indexOf("Morning"), day.indexOf("Afternoon"))
+                                        .slice(9)
+                                        .trim()}
+                                    </Text>
+                                  </Flex>
+                                  <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
+                                    <HStack className="dayTimeBox" mb="1rem">
+                                      <FontAwesomeIcon icon={faSun} size="1x" />
+                                      <Text>Afternoon</Text>
+                                    </HStack>
+                                    <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>
+                                      {day
+                                        .substring(day.indexOf("Afternoon"), day.indexOf("Evening"))
+                                        .slice(11)
+                                        .trim()}
+                                    </Text>
+                                  </Flex>
+                                  <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
+                                    <HStack className="dayTimeBox" mb="1rem">
+                                      <FontAwesomeIcon icon={faMoon} size="1x" />
+                                      <Text>Evening</Text>
+                                    </HStack>
 
-                                <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>
-                                  {day.substring(3).split("Evening:")[1]}
-                                </Text>
-                              </Flex>
+                                    <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>
+                                      {day.substring(day.indexOf("Evening")).slice(9).trim()}
+                                    </Text>
+                                  </Flex>
+                                </>
+                              )}
+                              {longTrip && <Text fontSize="18px">{day.split(": ")[1]}</Text>}
                             </VStack>
                           </AccordionPanel>
                         </AccordionItem>
