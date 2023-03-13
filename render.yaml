@@ -23,6 +23,8 @@ services:
         sync: false
       - key: UNSPLASH_API_KEY
         sync: false
+      - key: NODE_VERSION
+        value: 14.18.0
 
 databases:
   - name: blitzapp-db
