@@ -100,7 +100,7 @@ const TripPage: BlitzPage = () => {
 
   return (
     <Box backgroundColor="#0F1014" h="100%" minH="100vh" color="white">
-      <Box px={{ base: "2rem", lg: "7.5rem" }} py={{ base: "0.25rem", lg: "0.5rem" }}>
+      <Box px={{ base: "1.5rem", lg: "7.5rem" }} py={{ base: "0.25rem", lg: "0.5rem" }}>
         <Header theme="white" />
         {!loading && !!myTrip && (
           <>

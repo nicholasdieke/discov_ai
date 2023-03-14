@@ -82,6 +82,21 @@ function TripForm() {
     },
   ]
 
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ]
+
   const sendPrompt = async (values) => {
     setIsLoading(true)
     const days = Math.max(dateDiffInDays(values.daterange[0], values.daterange[1]), 1)
@@ -94,6 +109,8 @@ function TripForm() {
       values.group.value +
       " trip to " +
       values.destination +
+      " in " +
+      monthNames[(values.daterange[0] as Date).getMonth()] +
       ".  Write in an engaging, descriptive style with a friendly tone and correct grammar."
 
     if (days < 10) {
@@ -177,7 +194,6 @@ function TripForm() {
       autoCompleteRef.current.addListener("place_changed", async function () {
         if (autoCompleteRef.current) {
           const place = autoCompleteRef.current.getPlace()
-          console.log(place)
           if (place && place.address_components) {
             for (let i = 0; i < place.address_components.length; i++) {
               let comp = place.address_components[i]
@@ -289,7 +305,7 @@ function TripForm() {
             </FormControl>
           </VStack>
 
-          <Button type="submit" variant="primary" mt="1rem" width="full">
+          <Button type="submit" className="btn-grad" mt="1rem" width="full">
             Build Itinerary!
           </Button>
         </form>

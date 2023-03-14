@@ -9,15 +9,16 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
   return (
     <>
       <Head>
-        <title>DiscovAI</title>
-        <link rel="icon" href="/world_resized.png" />
-        <link rel="apple-touch-icon" href="/world_resized.png" />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <meta
           name="description"
           content="Discover a world of travel possibilities with <br /> our AI-powered itinerary builder."
         />
+        <title>DiscovAI</title>
       </Head>
 
       {children}
