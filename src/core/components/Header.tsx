@@ -6,7 +6,13 @@ function Header({ theme }) {
   const router = useRouter()
 
   return (
-    <Flex justifyContent="space-between" pb="1rem" pt="1.5rem" alignItems="center" color={theme}>
+    <Flex
+      justifyContent="space-between"
+      pb={{ base: "0.5rem", md: "1.5rem" }}
+      pt="1.5rem"
+      alignItems="center"
+      color={theme}
+    >
       <Text onClick={() => router.push(Routes.Home())} className="logo-text">
         DiscovAI
       </Text>

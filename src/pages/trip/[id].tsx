@@ -125,7 +125,7 @@ const TripPage: BlitzPage = () => {
         {!loading && !!myTrip && (
           <>
             <Flex
-              h={{ base: "200px", lg: "250px" }}
+              h={{ base: "175px", lg: "250px" }}
               bgPos="center"
               bgRepeat="no-repeat"
               bgImage={photoUrl}
@@ -136,7 +136,7 @@ const TripPage: BlitzPage = () => {
                 p="1rem"
                 alignItems="center"
                 justifyContent="center"
-                h={{ base: "200px", lg: "250px" }}
+                h={{ base: "175px", lg: "250px" }}
                 bgColor="rgb(0,0,0,0.5)"
                 w="100%"
               >
@@ -145,7 +145,7 @@ const TripPage: BlitzPage = () => {
                   <Divider />
                   <HStack fontSize="18px">
                     <FontAwesomeIcon icon={faCalendarDays} size="1x" />
-                    <Text>
+                    <Text fontSize={{ base: "0.9rem", md: "1.5rem" }}>
                       {myTrip.daterange[0]?.toLocaleDateString("en-US", dateOptions)} -{" "}
                       {myTrip.daterange[1]?.toLocaleDateString("en-US", dateOptions)}
                     </Text>

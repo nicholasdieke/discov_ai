@@ -1,6 +1,6 @@
 import { BlitzPage } from "@blitzjs/next"
-import { Box, Flex, Heading, Text, VStack } from "@chakra-ui/react"
-import Image from "next/image"
+import { Box, Flex, Heading, Image, Text, VStack } from "@chakra-ui/react"
+// import Image from "next/image"
 import { useEffect, useState } from "react"
 import "react-datepicker/dist/react-datepicker.css"
 import Header from "src/core/components/Header"
@@ -39,8 +39,8 @@ const Home: BlitzPage = () => {
         <meta name="twitter:card" content="summary_large_image" />
       </>
       <Box h="100%" pos="relative">
-        <Box minW="100%" zIndex="-1" minH="100%" pos="absolute">
-          <Image alt="bg-image" src={"/" + photoUrl} fill style={{ objectFit: "cover" }} />
+        <Box w="100%" zIndex="-1" h="100%" pos="absolute">
+          <Image alt="bg-image" src={"/" + photoUrl} objectFit="cover" h="100%" w="100%" />
         </Box>
         <Box h="100%" minH="100vh" px={{ base: "2rem", lg: "6rem" }} bgColor="#00000053">
           <Header theme="white" />
@@ -51,15 +51,14 @@ const Home: BlitzPage = () => {
               textAlign={{ base: "center", md: "start" }}
               alignItems={{ base: "center", md: "start" }}
               color="white"
-              mt={{ base: "2rem", md: "0rem" }}
+              mt={{ base: "1rem", md: "0rem" }}
             >
               <Heading
-                fontSize={{ base: "2.1rem", md: "2.5rem", lg: "4 rem", xl: "4rem" }}
+                fontSize={{ base: "1.5rem", sm: "2.5rem", md: "2.5rem", lg: "4 rem", xl: "4rem" }}
                 textAlign={{ base: "center", md: "start" }}
-                pb={"0.5rem"}
-                px="0.5rem"
+                pb={{ base: "0rem", md: "0.5rem" }}
+                // px="0.5rem"
                 fontWeight="700"
-                className="moveright2"
               >
                 Your Perfect Trip.
                 <br /> In Seconds.
@@ -67,14 +66,14 @@ const Home: BlitzPage = () => {
 
               <Text
                 textAlign={{ base: "center", md: "start" }}
-                fontSize={{ base: "1rem", md: "1rem", lg: "1rem", xl: "1.3rem" }}
+                fontSize={{ base: "0.8rem", sm: "1rem", md: "1rem", lg: "1rem", xl: "1.3rem" }}
                 pb={"1rem"}
-                maxW={{ base: "90%", md: "70%" }}
+                maxW={{ base: "100%", md: "70%" }}
               >
                 Discover a world of travel possibilities with our AI-powered itinerary builder.
               </Text>
             </VStack>
-            <VStack w={{ base: "100%", md: "50%" }} mb="3rem">
+            <VStack w={{ base: "100%", md: "50%" }} mb="5rem">
               <TripForm />
             </VStack>
           </Flex>

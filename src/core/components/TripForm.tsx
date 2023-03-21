@@ -216,7 +216,7 @@ function TripForm() {
     "&libraries=places"
 
   return (
-    <Box className="tripform">
+    <Box className="tripform" minW={{ base: "250px", sm: "350px" }}>
       <script src={script} onLoad={() => setLoaded(true)}></script>
       {!isLoading && (
         <form autoComplete="off" onSubmit={formik.handleSubmit}>
