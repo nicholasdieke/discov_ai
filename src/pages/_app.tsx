@@ -6,24 +6,20 @@ import "src/styles/globals.css"
 import { ChakraProvider, extendTheme } from "@chakra-ui/react"
 
 const theme = extendTheme({
-  // colors: {
-  //   primary: "#EEA38B",
-  //   secondary: "#4BA2D3",
-  // },
-
   components: {
     Button: {
       variants: {
         primary: {
-          bg: "black",
+          backgroundImage: "linear-gradient(to right, #623355 40%, #da621a 150%) !important",
+          transition: "0.5s ease-in-out",
+          transitionDuration: "0.5s",
           color: "white",
+          boxShadow: "0 0 20px #00000037",
           _hover: {
-            bg: "gray.900",
+            backgroundImage: "linear-gradient(to right, #623355 0%, #da621a 150%) !important",
+            color: "#fff",
+            textDecoration: "none",
           },
-        },
-        secondary: {
-          bg: "#4BA2D3",
-          color: "white",
         },
         outline: {
           _hover: {
@@ -32,11 +28,6 @@ const theme = extendTheme({
         },
       },
     },
-  },
-
-  fonts: {
-    heading: `'Plus Jakarta Sans', sans-serif`,
-    body: `'Plus Jakarta Sans', sans-serif`,
   },
 })
 

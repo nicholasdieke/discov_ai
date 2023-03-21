@@ -3,6 +3,10 @@
   --screen-width: 90vmin;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html,
 body {
   padding: 0;
@@ -55,20 +59,6 @@ i {
 .dayTimeBox {
   width: 0px;
   margin-top: 1px;
-}
-
-.btn-grad {
-  background-image: linear-gradient(to right, #623355 40%, #da621a 150%) !important;
-  transition: 0.5s ease-in-out;
-  transition-duration: 0.5s;
-  color: white;
-  box-shadow: 0 0 20px #00000037;
-}
-
-.btn-grad:hover {
-  background-image: linear-gradient(to right, #623355 0%, #da621a 150%) !important;
-  color: #fff;
-  text-decoration: none;
 }
 
 /* Errors */

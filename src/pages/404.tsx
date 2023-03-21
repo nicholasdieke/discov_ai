@@ -1,7 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import { Box, Button, Flex, Heading } from "@chakra-ui/react"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
 import "react-datepicker/dist/react-datepicker.css"
 import Header from "src/core/components/Header"
 
@@ -9,24 +8,7 @@ import Header from "src/core/components/Header"
 // This page is rendered if a route match is not found
 // ------------------------------------------------------
 export default function Page404() {
-  const statusCode = 404
-  const title = "This page could not be found"
-  const [photoUrl, setPhotoUrl] = useState("")
   const router = useRouter()
-
-  const getPhoto = () => {
-    fetch("/api/getHomePhotos")
-      .then((response) => response.json())
-      .then((response) => {
-        const random = Math.floor(Math.random() * 10)
-        setPhotoUrl(response.result[random].urls.full || "")
-      })
-      .catch((e) => console.log(e))
-  }
-
-  useEffect(() => {
-    getPhoto()
-  }, [])
 
   return (
     <Box

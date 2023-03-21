@@ -2,7 +2,6 @@
   "name": "discovai",
   "version": "1.0.0",
   "scripts": {
-    "predev": "docker-compose up -d",
     "dev": "blitz dev",
     "build": "blitz build",
     "start:production": "blitz start --port $PORT",
@@ -49,7 +48,6 @@
     "react": "18.2.0",
     "react-datepicker": "4.10.0",
     "react-dom": "18.2.0",
-    "react-google-autocomplete": "2.7.3",
     "secure-password": "4.0.0",
     "unsplash-js": "7.0.15",
     "zod": "3.20.2"

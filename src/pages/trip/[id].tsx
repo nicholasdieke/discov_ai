@@ -13,6 +13,7 @@ import {
   Heading,
   HStack,
   Text,
+  useToast,
   VStack,
 } from "@chakra-ui/react"
 import {
@@ -21,10 +22,7 @@ import {
   faChevronRight,
   faClipboard,
   faCloudSun,
-  faMoon,
-  faMugSaucer,
   faPlaneDeparture,
-  faSun,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Trip } from "db"
@@ -39,6 +37,7 @@ const TripPage: BlitzPage = () => {
   const tripId = router.query.id || ""
   const [loading, setLoading] = useState(true)
   const [longTrip, setLongTrip] = useState(false)
+  const toast = useToast()
 
   const [myTrip, setMyTrip] = useState<Trip | null | undefined>(undefined)
 
@@ -71,7 +70,7 @@ const TripPage: BlitzPage = () => {
   const getPhoto = (destination) => {
     fetch("/api/getDestPhoto?destination=" + destination)
       .then((response) => response.json())
-      .then((response) => setPhotoUrl(response.result[0].urls.full || ""))
+      .then((response) => setPhotoUrl(response.result[0].urls.regular || ""))
       .catch((e) => console.log(e))
   }
 
@@ -100,7 +99,28 @@ const TripPage: BlitzPage = () => {
 
   return (
     <Box backgroundColor="#0F1014" h="100%" minH="100vh" color="white">
-      <Box px={{ base: "1.5rem", lg: "7.5rem" }} py={{ base: "0.25rem", lg: "0.5rem" }}>
+      <>
+        <title>DiscovAI | Trip</title>
+        <meta
+          name="description"
+          content="Discover a world of travel possibilities with our AI-powered itinerary builder."
+        />
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="DiscovAI" />
+        <meta property="og:url" content="/" />
+        <meta property="og:image" content="/share-image.png" />
+        <meta name="twitter:title" content="DiscovAI" />
+        <meta
+          name="twitter:description"
+          content="Discover a world of travel possibilities with our AI-powered itinerary builder."
+        />
+        <meta name="twitter:image" content="/share-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </>
+      <Box px={{ base: "1.5rem", lg: "6rem" }} py={{ base: "0.25rem", lg: "0.5rem" }}>
         <Header theme="white" />
         {!loading && !!myTrip && (
           <>
@@ -141,7 +161,11 @@ const TripPage: BlitzPage = () => {
                 </Heading>
                 <Flex justifyContent="space-between">
                   <Flex gap="1rem" flexDir={{ base: "column", md: "row" }} mb="2rem">
-                    <a href="https://www.skyscanner.net/" target="_blank" rel="noreferrer">
+                    <a
+                      href="https://www.google.com/travel/flights"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       <Button
                         leftIcon={<FontAwesomeIcon icon={faPlaneDeparture} size="1x" />}
                         rightIcon={<FontAwesomeIcon icon={faChevronRight} size="1x" />}
@@ -151,7 +175,11 @@ const TripPage: BlitzPage = () => {
                       </Button>
                     </a>
 
-                    <a href="https://www.booking.com/" target="_blank" rel="noreferrer">
+                    <a
+                      href={"https://www.google.com/travel/hotels/" + myTrip.destination}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       <Button
                         leftIcon={<FontAwesomeIcon icon={faBed} size="1x" />}
                         rightIcon={<FontAwesomeIcon icon={faChevronRight} size="1x" />}
@@ -183,9 +211,20 @@ const TripPage: BlitzPage = () => {
                   <Button
                     leftIcon={<FontAwesomeIcon icon={faClipboard} size="1x" />}
                     onClick={() =>
-                      navigator.clipboard.writeText(
-                        "Check out my trip made on DiscovAI! www.discovai.com" + router.asPath
-                      )
+                      navigator.clipboard
+                        .writeText(
+                          "Check out the trip I made on DiscovAI! www.discovai.com" + router.asPath
+                        )
+                        .then(() => {
+                          toast({
+                            title: "Trip Copied",
+                            description: "Share this trip.",
+                            status: "success",
+                            duration: 2000,
+                            isClosable: true,
+                            position: "bottom-right",
+                          })
+                        })
                     }
                     variant="outline"
                   >
@@ -233,8 +272,7 @@ const TripPage: BlitzPage = () => {
                                 <>
                                   <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
                                     <HStack className="dayTimeBox" mb="1rem">
-                                      <FontAwesomeIcon icon={faMugSaucer} size="1x" />
-                                      <Text>Morning</Text>
+                                      <Text whiteSpace="nowrap">☕ Morning</Text>
                                     </HStack>
                                     <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>
                                       {day
@@ -245,8 +283,7 @@ const TripPage: BlitzPage = () => {
                                   </Flex>
                                   <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
                                     <HStack className="dayTimeBox" mb="1rem">
-                                      <FontAwesomeIcon icon={faSun} size="1x" />
-                                      <Text>Afternoon</Text>
+                                      <Text whiteSpace="nowrap">☀️ Afternoon</Text>
                                     </HStack>
                                     <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>
                                       {day
@@ -257,8 +294,7 @@ const TripPage: BlitzPage = () => {
                                   </Flex>
                                   <Flex alignItems="start" flexDir={{ base: "column", md: "row" }}>
                                     <HStack className="dayTimeBox" mb="1rem">
-                                      <FontAwesomeIcon icon={faMoon} size="1x" />
-                                      <Text>Evening</Text>
+                                      <Text whiteSpace="nowrap">🌃 Evening</Text>
                                     </HStack>
 
                                     <Text fontSize="18px" pl={{ base: "0rem", md: "8rem" }}>

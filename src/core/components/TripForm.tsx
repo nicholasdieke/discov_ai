@@ -116,13 +116,6 @@ function TripForm() {
     if (days < 10) {
       prompt = prompt + "Split each day into Morning, Afternoon, Evening."
     }
-
-    setTimeout(async () => {
-      setIsLoadingText("Picking out the best spots...")
-    }, 5000)
-    setTimeout(async () => {
-      setIsLoadingText("Almost Ready..")
-    }, 10000)
     await fetch("/api/generate", {
       method: "POST",
       headers: {
@@ -132,7 +125,6 @@ function TripForm() {
     })
       .then((response) => response.json())
       .then(async (response) => {
-        // setIsLoadingText("Almost Ready...")
         values = {
           ...values,
           group: values.group.value,
@@ -224,7 +216,7 @@ function TripForm() {
     "&libraries=places"
 
   return (
-    <Box className="reveal tripform">
+    <Box className="tripform">
       <script src={script} onLoad={() => setLoaded(true)}></script>
       {!isLoading && (
         <form autoComplete="off" onSubmit={formik.handleSubmit}>
@@ -235,7 +227,7 @@ function TripForm() {
               </FormLabel>
               <InputGroup>
                 <InputLeftElement color="white" pointerEvents="none">
-                  <FontAwesomeIcon icon={faLocationDot} size="1x" />
+                  <FontAwesomeIcon icon={faLocationDot} />
                 </InputLeftElement>
                 <Input
                   id="destination"
@@ -305,7 +297,7 @@ function TripForm() {
             </FormControl>
           </VStack>
 
-          <Button type="submit" className="btn-grad" mt="1rem" width="full">
+          <Button type="submit" variant="primary" mt="1rem" width="full">
             Build Itinerary!
           </Button>
         </form>
