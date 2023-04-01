@@ -12,6 +12,7 @@ import {
   Flex,
   Heading,
   HStack,
+  Spinner,
   Text,
   useToast,
   VStack,
@@ -34,9 +35,10 @@ import getTrip from "src/core/queries/getTrip"
 
 const TripPage: BlitzPage = () => {
   const router = useRouter()
-  const tripId = router.query.id || ""
+  const tripId = router.query.id as string
   const [loading, setLoading] = useState(true)
   const [longTrip, setLongTrip] = useState(false)
+  const [notFound, setNotFound] = useState(false)
   const toast = useToast()
 
   const [myTrip, setMyTrip] = useState<Trip | null | undefined>(undefined)
@@ -78,18 +80,18 @@ const TripPage: BlitzPage = () => {
     // Gets the info from db and then gets an image from unsplash
     invoke(getTrip, { id: tripId })
       .then((trip) => {
-        setMyTrip(trip as Trip)
-
-        getPhoto(trip?.destination || "city")
-        setLoading(false)
-        if (!!trip) setLongTrip(dateDiffInDays(trip.daterange[0], trip.daterange[1]) >= 10)
+        if (!!trip) {
+          setMyTrip(trip as Trip)
+          getPhoto(trip.destination)
+          setLoading(false)
+          setLongTrip(dateDiffInDays(trip.daterange[0], trip.daterange[1]) >= 10)
+        } else {
+          setLoading(false)
+          setNotFound(true)
+        }
       })
       .catch((e) => console.log(e))
   }
-
-  useEffect(() => {
-    getDetails(tripId)
-  }, [tripId])
 
   const dateOptions: Intl.DateTimeFormatOptions = {
     day: "2-digit",
@@ -97,10 +99,15 @@ const TripPage: BlitzPage = () => {
     year: "numeric",
   }
 
+  useEffect(() => {
+    getDetails(tripId)
+  }, [tripId])
+
   return (
     <Box backgroundColor="#0F1014" h="100%" minH="100vh" color="white">
       <>
         <title>DiscovAI | Trip</title>
+
         <meta
           name="description"
           content="Discover a world of travel possibilities with our AI-powered itinerary builder."
@@ -141,7 +148,9 @@ const TripPage: BlitzPage = () => {
                 w="100%"
               >
                 <VStack spacing="1rem" color="white" textAlign="center">
-                  <Heading fontSize={{ base: "40px", lg: "70px" }}>{myTrip.destination}</Heading>
+                  <Heading fontSize={{ base: "40px", lg: "70px" }}>
+                    {myTrip.destination.split(", ")[0]}
+                  </Heading>
                   <Divider />
                   <HStack fontSize="18px">
                     <FontAwesomeIcon icon={faCalendarDays} size="1x" />
@@ -154,13 +163,15 @@ const TripPage: BlitzPage = () => {
               </Flex>
             </Flex>
 
+            <div data-skyscanner-widget="FlightSearchWidget" data-locale="en-GB"></div>
+
             <Flex mt="2rem" mb="5rem" flexDir={{ base: "column-reverse", md: "column" }}>
               <Box>
                 <Heading size="md" my="1rem">
-                  Before You Go
+                  📝 Before You Go
                 </Heading>
-                <Flex justifyContent="space-between">
-                  <Flex gap="1rem" flexDir={{ base: "column", md: "row" }} mb="2rem">
+                <Flex justifyContent="space-between" flexDir={{ base: "column", md: "row" }}>
+                  <Flex gap="1rem" flexDir={{ base: "column", md: "row" }} mb="2rem" w="100%">
                     <a
                       href="https://www.google.com/travel/flights"
                       target="_blank"
@@ -170,13 +181,16 @@ const TripPage: BlitzPage = () => {
                         leftIcon={<FontAwesomeIcon icon={faPlaneDeparture} size="1x" />}
                         rightIcon={<FontAwesomeIcon icon={faChevronRight} size="1x" />}
                         variant="outline"
+                        w="100%"
                       >
                         See Flights
                       </Button>
                     </a>
 
                     <a
-                      href={"https://www.google.com/travel/hotels/" + myTrip.destination}
+                      href={
+                        "https://www.google.com/travel/hotels/" + myTrip.destination.split(", ")[0]
+                      }
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -184,6 +198,7 @@ const TripPage: BlitzPage = () => {
                         leftIcon={<FontAwesomeIcon icon={faBed} size="1x" />}
                         rightIcon={<FontAwesomeIcon icon={faChevronRight} size="1x" />}
                         variant="outline"
+                        w="100%"
                       >
                         See Stays
                       </Button>
@@ -191,7 +206,7 @@ const TripPage: BlitzPage = () => {
                     <a
                       href={
                         "https://www.meteoprog.com/weather/" +
-                        myTrip.destination.replaceAll(" ", "") +
+                        myTrip.destination.split(", ")[0] +
                         "/month/" +
                         monthNames[(myTrip.daterange[0] as Date).getMonth()]
                       }
@@ -202,6 +217,7 @@ const TripPage: BlitzPage = () => {
                         leftIcon={<FontAwesomeIcon icon={faCloudSun} size="1x" />}
                         rightIcon={<FontAwesomeIcon icon={faChevronRight} size="1x" />}
                         variant="outline"
+                        w="100%"
                       >
                         See Weather
                       </Button>
@@ -213,7 +229,10 @@ const TripPage: BlitzPage = () => {
                     onClick={() =>
                       navigator.clipboard
                         .writeText(
-                          "Check out the trip I made on DiscovAI! www.discovai.com" + router.asPath
+                          "Check out the trip to " +
+                            myTrip.destination.split(", ")[0] +
+                            " I made on DiscovAI! www.discovai.com" +
+                            router.asPath
                         )
                         .then(() => {
                           toast({
@@ -234,12 +253,12 @@ const TripPage: BlitzPage = () => {
               </Box>
               <Box>
                 <Heading size="md" mb="1rem">
-                  Your Personalised Itinerary
+                  📍 Your Personalised Itinerary
                 </Heading>
                 <VStack spacing="3rem">
                   <Accordion
                     defaultIndex={Array.from(
-                      { length: myTrip.itinerary.split("Day").slice(1).length },
+                      { length: myTrip.itinerary.trim().split("Day ").slice(1).length },
                       (_, i) => i
                     )}
                     allowMultiple
@@ -303,18 +322,46 @@ const TripPage: BlitzPage = () => {
                                   </Flex>
                                 </>
                               )}
-                              {longTrip && <Text fontSize="18px">{day.split(": ")[1]}</Text>}
+                              {longTrip && <Text fontSize="18px">{day.split(":")[1]}</Text>}
                             </VStack>
                           </AccordionPanel>
                         </AccordionItem>
                       ))}
                   </Accordion>
+
+                  <Box w="100%">
+                    <Heading size="md" mb="1rem">
+                      🔍 Tour Inspiration
+                    </Heading>
+                    <div id="widget-container">
+                      <div
+                        data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
+                        data-gyg-locale-code="en-US"
+                        data-gyg-widget="activities"
+                        data-gyg-number-of-items="4"
+                        data-gyg-partner-id="9WU9RNS"
+                        data-gyg-q={myTrip.destination}
+                      ></div>
+                    </div>
+                  </Box>
                 </VStack>
               </Box>
             </Flex>
           </>
         )}
-        {!loading && myTrip === null && (
+        {loading && (
+          <Flex
+            alignItems={"center"}
+            justifyContent="center"
+            mt={{ base: "1rem", md: "6rem" }}
+            w="100%"
+            flexDir="column"
+          >
+            <Spinner size="xl" />
+            <Text mt="2rem">Loading Trip...</Text>
+          </Flex>
+        )}
+        {notFound && !myTrip && (
           <Flex
             alignItems={"center"}
             justifyContent="center"

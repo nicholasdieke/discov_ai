@@ -80,6 +80,10 @@ function TripForm() {
       label: "🍜 Food",
       value: "food",
     },
+    {
+      label: "🌊 Relax",
+      value: "relaxing",
+    },
   ]
 
   const monthNames = [
@@ -111,10 +115,16 @@ function TripForm() {
       values.destination +
       " in " +
       monthNames[(values.daterange[0] as Date).getMonth()] +
-      ".  Write in an engaging, descriptive style with a friendly tone and correct grammar."
+      ". Write in an engaging, descriptive style with a friendly tone and correct grammar. Dont include regex 'Day'! "
 
     if (days < 10) {
-      prompt = prompt + "Split each day into Morning, Afternoon, Evening."
+      prompt =
+        prompt +
+        "Split each day into Morning, Afternoon, Evening. Please format each day's itinerary with a header that says 'Day 1:', 'Day 2:', and 'Day 3:', respectively."
+    } else {
+      prompt =
+        prompt +
+        "Please format each day's itinerary with a header that says 'Day 1:', 'Day 2:', or 'Day 3-5:', respectively."
     }
     await fetch("/api/generate", {
       method: "POST",
@@ -187,20 +197,26 @@ function TripForm() {
         if (autoCompleteRef.current) {
           const place = autoCompleteRef.current.getPlace()
           if (place && place.address_components) {
+            let places: string[] = []
             for (let i = 0; i < place.address_components.length; i++) {
               let comp = place.address_components[i]
               if (
                 comp?.types &&
+                places.length === 0 &&
                 [
                   "locality",
                   "postal_town",
                   "administrative_area_level_1",
                   "administrative_area_level_2",
-                  "country",
-                  "continent",
                 ].some((code) => comp!.types.includes(code))
               ) {
-                await formik.setFieldValue("destination", comp.long_name)
+                places.push(comp.long_name)
+              } else if (
+                comp?.types &&
+                ["country", "continent"].some((code) => comp!.types.includes(code))
+              ) {
+                places.push(comp.long_name)
+                await formik.setFieldValue("destination", places.join(", "))
                 break
               }
             }
@@ -314,9 +330,12 @@ function TripForm() {
             loop={true}
             autoplay={true}
           />
-          <Text textAlign="center" fontWeight="600" mt="-2rem" mb="2rem" color="white">
-            {isLoadingText}
-          </Text>
+          <Box textAlign="center" fontWeight="600" mt="-2rem" mb="2rem" color="white">
+            <Text>{isLoadingText}</Text>
+            <Text fontWeight="400" fontSize="14px">
+              Takes around 10-25 seconds
+            </Text>
+          </Box>
         </Box>
       )}
     </Box>

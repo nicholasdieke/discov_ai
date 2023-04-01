@@ -7,14 +7,14 @@ const GetTrip = z.object({
 
 export default async function getProject(input: z.infer<typeof GetTrip>) {
   // Validate the input
-  // const data = GetTrip.parse(input)
 
   // Require user to be logged in
   //   ctx.session.$authorize()
 
-  const trip = await db.trip.findFirst({ where: { id: input.id } })
-
-  // Can do any processing, fetching from other APIs, etc
-
-  return trip
+  if (!!input.id) {
+    const trip = await db.trip.findUnique({ where: { id: input.id } })
+    return trip
+  } else {
+    return null
+  }
 }

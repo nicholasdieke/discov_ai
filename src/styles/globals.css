@@ -1,6 +1,8 @@
 :root {
   --border-radius: 0.75rem;
   --screen-width: 90vmin;
+  --background-primary: #0f1014 !important;
+  --label-primary: #ffffff !important;
 }
 
 html {
@@ -35,7 +37,7 @@ i {
 }
 
 .logo-text:hover {
-  text-shadow: 0px 0px 10px #ffffff7f;
+  text-shadow: 0px 0px 25px #ffffffbd;
 }
 
 /* Main trip form */
@@ -117,9 +119,6 @@ i {
 
 .react-datepicker__day--in-range {
   background-color: #805ad5 !important;
-}
-
-.react-datepicker__day--keyboard-selected {
 }
 
 /* React select */
