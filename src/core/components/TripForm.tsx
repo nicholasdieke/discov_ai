@@ -120,7 +120,7 @@ function TripForm() {
     if (days < 10) {
       prompt =
         prompt +
-        "Split each day into Morning, Afternoon, Evening. Please format each day's itinerary with a header that says 'Day 1:', 'Day 2:', and 'Day 3:', respectively."
+        "Split each day into Morning, Afternoon, Evening. Please strictly format each day's itinerary with a header that says 'Day 1:', 'Day 2:', and 'Day 3:', respectively!"
     } else {
       prompt =
         prompt +
