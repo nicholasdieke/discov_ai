@@ -5,6 +5,7 @@ export default async function (req, res) {
   try {
     const response = await fetch(url)
     const data = await response.json()
+    res.setHeader("Access-Control-Allow-Origin", "*")
     res.status(response.status).json({ result: data })
   } catch (error) {
     if (error.response) {
