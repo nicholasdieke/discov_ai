@@ -77,7 +77,7 @@ const TripPage: BlitzPage = () => {
       .catch((e) => console.log(e))
   }
 
-  const getWeather = async (destination, fromDate, toDate) => {
+  const getWeather = (destination, fromDate, toDate) => {
     fetch(
       "/api/getWeatherInfo?destination=" +
         destination +
@@ -102,14 +102,13 @@ const TripPage: BlitzPage = () => {
     return result
   }
 
-  const getDetails = async (tripId) => {
+  const getDetails = (tripId) => {
     // Gets the info from db and then gets an image from unsplash
-    await invoke(getTrip, { id: tripId })
+    invoke(getTrip, { id: tripId })
       .then((trip) => {
         if (!!tripId && !!trip) {
           setMyTrip(trip as Trip)
           getPhoto(trip.destination)
-          // CONTINUE HERE!!! API DOESNT PRINT IN FE
           getWeather(
             trip.destination,
             addDay(trip.daterange[0] as Date)
@@ -118,7 +117,7 @@ const TripPage: BlitzPage = () => {
             addDay(trip.daterange[1] as Date)
               .toISOString()
               .split("T")[0]
-          ).catch(console.error)
+          )
           setLoading(false)
           setLongTrip(dateDiffInDays(trip.daterange[0], trip.daterange[1]) >= 10)
         } else if (!!tripId) {
@@ -136,7 +135,7 @@ const TripPage: BlitzPage = () => {
   }
 
   useEffect(() => {
-    getDetails(tripId).catch(console.error)
+    getDetails(tripId)
   }, [tripId])
 
   return (
