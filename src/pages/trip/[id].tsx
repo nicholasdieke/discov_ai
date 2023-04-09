@@ -118,7 +118,7 @@ const TripPage: BlitzPage = () => {
             addDay(trip.daterange[1] as Date)
               .toISOString()
               .split("T")[0]
-          )
+          ).catch(console.error)
           setLoading(false)
           setLongTrip(dateDiffInDays(trip.daterange[0], trip.daterange[1]) >= 10)
         } else if (!!tripId) {
