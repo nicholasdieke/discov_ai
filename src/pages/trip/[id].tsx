@@ -102,9 +102,9 @@ const TripPage: BlitzPage = () => {
     return result
   }
 
-  const getDetails = async (tripId) => {
+  const getDetails = (tripId) => {
     // Gets the info from db and then gets an image from unsplash
-    await invoke(getTrip, { id: tripId })
+    return invoke(getTrip, { id: tripId })
       .then((trip) => {
         if (!!tripId && !!trip) {
           setMyTrip(trip as Trip)
