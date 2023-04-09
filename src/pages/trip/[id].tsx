@@ -102,7 +102,7 @@ const TripPage: BlitzPage = () => {
     return result
   }
 
-  const getDetails = (tripId) => {
+  const getDetails = (tripId): void => {
     // Gets the info from db and then gets an image from unsplash
     invoke(getTrip, { id: tripId })
       .then((trip) => {
