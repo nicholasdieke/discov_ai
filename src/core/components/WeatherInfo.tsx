@@ -41,9 +41,9 @@ function WeatherInfo({ days }) {
     t = Math.max(0, Math.min(1, t)) // ensure t is within [0,1]
 
     // interpolate the color channels
-    const r = Math.round(coldColor[0] * (1 - t) + hotColor[0] * t)
-    const g = Math.round(coldColor[1] * (1 - t) + hotColor[1] * t)
-    const b = Math.round(coldColor[2] * (1 - t) + hotColor[2] * t)
+    const r = Math.round(coldColor[0]! * (1 - t) + hotColor[0]! * t)
+    const g = Math.round(coldColor[1]! * (1 - t) + hotColor[1]! * t)
+    const b = Math.round(coldColor[2]! * (1 - t) + hotColor[2]! * t)
 
     // convert the channels into a hex code
     return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0").toUpperCase()}`
