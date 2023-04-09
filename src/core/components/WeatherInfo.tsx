@@ -51,8 +51,11 @@ function WeatherInfo({ days }) {
 
   const formatDateString = (dateString) => {
     const date = new Date(dateString)
-    const options = { weekday: "short", day: "numeric", month: "short" }
-    const formattedDate = new Intl.DateTimeFormat("en-US", options).format(date)
+    const formattedDate = new Intl.DateTimeFormat("en-US", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    }).format(date)
     return formattedDate
   }
 
