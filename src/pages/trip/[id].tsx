@@ -227,7 +227,7 @@ const TripPage: BlitzPage = () => {
                   places.push(comp.long_name)
                   const lat = place.geometry.location.lat()
                   const lng = place.geometry.location.lng()
-                  const re = await fetch(`http://iatageo.com/getCode/${lat}/${lng}`)
+                  const re = await fetch(`https://iatageo.com/getCode/${lat}/${lng}`)
                   const data = await re.json()
                   const code = getMapKey(places.join(", "))
 
