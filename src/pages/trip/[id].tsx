@@ -252,7 +252,7 @@ const TripPage: BlitzPage = () => {
       })
         .then((response) => response.json())
         .then(async (response) => {
-          const url = `http://iatageo.com/getCode/${response.result.lat}/${response.result.lng}`
+          const url = `https://iatageo.com/getCode/${response.result.lat}/${response.result.lng}`
           const responseIata = await fetch(url)
           const data = await responseIata.json()
 
