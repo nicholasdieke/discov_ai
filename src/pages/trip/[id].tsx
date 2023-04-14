@@ -264,7 +264,7 @@ const TripPage: BlitzPage = () => {
     }
 
     useEffect(() => {
-      getDestCode()
+      getDestCode().catch((e) => console.log(e))
     }, [])
 
     return (
