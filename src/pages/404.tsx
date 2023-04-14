@@ -13,7 +13,7 @@ export default function Page404() {
   return (
     <Box
       // className="App"
-      backgroundColor="#0F1014"
+      backgroundColor="#1a1c21"
       h="100%"
       minH="100vh"
       color="white"

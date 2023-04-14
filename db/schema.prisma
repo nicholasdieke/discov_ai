@@ -67,9 +67,9 @@ model Trip {
   activity    String
   group       String
   itinerary   String
-
-  user   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  budget      String?
+  user        User?      @relation(fields: [userId], references: [id])
+  userId      Int?
 }
 
 // NOTE: It's highly recommended to use an enum for the token type

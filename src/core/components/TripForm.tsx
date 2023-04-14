@@ -1,4 +1,3 @@
-import { Routes } from "@blitzjs/next"
 import {
   Box,
   Button,
@@ -13,6 +12,9 @@ import {
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Select } from "chakra-react-select"
+// import Select from "react-select"
+
+import { Routes } from "@blitzjs/next"
 import { useFormik } from "formik"
 import Lottie from "lottie-react"
 import { useRouter } from "next/router"
@@ -41,6 +43,20 @@ function TripForm() {
     return Math.floor((utc2 - utc1) / _MS_PER_DAY)
   }
 
+  const budgetOptions = [
+    {
+      label: "🪙 Basic",
+      value: "cheap",
+    },
+    {
+      label: "💸 Comfortable",
+      value: "",
+    },
+    {
+      label: "💎 Luxury",
+      value: "luxury",
+    },
+  ]
   const groupOptions = [
     {
       label: "👫 Friends",
@@ -61,10 +77,6 @@ function TripForm() {
   ]
   const styleOptions = [
     {
-      label: "🤪 Everything",
-      value: "",
-    },
-    {
       label: "⛰️ Adventure",
       value: "adventurous",
     },
@@ -77,8 +89,8 @@ function TripForm() {
       value: "historic",
     },
     {
-      label: "🍜 Food",
-      value: "food",
+      label: "🍜 Foody",
+      value: "foody",
     },
     {
       label: "🌊 Relax",
@@ -108,7 +120,9 @@ function TripForm() {
       "Create a personalised " +
       days +
       "-day itinerary for a " +
-      values.activity.value +
+      values.budget.value +
+      " " +
+      values.activity.map((obj) => obj.value).join(" and ") +
       " " +
       values.group.value +
       " trip to " +
@@ -120,12 +134,13 @@ function TripForm() {
     if (days < 10) {
       prompt =
         prompt +
-        "Split each day into Morning, Afternoon, Evening. Please strictly format each day's itinerary with a header that says 'Day 1:', 'Day 2:', and 'Day 3:', respectively!"
+        "Split each day into Morning, Afternoon and Evening. Please strictly format each day's itinerary with a header that says 'Day 1:', 'Day 2:', and 'Day 3:', respectively!"
     } else {
       prompt =
         prompt +
         "Please format each day's itinerary with a header that says 'Day 1:', 'Day 2:', or 'Day 3-5:', respectively."
     }
+
     await fetch("/api/generate", {
       method: "POST",
       headers: {
@@ -137,9 +152,10 @@ function TripForm() {
       .then(async (response) => {
         values = {
           ...values,
-          group: values.group.value,
-          activity: values.activity.value,
+          group: values.group.label,
+          activity: values.activity.map((obj) => obj.value).join(", "),
           itinerary: response.result,
+          budget: values.group.label,
         }
         await createTrip(values)
           .then((trip) => router.push(Routes.TripPage({ id: trip.id })))
@@ -153,14 +169,9 @@ function TripForm() {
     initialValues: {
       destination: "",
       daterange: "",
-      group: {
-        label: "👫 Friends",
-        value: "friends",
-      },
-      activity: {
-        label: "🤪 Everything",
-        value: "",
-      },
+      group: "",
+      activity: "",
+      budget: "",
     },
     onSubmit: sendPrompt,
     validate: (values) => {
@@ -169,6 +180,7 @@ function TripForm() {
         daterange: string
         group: string
         activity: string
+        budget: string
       }> = {}
       if (!values.destination) {
         errors.destination = "Destination Required"
@@ -181,6 +193,9 @@ function TripForm() {
       }
       if (!values.activity) {
         errors.activity = "Activity Required"
+      }
+      if (!values.budget) {
+        errors.budget = "Budget Required"
       }
       return errors
     },
@@ -232,7 +247,7 @@ function TripForm() {
     "&libraries=places"
 
   return (
-    <Box className="tripform" minW={{ base: "250px", sm: "350px" }}>
+    <Box className="tripform" w={{ base: "100%", sm: "350px" }}>
       <script src={script} onLoad={() => setLoaded(true)}></script>
       {!isLoading && (
         <form autoComplete="off" onSubmit={formik.handleSubmit}>
@@ -286,7 +301,7 @@ function TripForm() {
                 name="group"
                 onChange={(e) => formik.setFieldValue("group", e)}
                 value={formik.values.group}
-                placeholder="e.g. Friends, Family, Couple"
+                placeholder="e.g. Friends, Family"
                 options={groupOptions}
               />
               {formik.errors.destination ? (
@@ -304,11 +319,32 @@ function TripForm() {
                 name="activity"
                 onChange={(e) => formik.setFieldValue("activity", e)}
                 value={formik.values.activity}
-                placeholder="e.g. Relax, History, Adventure"
+                placeholder="e.g. Relax, Adventure"
                 options={styleOptions}
+                isMulti
+                closeMenuOnSelect={false}
               />
-              {formik.errors.destination ? (
+
+              {formik.errors.activity ? (
                 <div className="errors">{formik.errors.activity as string}</div>
+              ) : null}
+            </FormControl>
+
+            <FormControl>
+              <FormLabel className="tripformlabel" htmlFor="How much?">
+                How much?
+              </FormLabel>
+              <Select
+                id="budget"
+                name="budget"
+                onChange={(e) => formik.setFieldValue("budget", e)}
+                value={formik.values.budget}
+                placeholder="e.g. Luxury"
+                options={budgetOptions}
+              />
+
+              {formik.errors.budget ? (
+                <div className="errors">{formik.errors.budget as string}</div>
               ) : null}
             </FormControl>
           </VStack>

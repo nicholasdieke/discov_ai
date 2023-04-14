@@ -54,14 +54,19 @@ const Home: BlitzPage = () => {
               mt={{ base: "1rem", md: "0rem" }}
             >
               <Heading
-                fontSize={{ base: "1.5rem", sm: "2.5rem", md: "2.5rem", lg: "4 rem", xl: "4rem" }}
+                fontSize={{
+                  base: "1.5rem",
+                  sm: "2.5rem",
+                  md: "3rem",
+                  lg: "4 rem",
+                  xl: "4.5rem",
+                }}
                 textAlign={{ base: "center", md: "start" }}
                 pb={{ base: "0rem", md: "0.5rem" }}
-                // px="0.5rem"
                 fontWeight="700"
               >
-                Your Perfect Trip.
-                <br /> In Seconds.
+                Your Perfect Trip
+                <br /> in Seconds.
               </Heading>
 
               <Text

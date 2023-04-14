@@ -32,6 +32,7 @@
     "@emotion/react": "11.x",
     "@emotion/styled": "11.x",
     "@fortawesome/fontawesome-svg-core": "6.3.0",
+    "@fortawesome/free-brands-svg-icons": "6.4.0",
     "@fortawesome/free-solid-svg-icons": "6.3.0",
     "@fortawesome/react-fontawesome": "0.2.0",
     "@prisma/client": "4.6.0",
@@ -48,6 +49,7 @@
     "react": "18.2.0",
     "react-datepicker": "4.10.0",
     "react-dom": "18.2.0",
+    "react-focus-lock": "2.9.4",
     "secure-password": "4.0.0",
     "unsplash-js": "7.0.15",
     "zod": "3.20.2"
