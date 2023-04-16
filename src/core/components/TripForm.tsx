@@ -30,9 +30,7 @@ function TripForm() {
 
   const [dateRange, setDateRange] = useState([null, null])
   const [isLoading, setIsLoading] = useState(false)
-  const [isLoadingText, setIsLoadingText] = useState("Building Your Itinerary...")
   const [loaded, setLoaded] = useState(false)
-  const [endDateError, setEndDateError] = useState(false)
   const [startDate, endDate] = dateRange
 
   const dateDiffInDays = (a, b) => {
@@ -120,12 +118,6 @@ function TripForm() {
 
   const sendPrompt = async (values) => {
     
-    if (values.daterange[1] == null){
-      setEndDateError(true)
-      return;
-    } else {
-      setEndDateError(false)
-    }
     setIsLoading(true)
     const days = Math.max(dateDiffInDays(values.daterange[0], values.daterange[1]), 1)
     let prompt =
@@ -177,6 +169,8 @@ function TripForm() {
 
   // Handling the form
   const formik = useFormik({
+    validateOnChange: false,
+    validateOnBlur: true,
     initialValues: {
       destination: "",
       daterange: "",
@@ -196,13 +190,13 @@ function TripForm() {
       if (!values.destination) {
         errors.destination = "Destination Required"
       }
-      if (!values.daterange) {
+      if (!values.daterange || values.daterange[1] == null) {
         errors.daterange = "Daterange Required"
       }
       if (!values.group) {
         errors.group = "Group Required"
       }
-      if (!values.activity) {
+      if (!values.activity || values.activity.length === 0) {
         errors.activity = "Activity Required"
       }
       if (!values.budget) {
@@ -298,11 +292,8 @@ function TripForm() {
                 startDate={startDate}
                 endDate={endDate}
               />
-              {formik.errors.destination ? (
+              {formik.errors.daterange ? (
                 <div className="errors">{formik.errors.daterange as string}</div>
-              ) : null}
-              {endDateError ? (
-                <div className="errors">Please add a valid end date</div>
               ) : null}
             </FormControl>
 
@@ -318,7 +309,7 @@ function TripForm() {
                 placeholder="e.g. Friends, Family"
                 options={groupOptions}
               />
-              {formik.errors.destination ? (
+              {formik.errors.group ? (
                 <div className="errors">{formik.errors.group as string}</div>
               ) : null}
             </FormControl>
@@ -381,7 +372,7 @@ function TripForm() {
             autoplay={true}
           />
           <Box textAlign="center" fontWeight="600" mt="-2rem" mb="2rem" color="white">
-            <Text>{isLoadingText}</Text>
+            <Text>Building Your Itinerary...</Text>
             <Text fontWeight="400" fontSize="14px">
               Takes around 20-40 seconds
             </Text>
