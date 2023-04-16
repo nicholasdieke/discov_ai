@@ -84,7 +84,7 @@ function WeatherInfo({ days }) {
             alt={day.conditions}
             src={getWeatherIcon(day.icon)}
           />
-          <Flex flexDir={{ base: "column", md: "row" }} mt="1rem" fontSize="20px">
+          <Flex flexDir={{ base: "column", md: "row" }} alignItems="center" mt="1rem" fontSize="20px">
             <Text mr={{ base: "0", md: "0.4rem" }} fontWeight="600">
               {day.tempmax}°
             </Text>

@@ -32,6 +32,7 @@ function TripForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingText, setIsLoadingText] = useState("Building Your Itinerary...")
   const [loaded, setLoaded] = useState(false)
+  const [endDateError, setEndDateError] = useState(false)
   const [startDate, endDate] = dateRange
 
   const dateDiffInDays = (a, b) => {
@@ -89,8 +90,8 @@ function TripForm() {
       value: "historic",
     },
     {
-      label: "🍜 Foody",
-      value: "foody",
+      label: "🍜 Foodie",
+      value: "foodie",
     },
     {
       label: "🌊 Relax",
@@ -114,6 +115,13 @@ function TripForm() {
   ]
 
   const sendPrompt = async (values) => {
+    
+    if (values.daterange[1] == null){
+      setEndDateError(true)
+      return;
+    } else {
+      setEndDateError(false)
+    }
     setIsLoading(true)
     const days = Math.max(dateDiffInDays(values.daterange[0], values.daterange[1]), 1)
     let prompt =
@@ -129,17 +137,17 @@ function TripForm() {
       values.destination +
       " in " +
       monthNames[(values.daterange[0] as Date).getMonth()] +
-      ". Write in an engaging, descriptive style with a friendly tone and correct grammar. Dont include regex 'Day'! "
+      ". Write in an engaging, descriptive style with a friendly tone and correct grammar. Dont include regex 'Day'! in the itinerary. "
 
-    if (days < 10) {
-      prompt =
-        prompt +
-        "Split each day into Morning, Afternoon and Evening. Please strictly format each day's itinerary with a header that says 'Day 1:', 'Day 2:', and 'Day 3:', respectively!"
-    } else {
-      prompt =
-        prompt +
-        "Please format each day's itinerary with a header that says 'Day 1:', 'Day 2:', or 'Day 3-5:', respectively."
-    }
+      if (days < 10) {
+        prompt =
+          prompt +
+          "Please ensure each day's itinerary has a header that says, 'Day X:', where X is the number of the day. Split each day into Morning, Afternoon and Evening. Follow these instructions exactly."
+      } else {
+        prompt =
+          prompt +
+          "Please format each day's itinerary with a header that says, for example, 'Day X:', where X is the number of the day or 'Day X-Y:'. Follow these instructions exactly."
+      }
 
     await fetch("/api/generate", {
       method: "POST",
@@ -155,7 +163,7 @@ function TripForm() {
           group: values.group.label,
           activity: values.activity.map((obj) => obj.value).join(", "),
           itinerary: response.result,
-          budget: values.group.label,
+          budget: values.budget.label,
         }
         await createTrip(values)
           .then((trip) => router.push(Routes.TripPage({ id: trip.id })))
@@ -290,6 +298,9 @@ function TripForm() {
               {formik.errors.destination ? (
                 <div className="errors">{formik.errors.daterange as string}</div>
               ) : null}
+              {endDateError ? (
+                <div className="errors">Please add a valid end date</div>
+              ) : null}
             </FormControl>
 
             <FormControl>
@@ -369,7 +380,7 @@ function TripForm() {
           <Box textAlign="center" fontWeight="600" mt="-2rem" mb="2rem" color="white">
             <Text>{isLoadingText}</Text>
             <Text fontWeight="400" fontSize="14px">
-              Takes around 10-25 seconds
+              Takes around 20-40 seconds
             </Text>
           </Box>
         </Box>
