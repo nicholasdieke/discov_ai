@@ -97,6 +97,10 @@ function TripForm() {
       label: "🌊 Relax",
       value: "relaxing",
     },
+    {
+      label: "🍾 Party",
+      value: "party",
+    },
   ]
 
   const monthNames = [
@@ -125,29 +129,28 @@ function TripForm() {
     setIsLoading(true)
     const days = Math.max(dateDiffInDays(values.daterange[0], values.daterange[1]), 1)
     let prompt =
-      "Create a personalised " +
-      days +
-      "-day itinerary for a " +
+      "Create a personalised itinerary for a " +
       values.budget.value +
       " " +
-      values.activity.map((obj) => obj.value).join(" and ") +
+      values.activity.map((obj) => obj.value).join(", ") +
       " " +
       values.group.value +
       " trip to " +
       values.destination +
-      " in " +
-      monthNames[(values.daterange[0] as Date).getMonth()] +
-      ". Write in an engaging, descriptive style with a friendly tone and correct grammar. Dont include regex 'Day'! in the itinerary. "
+      " from  "+(values.daterange[0] as Date).toDateString()+" to "+(values.daterange[1] as Date).toDateString() +
+      ". Write in an engaging, descriptive style with a friendly tone and correct grammar. "
 
       if (days < 10) {
         prompt =
           prompt +
-          "Please ensure each day's itinerary has a header that says, 'Day X:', where X is the number of the day. Split each day into Morning, Afternoon and Evening. Follow these instructions exactly."
+          "Please ensure each day's itinerary has a header that says, 'Day X:', where X is the number of the day. Split each day into Morning, Afternoon and Evening."
       } else {
         prompt =
           prompt +
-          "Please format each day's itinerary with a header that says, for example, 'Day X:', where X is the number of the day or 'Day X-Y:'. Follow these instructions exactly."
+          "Please format each day's itinerary with a header that says, for example, 'Day X:', where X is the number of the day or 'Day X-Y:'."
       }
+
+      prompt = prompt + "Do not include the word 'Day', capitalised like this anywhere in the itinerary because it messes up my formatting. Do not include the date in the header. The only allowed instance of the word 'Day' is in the header. Follow these instructions exactly."
 
     await fetch("/api/generate", {
       method: "POST",
