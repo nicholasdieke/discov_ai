@@ -21,7 +21,7 @@ const Home: BlitzPage = () => {
         <title>DiscovAI</title>
         <meta
           name="description"
-          content="Discover a world of travel possibilities with our AI-powered itinerary builder."
+          content="Discover your dream vacation with DiscovAI, the AI-powered travel planner that creates personalised itineraries based on your interests and budget. Plan your perfect trip today!"
         />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/favicon.ico" />
@@ -33,7 +33,7 @@ const Home: BlitzPage = () => {
         <meta name="twitter:title" content="DiscovAI" />
         <meta
           name="twitter:description"
-          content="Discover a world of travel possibilities with our AI-powered itinerary builder."
+          content="Discover your dream vacation with DiscovAI, the AI-powered travel planner that creates personalised itineraries based on your interests and budget. Plan your perfect trip today!"
         />
         <meta name="twitter:image" content="/share-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
