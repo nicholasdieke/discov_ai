@@ -130,7 +130,7 @@ function TripForm() {
       " trip to " +
       values.destination +
       " from  "+(values.daterange[0] as Date).toDateString()+" to "+(values.daterange[1] as Date).toDateString() +
-      ". Write in an engaging, descriptive style with a friendly tone and correct grammar. "
+      ". Include specific place recommendations. Write in an engaging, descriptive style with a friendly tone and correct grammar. Include "
 
       if (days < 10) {
         prompt =

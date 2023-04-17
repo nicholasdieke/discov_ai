@@ -455,7 +455,17 @@ const TripPage: BlitzPage = () => {
                         <PopoverForm myTrip={myTrip} loaded={loaded} />
 
                         <a
-                          href={`https://www.kayak.com/hotels/${myTrip.destination
+                          href={myTrip.budget?.includes('Luxury')  ? `https://www.tablethotels.com/en/${myTrip.destination.split(", ")[0]?.toLowerCase()}-hotels?query=${myTrip.destination}&lang=en&nR=1&nA=2&nC=0&arrDate=${
+                            addDay(myTrip.daterange[0] as Date)
+                              .toISOString()
+                              .split("T")[0]
+                          }
+&depDate=${
+                            addDay(myTrip.daterange[1] as Date)
+                              .toISOString()
+                              .split("T")[0]
+                          }
+&isMapView=false` : `https://www.kayak.com/hotels/${myTrip.destination
                             .split(" ")
                             .join("")}/${
                             addDay(myTrip.daterange[0] as Date)
