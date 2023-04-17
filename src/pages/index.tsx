@@ -18,7 +18,7 @@ const Home: BlitzPage = () => {
   return (
     <Box className="App" h="100%" minH="100vh" overflow="hidden">
       <>
-        <title>DiscovAI</title>
+        <title>DiscovAI - Your AI-Powered Travel Planner for Personalised Itineraries</title>
         <meta
           name="description"
           content="Discover your dream vacation with DiscovAI, the AI-powered travel planner that creates personalised itineraries based on your interests and budget. Plan your perfect trip today!"
@@ -29,13 +29,13 @@ const Home: BlitzPage = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta property="og:title" content="DiscovAI" />
         <meta property="og:url" content="/" />
-        <meta property="og:image" content="/share-image.png" />
+        <meta property="og:image" content="https://www.discovai.com/share-image.png" />
         <meta name="twitter:title" content="DiscovAI" />
         <meta
           name="twitter:description"
           content="Discover your dream vacation with DiscovAI, the AI-powered travel planner that creates personalised itineraries based on your interests and budget. Plan your perfect trip today!"
         />
-        <meta name="twitter:image" content="/share-image.png" />
+        <meta name="twitter:image" content="https://www.discovai.com/share-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
       </>
       <Box h="100%" pos="relative">
