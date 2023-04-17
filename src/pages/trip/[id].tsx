@@ -184,6 +184,8 @@ const TripPage: BlitzPage = () => {
       ["toronto", "YTO"],
       ["madrid", "MAD"],
       ["las vegas", "LAS,BLD"],
+      ["Upper Bavaria", "MUC"],
+      ["Oberbayern", "MUC"],
     ])
 
     function getMapKey(input) {
@@ -320,7 +322,7 @@ const TripPage: BlitzPage = () => {
             </FormControl>
             <a
               style={{pointerEvents: !origin? "none" : "auto"}}
-              href={!origin? "#" : `https://www.kayak.com/flights/${origin.split(",")[0]}-${destCode}/${
+              href={!origin? "#" : `https://www.kayak.com/flights/${origin.split(",")[0]},nearby-${destCode},nearby/${
                 addDay(myTrip.daterange[0] as Date)
                   .toISOString()
                   .split("T")[0]
