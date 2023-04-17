@@ -8,7 +8,7 @@ function MyDateRangePicker({ onChange, startDate, endDate }) {
   return (
     <InputGroup>
       <InputLeftElement color="white">
-        <FontAwesomeIcon icon={faCalendarDays} />
+        <FontAwesomeIcon icon={faCalendarDays} height="20px"/>
       </InputLeftElement>
       <DatePicker
         className="react-datapicker__input-text"

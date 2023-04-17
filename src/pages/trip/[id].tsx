@@ -1,5 +1,7 @@
 import { BlitzPage, Routes } from "@blitzjs/next";
 import { invoke } from "@blitzjs/rpc";
+import Head from "next/head";
+
 import {
   Accordion,
   AccordionButton,
@@ -36,6 +38,7 @@ import {
 import {
   faBed,
   faCalendarDays,
+  faCar,
   faChevronRight,
   faClipboard,
   faEnvelope,
@@ -282,8 +285,8 @@ const TripPage: BlitzPage = () => {
       >
         <PopoverTrigger>
           <Button
-            leftIcon={<FontAwesomeIcon icon={faPlaneDeparture} size="1x" />}
-            rightIcon={<FontAwesomeIcon icon={faChevronRight} size="1x" />}
+            leftIcon={<FontAwesomeIcon icon={faPlaneDeparture} height="18px" />}
+            rightIcon={<FontAwesomeIcon icon={faChevronRight} height="18px" />}
             variant="outline"
           >
             See Flights
@@ -384,29 +387,29 @@ const TripPage: BlitzPage = () => {
 
   return (
     <>
-      <>
+      <Head>
         <title>DiscovAI | Trip</title>
 
         <meta
           name="description"
-          content="Discover a world of travel possibilities with our AI-powered itinerary builder."
+          content="Discover your dream vacation with DiscovAI, the AI-powered travel planner that creates personalised itineraries based on your interests and budget. Plan your perfect trip today!"
         />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/favicon.ico" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="DiscovAI" />
+        <meta property="og:title" content="DiscovAI | Trip" />
         <meta property="og:url" content="/" />
-        <meta property="og:image" content="/share-image.png" />
-        <meta name="twitter:title" content="DiscovAI" />
+        <meta property="og:image" content="https://www.dropbox.com/s/hmmp4gklv03u11n/share-image.png?raw=1" />
+        <meta name="twitter:title" content="DiscovAI | Trip" />
         <meta
           name="twitter:description"
-          content="Discover a world of travel possibilities with our AI-powered itinerary builder."
+          content="Discover your dream vacation with DiscovAI, the AI-powered travel planner that creates personalised itineraries based on your interests and budget. Plan your perfect trip today!"
         />
-        <meta name="twitter:image" content="/share-image.png" />
+        <meta name="twitter:image" content="https://www.dropbox.com/s/hmmp4gklv03u11n/share-image.png?raw=1" />
         <meta name="twitter:card" content="summary_large_image" />
-        <script src={script} onLoad={() => setLoaded(true)}></script>
-      </>
+        <script src={script} onLoad={() => setLoaded(true)} />
+      </Head>
       <Box bg="#1a1c21" h="100%" minH="100vh" color="#ffffffdb">
         <Box px={{ base: "1.5rem", lg: "6rem" }} py={{ base: "0.25rem", lg: "0.5rem" }}>
           <Header theme="white" />
@@ -434,7 +437,7 @@ const TripPage: BlitzPage = () => {
                     </Heading>
                     <Divider />
                     <HStack fontSize="18px">
-                      <FontAwesomeIcon icon={faCalendarDays} size="1x" />
+                      <FontAwesomeIcon icon={faCalendarDays} height="22px"/>
                       <Text fontSize={{ base: "0.9rem", md: "1.5rem" }}>
                         {myTrip.daterange[0]?.toLocaleDateString("en-US", dateOptions)} -{" "}
                         {myTrip.daterange[1]?.toLocaleDateString("en-US", dateOptions)}
@@ -480,8 +483,8 @@ const TripPage: BlitzPage = () => {
                           rel="noreferrer"
                         >
                           <Button
-                            leftIcon={<FontAwesomeIcon icon={faBed} size="1x" />}
-                            rightIcon={<FontAwesomeIcon icon={faChevronRight} size="1x" />}
+                            leftIcon={<FontAwesomeIcon icon={faBed} height="18px" />}
+                            rightIcon={<FontAwesomeIcon icon={faChevronRight} height="18px" />}
                             variant="outline"
                             w="100%"
                           >
@@ -505,8 +508,8 @@ const TripPage: BlitzPage = () => {
                           rel="noreferrer"
                         >
                           <Button
-                            leftIcon={<FontAwesomeIcon icon={faBed} size="1x" />}
-                            rightIcon={<FontAwesomeIcon icon={faChevronRight} size="1x" />}
+                            leftIcon={<FontAwesomeIcon icon={faCar} height="18px"/>}
+                            rightIcon={<FontAwesomeIcon icon={faChevronRight} height="18px" />}
                             variant="outline"
                             w="100%"
                           >
@@ -519,7 +522,7 @@ const TripPage: BlitzPage = () => {
                         <MenuButton
                           as={Button}
                           variant="outline"
-                          leftIcon={<FontAwesomeIcon icon={faShareNodes} />}
+                          leftIcon={<FontAwesomeIcon icon={faShareNodes} height="20px" />}
                           _hover={{ bg: "gray.700" }}
                           _expanded={{ bg: "gray.700" }}
                           _focus={{ boxShadow: "outline" }}

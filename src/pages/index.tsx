@@ -1,5 +1,6 @@
 import { BlitzPage } from "@blitzjs/next"
 import { Box, Flex, Heading, Image, Text, VStack } from "@chakra-ui/react"
+import Head from "next/head"
 // import Image from "next/image"
 import { useEffect, useState } from "react"
 import "react-datepicker/dist/react-datepicker.css"
@@ -17,7 +18,7 @@ const Home: BlitzPage = () => {
 
   return (
     <Box className="App" h="100%" minH="100vh" overflow="hidden">
-      <>
+      <Head>
         <title>DiscovAI - Your AI-Powered Travel Planner for Personalised Itineraries</title>
         <meta
           name="description"
@@ -27,17 +28,17 @@ const Home: BlitzPage = () => {
         <link rel="apple-touch-icon" href="/favicon.ico" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="DiscovAI" />
+        <meta property="og:title" content="DiscovAI - Your AI-Powered Travel Planner for Personalised Itineraries" />
         <meta property="og:url" content="/" />
         <meta property="og:image" content="https://www.dropbox.com/s/hmmp4gklv03u11n/share-image.png?raw=1" />
-        <meta name="twitter:title" content="DiscovAI" />
+        <meta name="twitter:title" content="DiscovAI - Your AI-Powered Travel Planner for Personalised Itineraries" />
         <meta
           name="twitter:description"
           content="Discover your dream vacation with DiscovAI, the AI-powered travel planner that creates personalised itineraries based on your interests and budget. Plan your perfect trip today!"
         />
         <meta name="twitter:image" content="https://www.dropbox.com/s/hmmp4gklv03u11n/share-image.png?raw=1" />
         <meta name="twitter:card" content="summary_large_image" />
-      </>
+      </Head>
       <Box h="100%" pos="relative">
         <Box w="100%" zIndex="-1" h="100%" pos="absolute">
           <Image alt="bg-image" src={"/" + photoUrl} objectFit="cover" h="100%" w="100%" />

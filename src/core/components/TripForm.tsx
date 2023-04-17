@@ -17,6 +17,7 @@ import { Select } from "chakra-react-select"
 import { Routes } from "@blitzjs/next"
 import { useFormik } from "formik"
 import Lottie from "lottie-react"
+import Head from "next/head"
 import { useRouter } from "next/router"
 import loading_animation from "public/plane_loading.json"
 import { useEffect, useRef, useState } from "react"
@@ -253,7 +254,9 @@ function TripForm() {
 
   return (
     <Box className="tripform" w={{ base: "100%", sm: "350px" }}>
-      <script src={script} onLoad={() => setLoaded(true)}></script>
+      <Head>
+      <script src={script} onLoad={() => setLoaded(true)} />
+      </Head>
       {!isLoading && (
         <form autoComplete="off" onSubmit={formik.handleSubmit}>
           <VStack spacing="0.75rem" color="white">
@@ -263,7 +266,7 @@ function TripForm() {
               </FormLabel>
               <InputGroup>
                 <InputLeftElement color="white" pointerEvents="none">
-                  <FontAwesomeIcon icon={faLocationDot} />
+                  <FontAwesomeIcon icon={faLocationDot} height="20px"/>
                 </InputLeftElement>
                 <Input
                   id="destination"
