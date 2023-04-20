@@ -50,7 +50,7 @@ function TripForm() {
     },
     {
       label: "💸 Comfortable",
-      value: "",
+      value: "middle-priced",
     },
     {
       label: "💎 Luxury",

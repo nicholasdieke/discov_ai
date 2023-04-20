@@ -1,20 +1,11 @@
 import { BlitzPage } from "@blitzjs/next"
 import { Box, Flex, Heading, Image, Text, VStack } from "@chakra-ui/react"
 import Head from "next/head"
-// import Image from "next/image"
-import { useEffect, useState } from "react"
 import "react-datepicker/dist/react-datepicker.css"
 import Header from "src/core/components/Header"
 import TripForm from "src/core/components/TripForm"
 
 const Home: BlitzPage = () => {
-  const [photoUrl, setPhotoUrl] = useState("")
-
-  const bgs = ["bg-2.jpeg", "bg-3.jpg", "bg-4.jpg", "bg-5.jpg", "bg-7.jpg", "bg-10.jpg"]
-
-  useEffect(() => {
-    setPhotoUrl(bgs[Math.floor(Math.random() * bgs.length)] as string)
-  }, [])
 
   return (
     <Box className="App" h="100%" minH="100vh" overflow="hidden">
@@ -41,7 +32,7 @@ const Home: BlitzPage = () => {
       </Head>
       <Box h="100%" pos="relative">
         <Box w="100%" zIndex="-1" h="100%" pos="absolute">
-          <Image alt="bg-image" src={"/" + photoUrl} objectFit="cover" h="100%" w="100%" />
+          <Image alt="bg-image" src="/bg-4.jpg" objectFit="cover" h="100%" w="100%" />
         </Box>
         <Box h="100%" minH="100vh" px={{ base: "2rem", lg: "6rem" }} bgColor="#00000053">
           <Header theme="white" />
