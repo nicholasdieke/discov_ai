@@ -17,7 +17,7 @@ import { Select } from "chakra-react-select"
 import { Routes } from "@blitzjs/next"
 import { useFormik } from "formik"
 import Lottie from "lottie-react"
-import Head from "next/head"
+import mixpanel from 'mixpanel-browser'
 import { useRouter } from "next/router"
 import loading_animation from "public/plane_loading.json"
 import { useEffect, useRef, useState } from "react"
@@ -28,6 +28,9 @@ function TripForm() {
   const autoCompleteRef = useRef<google.maps.places.Autocomplete>()
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
+
+  mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN); 
+
 
   const [dateRange, setDateRange] = useState([null, null])
   const [isLoading, setIsLoading] = useState(false)
@@ -161,9 +164,12 @@ function TripForm() {
           itinerary: response.result,
           budget: values.budget.label,
         }
+        mixpanel.track("Created Trip", {"destination": values.destination})
         await createTrip(values)
           .then((trip) => router.push(Routes.TripPage({ id: trip.id })))
           .catch((e) => console.log(e))
+
+          
       })
       .catch((e) => console.log(e))
   }
@@ -249,14 +255,13 @@ function TripForm() {
 
   const script =
     "https://maps.googleapis.com/maps/api/js?key=" +
-    process.env.GOOGLE_MAPS_API_KEY +
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY +
     "&libraries=places"
 
   return (
     <Box className="tripform" w={{ base: "100%", sm: "350px" }}>
-      <Head>
       <script src={script} onLoad={() => setLoaded(true)} />
-      </Head>
+
       {!isLoading && (
         <form autoComplete="off" onSubmit={formik.handleSubmit}>
           <VStack spacing="0.75rem" color="white">

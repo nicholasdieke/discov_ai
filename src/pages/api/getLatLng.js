@@ -1,5 +1,5 @@
 export default async function (req, res) {
-  const maps_key = process.env.GOOGLE_MAPS_API_KEY
+  const maps_key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
   const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${req.query.destination}&key=${maps_key}`
 
   function getMapKey(input) {
