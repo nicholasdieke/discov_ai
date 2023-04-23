@@ -16,7 +16,7 @@ function Header({ theme }) {
       alignItems="center"
       color={theme}
     >
-      <Text onClick={() => { mixpanel.track("Clicked Logo"); router.push(Routes.Home());}} className="logo-text">
+      <Text onClick={() => { mixpanel.track("Clicked Logo"); router.push(Routes.Home()).catch((e)=> console.log(e));}} className="logo-text">
         DiscovAI
       </Text>
       <HStack spacing="1rem">
