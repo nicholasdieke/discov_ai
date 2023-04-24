@@ -71,7 +71,6 @@ const TripPage: BlitzPage = () => {
 
   mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN, {debug: true})
 
-
   const [myTrip, setMyTrip] = useState<Trip | null | undefined>(undefined)
 
   const [photoUrl, setPhotoUrl] = useState("")
@@ -139,6 +138,8 @@ const TripPage: BlitzPage = () => {
           setInFuture(trip.daterange[0]! > new Date())
           setLoading(false)
           setLongTrip(dateDiffInDays(trip.daterange[0], trip.daterange[1]) >= 10)
+          mixpanel.track('Viewed Trip Page')
+
         } else if (!!tripId) {
           setLoading(false)
           setNotFound(true)

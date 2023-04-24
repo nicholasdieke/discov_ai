@@ -30,7 +30,7 @@ function TripForm() {
   const router = useRouter()
 
   mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN); 
-
+  
 
   const [dateRange, setDateRange] = useState([null, null])
   const [isLoading, setIsLoading] = useState(false)
@@ -103,21 +103,6 @@ function TripForm() {
       label: "🍾 Party",
       value: "party",
     },
-  ]
-
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
   ]
 
   const sendPrompt = async (values) => {
@@ -252,6 +237,8 @@ function TripForm() {
       })
     }
   }, [loaded])
+
+  useEffect(()=>mixpanel.track('Viewed Home Page'),[])
 
   const script =
     "https://maps.googleapis.com/maps/api/js?key=" +
