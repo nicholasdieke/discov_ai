@@ -15,6 +15,7 @@ function Footer({ theme }) {
           .catch((e) => console.log(e))
 
     onClose();
+    mixpanel.track("Submitted Feedback");
     toast({
       title: "Feedback Submitted.",
       description: "Thank you for your feedback.",
