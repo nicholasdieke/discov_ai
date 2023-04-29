@@ -52,6 +52,7 @@ import { Trip } from "db";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
+import Footer from "src/core/components/Footer";
 import Header from "src/core/components/Header";
 import WeatherInfo from "src/core/components/WeatherInfo";
 import getTrip from "src/core/queries/getTrip";
@@ -435,7 +436,7 @@ const TripPage: BlitzPage = () => {
                 </Flex>
               </Flex>
 
-              <Flex mt="2rem" mb="5rem" flexDir={{ base: "column-reverse", md: "column" }}>
+              <Flex mt="2rem" mb="2rem" flexDir={{ base: "column-reverse", md: "column" }}>
                 {inFuture && (
                   <Box>
                     <Heading size="md" my="1rem">
@@ -658,7 +659,7 @@ const TripPage: BlitzPage = () => {
                   </Box>
 
                   <Box w="100%">
-                    <Heading size="md" mb="1rem">
+                    <Heading size="md">
                       🔍 Tour Inspiration
                     </Heading>
                     <div id="widget-container">
@@ -710,6 +711,7 @@ const TripPage: BlitzPage = () => {
               </Button>
             </Flex>
           )}
+          <Footer theme="white" />
         </Box>
       </Box>
     </>

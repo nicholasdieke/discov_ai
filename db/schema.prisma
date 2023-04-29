@@ -24,6 +24,7 @@ model User {
   tokens   Token[]
   sessions Session[]
   trips    Trip[]
+  feedback Feedback[]
 }
 
 model Session {
@@ -71,6 +72,16 @@ model Trip {
   user        User?      @relation(fields: [userId], references: [id])
   userId      Int?
 }
+
+model Feedback {
+  id          String     @id @default(uuid())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  comment String
+  user        User?      @relation(fields: [userId], references: [id])
+  userId      Int?
+}
+
 
 // NOTE: It's highly recommended to use an enum for the token type
 //       but enums only work in Postgres.
