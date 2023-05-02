@@ -70,7 +70,7 @@ const TripPage: BlitzPage = () => {
   const toast = useToast()
   const maps_key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
-  mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN, {debug: true})
+  mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN)
 
   const [myTrip, setMyTrip] = useState<Trip | null | undefined>(undefined)
 
@@ -352,10 +352,8 @@ const TripPage: BlitzPage = () => {
     evt.preventDefault()
     navigator.clipboard.writeText(shareMessage).then(
       () => {
-        /* clipboard successfully set */
       },
       () => {
-        /* clipboard write failed */
       }
     )
   }

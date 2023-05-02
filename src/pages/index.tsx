@@ -1,11 +1,26 @@
 import { BlitzPage } from "@blitzjs/next"
 import { Box, Flex, Heading, Image, Text, VStack } from "@chakra-ui/react"
+import mixpanel from 'mixpanel-browser'
 import Head from "next/head"
+import { useEffect } from "react"
 import "react-datepicker/dist/react-datepicker.css"
 import Header from "src/core/components/Header"
 import TripForm from "src/core/components/TripForm"
 
+
+
 const Home: BlitzPage = () => {
+  
+  mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN); 
+
+  useEffect(() => {
+    mixpanel.track('Viewed Home Page');
+    
+    return () => {
+      // Define any cleanup code here
+    };
+  }, []);
+  
 
   return (
     <Box className="App" h="100%" minH="100vh" overflow="hidden">

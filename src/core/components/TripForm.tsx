@@ -238,8 +238,6 @@ function TripForm() {
     }
   }, [loaded])
 
-  useEffect(()=>mixpanel.track('Viewed Home Page'),[])
-
   const script =
     "https://maps.googleapis.com/maps/api/js?key=" +
     process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY +
