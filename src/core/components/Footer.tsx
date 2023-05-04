@@ -35,7 +35,7 @@ function Footer({ theme }) {
       color={theme}
     >
       <Text>
-        © 2023 Nicholas Dieke
+        © 2023 DiscovAI
       </Text>
       <Button variant="unstyled" onClick={onOpen}>
         Give Feedback

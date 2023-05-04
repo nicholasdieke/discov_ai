@@ -130,3 +130,10 @@ i {
 .css-ky7590 {
   color: black;
 }
+
+/* Map */
+
+.map-container{
+  width: 100%;
+  height: 300px;
+}

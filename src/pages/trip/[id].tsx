@@ -1,8 +1,5 @@
 import { BlitzPage, Routes } from "@blitzjs/next";
 import { invoke } from "@blitzjs/rpc";
-import mixpanel from 'mixpanel-browser';
-import Head from "next/head";
-
 import {
   Accordion,
   AccordionButton,
@@ -13,28 +10,16 @@ import {
   Button,
   Divider,
   Flex,
-  FormControl,
-  FormLabel,
   HStack,
   Heading,
-  IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  PopoverTrigger as OrigPopoverTrigger,
-  Popover,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverContent,
   Spinner,
   Text,
   VStack,
-  useDisclosure,
-  useToast,
+  useToast
 } from "@chakra-ui/react";
 import {
   faBed,
@@ -43,23 +28,24 @@ import {
   faChevronRight,
   faClipboard,
   faEnvelope,
-  faLocationDot,
-  faPlaneDeparture,
   faShareNodes
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Trip } from "db";
+import mapboxgl from 'mapbox-gl';
+import mixpanel from 'mixpanel-browser';
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
+import FlightPopover from "src/core/components/FlightPopover";
 import Footer from "src/core/components/Footer";
 import Header from "src/core/components/Header";
 import WeatherInfo from "src/core/components/WeatherInfo";
 import getTrip from "src/core/queries/getTrip";
 
 
-export const PopoverTrigger: React.FC<{ children: React.ReactNode }> =
-  OrigPopoverTrigger
+
 
 const TripPage: BlitzPage = () => {
   const router = useRouter()
@@ -77,7 +63,7 @@ const TripPage: BlitzPage = () => {
   const [photoUrl, setPhotoUrl] = useState("")
   const [weatherData, setWeatherData] = useState()
   const [inFuture, setInFuture] = useState(false)
-  const [destCode, setDestCode] = useState("")
+  const [latLong, setLatLong] = useState(["", ""])
 
   const dateDiffInDays = (a, b) => {
     const _MS_PER_DAY = 1000 * 60 * 60 * 24
@@ -139,7 +125,20 @@ const TripPage: BlitzPage = () => {
           setInFuture(trip.daterange[0]! > new Date())
           setLoading(false)
           setLongTrip(dateDiffInDays(trip.daterange[0], trip.daterange[1]) >= 10)
+
+          fetch("/api/getLatLng?destination=" + trip.destination, {
+            method: "GET",
+          })
+            .then((response) => response.json())
+            .then(async (response) => {
+              setLatLong([response.result.lat, response.result.lng]);
+              console.log([response.result.lat, response.result.lng])
+            })
+              .catch((e) => console.log(e))
+
+
           mixpanel.track('Viewed Trip Page')
+          
 
         } else if (!!tripId) {
           setLoading(false)
@@ -154,190 +153,30 @@ const TripPage: BlitzPage = () => {
     month: "short",
     year: "numeric",
   }
-  const { onOpen, onClose, isOpen } = useDisclosure()
 
   useEffect(() => {
     getDetails(tripId)
   }, [tripId])
 
-  const PopoverForm = ({ myTrip, loaded }) => {
-    const autoCompleteRef = useRef<google.maps.places.Autocomplete>()
-    const inputRef = useRef<HTMLInputElement>(null)
-    const [origin, setOrigin] = useState("")
-
-    const cityCodes = new Map([
-      ["london", "LON"],
-      ["new york", "NYC"],
-      ["milan", "MIL"],
-      ["tokyo", "TYO"],
-      ["paris", "PAR"],
-      ["melbourne", "MEL"],
-      ["stockholm", "STO"],
-      ["buenos aires", "BUE"],
-      ["sao paulo", "SAO"],
-      ["toronto", "YTO"],
-      ["madrid", "MAD"],
-      ["las vegas", "LAS,BLD"],
-      ["Upper Bavaria", "MUC"],
-      ["Oberbayern", "MUC"],
-    ])
-
-    function getMapKey(input) {
-      const entries = Array.from(cityCodes.entries())
-      for (let i = 0; i < entries.length; i++) {
-        const [city, code] = entries[i]!
-        const regex = new RegExp("\\b" + city + "\\b", "i")
-        if (regex.test(input)) {
-          return code
-        }
-      }
-      return null // no match found
-    }
-
+  const MapboxMap = () => {
+    const mapContainerRef = useRef(null)
+  
     useEffect(() => {
-      if (
-        typeof window !== "undefined" &&
-        window.google &&
-        inputRef.current instanceof HTMLInputElement
-      ) {
-        autoCompleteRef.current = new window.google.maps.places.Autocomplete(inputRef.current)
-        autoCompleteRef.current.addListener("place_changed", async function () {
-          if (autoCompleteRef.current) {
-            const place = autoCompleteRef.current.getPlace()
-            if (place && place.address_components && place.geometry && place.geometry.location) {
-              let places: string[] = []
-              for (let i = 0; i < place.address_components.length; i++) {
-                let comp = place.address_components[i]
-                if (
-                  comp?.types &&
-                  places.length === 0 &&
-                  ["administrative_area_level_1", "administrative_area_level_2"].some((code) =>
-                    comp!.types.includes(code)
-                  )
-                ) {
-                  places.push(comp.long_name)
-                } else if (
-                  comp?.types &&
-                  ["country", "continent"].some((code) => comp!.types.includes(code))
-                ) {
-                  places.push(comp.long_name)
-                  const lat = place.geometry.location.lat()
-                  const lng = place.geometry.location.lng()
-                  const re = await fetch(`https://iatageo.com/getCode/${lat}/${lng}`)
-                  const data = await re.json()
-                  const code = getMapKey(places.join(", "))
-
-                  if (!code) {
-                    places.unshift(data.IATA)
-                  } else {
-                    places.unshift(code)
-                  }
-
-                  setOrigin(places.join(", "))
-                  break
-                }
-              }
-            }
-          }
-        })
-      }
-    }, [loaded])
-    const getDestCode = async () => {
-      fetch("/api/getLatLng?destination=" + myTrip.destination, {
-        method: "GET",
+      mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+      const map = new mapboxgl.Map({
+        container: mapContainerRef.current,
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [latLong[1], latLong[0]],
+        zoom: myTrip!.destination.includes(",") ? 11 : 5
       })
-        .then((response) => response.json())
-        .then(async (response) => {
-          const url = `https://iatageo.com/getCode/${response.result.lat}/${response.result.lng}`
-          const responseIata = await fetch(url)
-          const data = await responseIata.json()
-
-          const code = getMapKey(myTrip.destination)
-          if (!code) {
-            setDestCode(data.IATA)
-          } else {
-            setDestCode(code)
-          }
-        })
-        .catch((e) => console.log(e))
-    }
-
-    useEffect(() => {
-      getDestCode().catch((e) => console.log(e))
     }, [])
-
-    return (
-      <Popover
-        isOpen={isOpen}
-        onOpen={onOpen}
-        onClose={onClose}
-        placement="bottom"
-        closeOnBlur={false}
-      >
-        <PopoverTrigger>
-          <Button
-            leftIcon={<FontAwesomeIcon icon={faPlaneDeparture} height="18px" />}
-            rightIcon={<FontAwesomeIcon icon={faChevronRight} height="18px" />}
-            variant="outline"
-            onClick={()=> mixpanel.track('Opened Flights')}
-          >
-            See Flights
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent p={5} bg="gray.700" color="#ffffffdb" borderColor="#ffffff70">
-          {/* <ReactFocusLock returnFocus persistentFocus={false}> */}
-          <PopoverArrow />
-          <PopoverCloseButton  />
-          <form>
-                      <Flex alignItems="flex-end">
-
-            <FormControl mr="0.5rem">
-              <FormLabel htmlFor="Departure city or airport">
-              Departure city or airport
-              </FormLabel>
-              <InputGroup>
-                <InputLeftElement pointerEvents="none">
-                  <FontAwesomeIcon icon={faLocationDot} height="20px"/>
-                </InputLeftElement>
-                <Input
-                  id="destination"
-                  name="destination"
-                  type="text"
-                  placeholder="City or State"
-                  value={origin}
-                  onChange={(e) => setOrigin(e.target.value)}
-                  ref={inputRef}
-                />
-              </InputGroup>
-            </FormControl>
-            <a
-              style={{pointerEvents: !origin? "none" : "auto"}}
-              href={!origin? "#" : `https://www.kayak.com/flights/${origin.split(",")[0]},nearby-${destCode},nearby/${
-                addDay(myTrip.daterange[0] as Date)
-                  .toISOString()
-                  .split("T")[0]
-              }/${
-                addDay(myTrip.daterange[1] as Date)
-                  .toISOString()
-                  .split("T")[0]
-              }?sort=bestflight_a`}
-              target="_blank"
-              rel="noreferrer"
-              
-            >
-              <IconButton
-                icon={<FontAwesomeIcon icon={faPlaneDeparture} height="20px" />}
-                variant="primary"
-                aria-label="Search Flights"
-                disabled={!origin}
-              />
-            </a>
-            </Flex>
-          </form>
-          {/* </ReactFocusLock> */}
-        </PopoverContent>
-      </Popover>
-    )
+  
+    return <Box w="100%">
+      <Heading size="md" mb="1rem">
+      🗺️ Map
+                    </Heading>
+      <div className="map-container" ref={mapContainerRef} />
+      </Box>
   }
 
   const script = "https://maps.googleapis.com/maps/api/js?key=" + maps_key + "&libraries=places"
@@ -397,8 +236,9 @@ const TripPage: BlitzPage = () => {
         
       </Head>
       <script src={script} onLoad={() => setLoaded(true)} />
-      <Box bg="#1a1c21" h="100%" minH="100vh" color="#ffffffdb">
-        <Box px={{ base: "1.5rem", lg: "6rem" }} py={{ base: "0.25rem", lg: "0.5rem" }}>
+      <Box bg="#1a1c21" h="100%" color="#ffffffdb">
+        <Flex flexDir="column" minH="100vh" px={{ base: "1.5rem", lg: "6rem" }} py={{ base: "0.25rem", lg: "0.5rem" }} justifyContent="space-between">
+          <>
           <Header theme="white" />
           {!loading && !!myTrip && (
             <>
@@ -442,7 +282,7 @@ const TripPage: BlitzPage = () => {
                     </Heading>
                     <Flex justifyContent="space-between" flexDir={{ base: "column", md: "row" }}>
                       <Flex gap="1rem" flexDir={{ base: "column", md: "row" }} mb="2rem" w="100%">
-                        <PopoverForm myTrip={myTrip} loaded={loaded} />
+                        {latLong[0] !== "" && <FlightPopover myTrip={myTrip} loaded={loaded} latLong={latLong}/>}
 
                         <a
                           href={myTrip.budget?.includes('Luxury')  ? `https://www.tablethotels.com/en/${myTrip.destination.split(", ")[0]?.toLowerCase()}-hotels?query=${myTrip.destination}&lang=en&nR=1&nA=2&nC=0&arrDate=${
@@ -565,7 +405,7 @@ const TripPage: BlitzPage = () => {
                   )}
                   <Box w="100%">
                     <Heading size="md" mb="1rem">
-                      📍 Your Personalised Itinerary
+                      📍 Personalised Itinerary
                     </Heading>
                     <Accordion
                       defaultIndex={Array.from(
@@ -656,8 +496,10 @@ const TripPage: BlitzPage = () => {
                     </Accordion>
                   </Box>
 
-                  <Box w="100%">
-                    <Heading size="md">
+                  <MapboxMap />
+
+                  <Box w="100%" mt="5rem !important">
+                    <Heading size="md" mb="1rem">
                       🔍 Tour Inspiration
                     </Heading>
                     <div id="widget-container">
@@ -680,7 +522,6 @@ const TripPage: BlitzPage = () => {
             <Flex
               alignItems={"center"}
               justifyContent="center"
-              mt={{ base: "1rem", md: "6rem" }}
               w="100%"
               flexDir="column"
             >
@@ -692,7 +533,6 @@ const TripPage: BlitzPage = () => {
             <Flex
               alignItems={"center"}
               justifyContent="center"
-              mt={{ base: "1rem", md: "6rem" }}
               w="100%"
               flexDir="column"
             >
@@ -709,8 +549,9 @@ const TripPage: BlitzPage = () => {
               </Button>
             </Flex>
           )}
+          </>
           <Footer theme="white" />
-        </Box>
+        </Flex>
       </Box>
     </>
   )

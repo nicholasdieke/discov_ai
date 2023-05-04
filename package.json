@@ -43,6 +43,7 @@
     "formik": "2.2.9",
     "framer-motion": "5.x",
     "lottie-react": "2.4.0",
+    "mapbox-gl": "2.14.1",
     "mixpanel-browser": "2.46.0",
     "next": "13.1",
     "openai": "3.2.1",
