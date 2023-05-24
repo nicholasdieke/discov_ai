@@ -175,7 +175,7 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
       .then((response) => {
         setIsLoading(false)
         setResult(response.destinations)
-        loadImages(response.destinations)
+        loadImages(response.destinations).catch((e) => console.log(e))
 
         //   values = {
         //     ...values,

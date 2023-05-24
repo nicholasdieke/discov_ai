@@ -121,6 +121,7 @@ function DiscoverSection() {
                     <Flex
                       className={isMobile ? "destinationBox active" : "destinationBox"}
                       id={destination.destination}
+                      key={"destination-" + (index + 1)}
                     >
                       <VStack textAlign="start" alignItems="start" mb="2rem" w="100%">
                         <Heading size="lg">
