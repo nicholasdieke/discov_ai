@@ -132,7 +132,6 @@ const TripPage: BlitzPage = () => {
             .then((response) => response.json())
             .then(async (response) => {
               setLatLong([response.result.lat, response.result.lng]);
-              console.log([response.result.lat, response.result.lng])
             })
               .catch((e) => console.log(e))
 
