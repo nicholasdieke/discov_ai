@@ -12,7 +12,7 @@ function DiscoverSection() {
   const [result, setResult] = useState<{ destination: string; description: string }[]>([])
   const [images, setImages] = useState([])
   const [originLatLng, setOriginLatLng] = useState([])
-  const [showMap, setShowMap] = useState(true)
+  const [showMap, setShowMap] = useState(false)
   const isMobile = useMediaQuery({ maxWidth: 767 })
 
   mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN)
