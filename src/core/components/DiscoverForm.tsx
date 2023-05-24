@@ -261,7 +261,11 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
       autoCompleteRef.current.addListener("place_changed", async function () {
         if (autoCompleteRef.current) {
           const place = autoCompleteRef.current.getPlace()
-          setOriginLatLng([place.geometry.location.lng(), place.geometry.location.lat()])
+          if (place.geometry && place.geometry.location) {
+            setOriginLatLng([place.geometry.location.lng(), place.geometry.location.lat()])
+          } else {
+            setOriginLatLng([51.5074, -0.1278])
+          }
           if (place && place.address_components) {
             let places: string[] = []
             for (let i = 0; i < place.address_components.length; i++) {
