@@ -176,18 +176,7 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
         setIsLoading(false)
         setResult(response.destinations)
         loadImages(response.destinations).catch((e) => console.log(e))
-
-        //   values = {
-        //     ...values,
-        //     group: values.group.label,
-        //     activity: values.activity.map((obj) => obj.value).join(", "),
-        //     itinerary: response.result,
-        //     budget: values.budget.label,
-        //   }
-        //   mixpanel.track("Created Trip", {"destination": values.destination})
-        //   await createTrip(values)
-        //     .then((trip) => router.push(Routes.TripPage({ id: trip.id })))
-        //     .catch((e) => console.log(e))
+        mixpanel.track("Searched for Destinations", values)
       })
       .catch((e) => console.log(e))
   }
@@ -478,7 +467,7 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
           <Box textAlign="center" fontWeight="600" mt="-2rem" mb="2rem" color="white">
             <Text>Searching for the best destinations...</Text>
             <Text fontWeight="400" fontSize="14px">
-              Takes around 20-40 seconds
+              This can take up to a minute
             </Text>
           </Box>
         </Box>

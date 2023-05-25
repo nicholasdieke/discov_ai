@@ -17,7 +17,7 @@ import { Select } from "chakra-react-select"
 import { Routes } from "@blitzjs/next"
 import { useFormik } from "formik"
 import Lottie from "lottie-react"
-import mixpanel from 'mixpanel-browser'
+import mixpanel from "mixpanel-browser"
 import { useRouter } from "next/router"
 import loading_animation from "public/plane_loading.json"
 import { useEffect, useRef, useState } from "react"
@@ -29,8 +29,7 @@ function TripForm() {
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
-  mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN); 
-  
+  mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN)
 
   const [dateRange, setDateRange] = useState([null, null])
   const [isLoading, setIsLoading] = useState(false)
@@ -106,7 +105,6 @@ function TripForm() {
   ]
 
   const sendPrompt = async (values) => {
-    
     setIsLoading(true)
     const days = Math.max(dateDiffInDays(values.daterange[0], values.daterange[1]), 1)
     let prompt =
@@ -118,20 +116,25 @@ function TripForm() {
       values.group.value +
       " trip to " +
       values.destination +
-      " from  "+(values.daterange[0] as Date).toDateString()+" to "+(values.daterange[1] as Date).toDateString() +
+      " from  " +
+      (values.daterange[0] as Date).toDateString() +
+      " to " +
+      (values.daterange[1] as Date).toDateString() +
       ". Include specific place recommendations. Write in an engaging, descriptive style with a friendly tone and correct grammar. "
 
-      if (days < 10) {
-        prompt =
-          prompt +
-          "Please ensure each day's itinerary has a header that says, 'Day X:', where X is the number of the day. Split each day into Morning, Afternoon and Evening."
-      } else {
-        prompt =
-          prompt +
-          "Please format each day's itinerary with a header that says, for example, 'Day X:', where X is the number of the day or 'Day X-Y:'."
-      }
+    if (days < 10) {
+      prompt =
+        prompt +
+        "Please ensure each day's itinerary has a header that says, 'Day X:', where X is the number of the day. Split each day into Morning, Afternoon and Evening."
+    } else {
+      prompt =
+        prompt +
+        "Please format each day's itinerary with a header that says, for example, 'Day X:', where X is the number of the day or 'Day X-Y:'."
+    }
 
-      prompt = prompt + "Do not include the word 'Day', capitalised like this anywhere in the itinerary because it messes up my formatting. Do not include the date in the header. The only allowed instance of the word 'Day' is in the header. Follow these instructions exactly."
+    prompt =
+      prompt +
+      "Do not include the word 'Day', capitalised like this anywhere in the itinerary because it messes up my formatting. Do not include the date in the header. The only allowed instance of the word 'Day' is in the header. Follow these instructions exactly."
 
     await fetch("/api/generate", {
       method: "POST",
@@ -149,12 +152,10 @@ function TripForm() {
           itinerary: response.result,
           budget: values.budget.label,
         }
-        mixpanel.track("Created Trip", {"destination": values.destination})
+        mixpanel.track("Created Trip", { destination: values.destination })
         await createTrip(values)
           .then((trip) => router.push(Routes.TripPage({ id: trip.id })))
           .catch((e) => console.log(e))
-
-          
       })
       .catch((e) => console.log(e))
   }
@@ -256,7 +257,7 @@ function TripForm() {
               </FormLabel>
               <InputGroup>
                 <InputLeftElement color="white" pointerEvents="none">
-                  <FontAwesomeIcon icon={faLocationDot} height="20px"/>
+                  <FontAwesomeIcon icon={faLocationDot} height="20px" />
                 </InputLeftElement>
                 <Input
                   id="destination"
@@ -367,7 +368,7 @@ function TripForm() {
           <Box textAlign="center" fontWeight="600" mt="-2rem" mb="2rem" color="white">
             <Text>Building Your Itinerary...</Text>
             <Text fontWeight="400" fontSize="14px">
-              Takes around 20-40 seconds
+              This can take up to a minute
             </Text>
           </Box>
         </Box>

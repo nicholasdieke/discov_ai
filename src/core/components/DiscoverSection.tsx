@@ -26,7 +26,7 @@ function DiscoverSection() {
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/streets-v11",
         center: originLatLng,
-        zoom: 1,
+        zoom: 3,
       })
       result.map((res) => {
         new mapboxgl.Marker()
@@ -37,32 +37,34 @@ function DiscoverSection() {
           .addTo(map)
       })
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!isMobile) {
-              if (entry.isIntersecting) {
-                entry.target.classList.add("active")
-                const activeDest = result.find((r) => r.destination === entry.target.id)
-                map.flyTo({
-                  bearing: 0,
-                  center: [
-                    activeDest!["lng_lat_coordinates"].split(",")[1] || 0,
-                    activeDest!["lng_lat_coordinates"].split(",")[0] || 0,
-                  ],
-                  zoom: 12,
-                  pitch: 30,
-                })
-              } else {
-                entry.target.classList.remove("active")
+      if (!isMobile) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!isMobile) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("active")
+                  const activeDest = result.find((r) => r.destination === entry.target.id)
+                  map.flyTo({
+                    bearing: 0,
+                    center: [
+                      activeDest!["lng_lat_coordinates"].split(",")[1] || 0,
+                      activeDest!["lng_lat_coordinates"].split(",")[0] || 0,
+                    ],
+                    zoom: 12,
+                    pitch: 30,
+                  })
+                } else {
+                  entry.target.classList.remove("active")
+                }
               }
-            }
-          })
-        },
-        { rootMargin: "-50px 0px -50px 0px" }
-      )
-      let dests = document.querySelectorAll(".destinationBox")
-      dests.forEach((d) => observer.observe(d))
+            })
+          },
+          { rootMargin: "-300px 0px -300px 0px" }
+        )
+        let dests = document.querySelectorAll(".destinationBox")
+        dests.forEach((d) => observer.observe(d))
+      }
     }, [])
 
     return <Box className="mapContainer2" w={isMobile ? "100%" : "60%"} ref={mapContainerRef} />
@@ -110,7 +112,15 @@ function DiscoverSection() {
             flexDir={isMobile ? "column" : "row"}
           >
             {isMobile && (
-              <Button w="100%" mb="0.5rem" variant="outline" onClick={() => setShowMap(!showMap)}>
+              <Button
+                w="100%"
+                mb="0.5rem"
+                variant="outline"
+                onClick={() => {
+                  setShowMap(!showMap)
+                  mixpanel.track("Clicked Show Result/Map")
+                }}
+              >
                 Show {showMap ? "Results" : "Map"}
               </Button>
             )}
@@ -152,6 +162,7 @@ function DiscoverSection() {
               setImages([])
               setOriginLatLng([])
               scrollToTop()
+              mixpanel.track("Clicked New Search")
             }}
           >
             <FontAwesomeIcon icon={faSearch} height="20px" />

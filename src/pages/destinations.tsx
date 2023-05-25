@@ -11,11 +11,9 @@ const DestinationPage: BlitzPage = () => {
   mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN)
 
   useEffect(() => {
-    mixpanel.track("Viewed Home Page")
+    mixpanel.track("Viewed Destinations Page")
 
-    return () => {
-      // Define any cleanup code here
-    }
+    return () => {}
   }, [])
 
   return (
