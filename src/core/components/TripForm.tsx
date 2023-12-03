@@ -134,7 +134,7 @@ function TripForm() {
 
     prompt =
       prompt +
-      "Do not include the word 'Day', capitalised like this anywhere in the itinerary because it messes up my formatting. Do not include the date in the header. The only allowed instance of the word 'Day' is in the header. Follow these instructions exactly."
+      "The first word should be 'Day' but should not be used in the content of the day's itinerary. Follow these instructions exactly with no content before or after this."
 
     await fetch("/api/generate", {
       method: "POST",

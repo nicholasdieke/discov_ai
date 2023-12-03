@@ -60,7 +60,7 @@ const DestinationPage: BlitzPage = () => {
           <Flex alignItems={"center"} w="100%" flexDir="column" minH="90vh">
             <VStack
               w="100%"
-              mt={{ base: "1rem", sm: "3rem" }}
+              mt={{ base: "1rem", sm: "2rem" }}
               textAlign="center"
               alignItems="center"
               color="white"
@@ -70,14 +70,14 @@ const DestinationPage: BlitzPage = () => {
                   base: "1.5rem",
                   sm: "2.5rem",
                   md: "3rem",
-                  lg: "4 rem",
-                  xl: "4.5rem",
+                  lg: "3.5rem",
+                  xl: "4rem",
                 }}
                 textAlign="center"
-                pb={{ base: "0rem", md: "0.5rem" }}
+                pb={{ base: "0rem", md: "0.25rem" }}
                 fontWeight="700"
               >
-                Discover new Destinations.
+                Discover new Destinations
               </Heading>
 
               <Text

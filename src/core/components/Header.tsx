@@ -1,5 +1,5 @@
 import { Routes } from "@blitzjs/next"
-import { Button, Flex, HStack, Tag, Text } from "@chakra-ui/react"
+import { Button, Flex, HStack, Text } from "@chakra-ui/react"
 import mixpanel from "mixpanel-browser"
 import { useRouter } from "next/router"
 import { useMediaQuery } from "react-responsive"
@@ -28,13 +28,14 @@ function Header({ theme }) {
       >
         DiscovAI
       </Text>
-      <HStack spacing="1rem">
+      <HStack spacing="0.5rem">
         <Button
           size="md"
           variant=""
           onClick={() => router.push(Routes.Home())}
           opacity={currentRoute === Routes.Home().pathname ? 1 : 0.65}
           hidden={isMobile && currentRoute === Routes.Home().pathname}
+          className="menuItems"
         >
           Itineraries
         </Button>
@@ -44,11 +45,9 @@ function Header({ theme }) {
           onClick={() => router.push(Routes.DestinationPage())}
           opacity={currentRoute === Routes.DestinationPage().pathname ? 1 : 0.65}
           hidden={isMobile && currentRoute === Routes.DestinationPage().pathname}
+          className="menuItems"
         >
           Destinations
-          <Tag ml="0.5rem" size="md" bgColor="#b26cee" color="white">
-            New
-          </Tag>
         </Button>
         {/* <Button variant="outline">Log In</Button>
         <Button variant="outline">Sign Up</Button> */}

@@ -149,7 +149,7 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
 
   const sendPrompt = async (values) => {
     setIsLoading(true)
-    let prompt = `I'm planning a ${
+    let prompt = `I am planning a ${
       values.group.value
     } trip and would like some recommendations. I will be traveling from ${(
       values.daterange[0] as Date
@@ -161,7 +161,7 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
       values.distance.value
     } and considered a ${
       values.touristy.value
-    }. Can you recommend five destinations and activities for me to consider. Provide them in JSON format with the following keys: destination, description (4-6 sentences) and lng_lat_coordinates (formatted like 44.8681, 13.8481). Here is an example of the correct format: { “destinations”: [{"destination": "destination"}, {"description": “description”},{“lng_lat_coordinates”: “44.1, 0.4”}, …]}`
+    }. Can you recommend five destinations and activities for me to consider. Provide them in JSON format with the following keys: destination, description (4-6 sentences) and lng_lat_coordinates (formatted like 44.8681, 13.8481). Here is an example of the correct format: { “destinations”: [{"destination": "destination"}, {"description": “description”},{“lng_lat_coordinates”: “44.1, 0.4”}, …]}. Do not include triple backticks and the word json.`
 
     await fetch("/api/generate", {
       method: "POST",
