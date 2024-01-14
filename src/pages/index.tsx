@@ -62,7 +62,7 @@ const Home: BlitzPage = () => {
             muted
             autoPlay
             style={{ objectFit: "cover", height: "100%", width: "100%" }}
-            poster="https://www.dropbox.com/scl/fi/piuyvjd43armk4qlvr6y0/bgimageposter-min.png?rlkey=03xmpek4ejzr3p45k5znp6j5o&raw=1"
+            // poster="https://www.dropbox.com/scl/fi/piuyvjd43armk4qlvr6y0/bgimageposter-min.png?rlkey=03xmpek4ejzr3p45k5znp6j5o&raw=1"
             src="https://www.dropbox.com/scl/fi/uxqo4kgk4ka9fw4hq8ck9/production_id_4328789-720p.mp4?rlkey=1rxw10i0ntxhh0f5v25c3cwc6&raw=1"
           />
         </Box>
