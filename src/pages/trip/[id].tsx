@@ -81,10 +81,9 @@ const TripPage: BlitzPage = () => {
   }
 
   const getCountryInfo = (country) => {
-    return fetch("/api/getCountryInfo?country=" + country)
+    fetch("/api/getCountryInfo?country=" + country)
       .then((response) => response.json())
       .then((response) => {
-        console.log(response.result[0])
         setCountryData(response.result[0])
       })
       .catch((e) => console.log(e))
