@@ -274,7 +274,7 @@ function TripForm() {
               ) : null}
             </FormControl>
 
-            <FormControl>
+            <FormControl zIndex={10}>
               <FormLabel className="tripformlabel" htmlFor="When?">
                 When?
               </FormLabel>
@@ -302,6 +302,7 @@ function TripForm() {
                 value={formik.values.group}
                 placeholder="e.g. Friends, Family"
                 options={groupOptions}
+                hideSelectedOptions
               />
               {formik.errors.group ? (
                 <div className="errors">{formik.errors.group as string}</div>
@@ -340,6 +341,7 @@ function TripForm() {
                 value={formik.values.budget}
                 placeholder="e.g. Luxury"
                 options={budgetOptions}
+                hideSelectedOptions
               />
 
               {formik.errors.budget ? (

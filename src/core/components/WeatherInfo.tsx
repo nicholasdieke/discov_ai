@@ -70,21 +70,26 @@ function WeatherInfo({ days }) {
           borderWidth="1px"
           borderRadius="10px"
           borderColor={getBorderColor(day.temp)}
-          p="0.75rem"
+          p="0.5rem"
           maxW={{ base: "100px", md: "190px" }}
           minW={{ base: "85px", md: "160px" }}
         >
-          <Text mb="1rem" fontWeight="600">
+          <Text mb="0.5rem" fontWeight="600">
             {formatDateString(day.datetime)}
           </Text>
 
           <Image
-            boxSize={{ base: "35px", md: "50px" }}
+            boxSize={{ base: "35px", md: "45px" }}
             objectFit="cover"
             alt={day.conditions}
             src={getWeatherIcon(day.icon)}
           />
-          <Flex flexDir={{ base: "column", md: "row" }} alignItems="center" mt="1rem" fontSize="20px">
+          <Flex
+            flexDir={{ base: "column", md: "row" }}
+            alignItems="center"
+            mt="0.5rem"
+            fontSize="20px"
+          >
             <Text mr={{ base: "0", md: "0.4rem" }} fontWeight="600">
               {day.tempmax}°
             </Text>

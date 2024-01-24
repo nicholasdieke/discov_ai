@@ -318,7 +318,7 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
                   <div className="errors">{formik.errors.destination as string}</div>
                 ) : null}
               </FormControl>
-              <FormControl>
+              <FormControl zIndex={10}>
                 <FormLabel className="tripformlabel" htmlFor="When?">
                   When?
                 </FormLabel>

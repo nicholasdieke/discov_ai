@@ -45,7 +45,7 @@ function Footer({ theme }) {
       alignItems="center"
       color={theme}
     >
-      <Text>© 2023 DiscovAI</Text>
+      <Text>© 2024 DiscovAI</Text>
       <Button variant="unstyled" onClick={onOpen}>
         Give Feedback
       </Button>

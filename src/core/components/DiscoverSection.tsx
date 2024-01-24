@@ -29,7 +29,9 @@ function DiscoverSection() {
         zoom: 3,
       })
       result.map((res) => {
-        new mapboxgl.Marker()
+        new mapboxgl.Marker({
+          color: "#000000",
+        })
           .setLngLat([
             res["lng_lat_coordinates"].split(",")[1],
             res["lng_lat_coordinates"].split(",")[0],
@@ -116,6 +118,7 @@ function DiscoverSection() {
                 w="100%"
                 mb="0.5rem"
                 variant="outline"
+                color="white"
                 onClick={() => {
                   setShowMap(!showMap)
                   mixpanel.track("Clicked Show Result/Map")
