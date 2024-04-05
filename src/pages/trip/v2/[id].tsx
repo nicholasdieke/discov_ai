@@ -92,7 +92,7 @@ const TripPagev2: BlitzPage = () => {
     const mapContainerRef = useRef(null)
     const isMobile = useMediaQuery({ maxWidth: 767 })
 
-    const createMarkers = async (map, pins) => {
+    const createMarkers = (map, pins) => {
       markers.forEach((marker) => marker.remove())
       markers = []
       const icon = renderToStaticMarkup(<FontAwesomeIcon icon={faExternalLinkAlt} height="20px" />)
@@ -232,9 +232,8 @@ const TripPagev2: BlitzPage = () => {
           content="https://www.dropbox.com/s/hmmp4gklv03u11n/share-image.png?raw=1"
         />
         <meta name="twitter:card" content="summary_large_image" />
-        <Script src={script} />
       </Head>
-
+      <Script src={script} />
       <Flex
         bg="#1E1E1E"
         minH="100vh"

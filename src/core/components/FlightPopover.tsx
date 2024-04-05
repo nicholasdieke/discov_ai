@@ -142,7 +142,6 @@ const FlightPopover = ({ myTrip, latLong }) => {
         <Button
           leftIcon={<FontAwesomeIcon icon={faPlaneDeparture} height="16px" />}
           rightIcon={<FontAwesomeIcon icon={faChevronRight} height="16px" />}
-          variant="outline"
           onClick={() => mixpanel.track("Opened Flights")}
           variant="secondary"
         >
