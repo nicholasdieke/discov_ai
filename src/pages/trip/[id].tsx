@@ -1,4 +1,4 @@
-import { BlitzPage, Routes } from "@blitzjs/next"
+/* import { BlitzPage, Routes } from "@blitzjs/next"
 import { invoke } from "@blitzjs/rpc"
 import {
   Accordion,
@@ -604,3 +604,4 @@ const TripPage: BlitzPage = () => {
 }
 
 export default TripPage
+ */
