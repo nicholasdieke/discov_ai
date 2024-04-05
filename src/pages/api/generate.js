@@ -19,10 +19,11 @@ export default async function (req, res) {
 
   try {
     const completion = await openai.createChatCompletion({
-      model: "gpt-4-1106-preview",
+      model: "gpt-4-0125-preview",
       messages: [{ role: "user", content: req.body }],
       temperature: 0.6,
-      max_tokens: 1000,
+      max_tokens: 4096,
+      response_format: { type: "json_object" },
     })
     res.status(200).json({ result: completion.data.choices[0].message.content })
   } catch (error) {

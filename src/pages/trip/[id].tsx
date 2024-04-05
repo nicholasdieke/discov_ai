@@ -586,7 +586,7 @@ const TripPage: BlitzPage = () => {
                   Sorry, this trip does not exist.
                 </Heading>
                 <Button
-                  colorScheme="purple"
+                  variant="primary"
                   mt="1rem"
                   width="200px"
                   onClick={() => router.push(Routes.Home())}

@@ -22,7 +22,7 @@ import "react-datepicker/dist/react-datepicker.css"
 
 export const PopoverTrigger: React.FC<{ children: React.ReactNode }> = OrigPopoverTrigger
 
-const FlightPopover = ({ myTrip, loaded, latLong }) => {
+const FlightPopover = ({ myTrip, latLong }) => {
   const autoCompleteRef = useRef<google.maps.places.Autocomplete>()
   const inputRef = useRef<HTMLInputElement>(null)
   const [origin, setOrigin] = useState("")
@@ -112,7 +112,7 @@ const FlightPopover = ({ myTrip, loaded, latLong }) => {
         }
       })
     }
-  }, [loaded])
+  }, [])
   const getDestCode = async () => {
     const url = `https://iatageo.com/getCode/${latLong[0]}/${latLong[1]}`
     const response = await fetch(url)
@@ -144,7 +144,7 @@ const FlightPopover = ({ myTrip, loaded, latLong }) => {
           rightIcon={<FontAwesomeIcon icon={faChevronRight} height="16px" />}
           variant="outline"
           onClick={() => mixpanel.track("Opened Flights")}
-          className="white"
+          variant="secondary"
         >
           See Flights
         </Button>

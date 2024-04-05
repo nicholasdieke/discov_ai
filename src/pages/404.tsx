@@ -32,7 +32,7 @@ export default function Page404() {
             Sorry, this page does not exist.
           </Heading>
           <Button
-            colorScheme="purple"
+            variant="primary"
             mt="1rem"
             width="200px"
             onClick={() => router.push(Routes.Home())}

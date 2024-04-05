@@ -66,7 +66,7 @@ const Home: BlitzPage = () => {
             src="https://www.dropbox.com/scl/fi/uxqo4kgk4ka9fw4hq8ck9/production_id_4328789-720p.mp4?rlkey=1rxw10i0ntxhh0f5v25c3cwc6&raw=1"
           />
         </Box>
-        <Box h="100%" minH="100vh" px={{ base: "1.5rem", lg: "6rem" }} bgColor="#00000053">
+        <Box h="100%" minH="100vh" px={{ base: "1.5rem", lg: "6rem" }} bgColor="#00000033">
           <Header theme="white" />
           <Flex alignItems={"center"} w="100%" flexDir={{ base: "column", md: "row" }} minH="90vh">
             <VStack
@@ -79,7 +79,7 @@ const Home: BlitzPage = () => {
             >
               <Heading
                 fontSize={{
-                  base: "1.5rem",
+                  base: "2rem",
                   sm: "2.5rem",
                   md: "3rem",
                   lg: "4 rem",

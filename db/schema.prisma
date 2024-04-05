@@ -7,7 +7,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64"]
 }
 
 // --------------------------------------
@@ -67,21 +68,21 @@ model Trip {
   daterange   DateTime[]
   activity    String
   group       String
-  itinerary   String
+  extras      String?
+  itinerary   Json       @default("{}")
   budget      String?
   user        User?      @relation(fields: [userId], references: [id])
   userId      Int?
 }
 
 model Feedback {
-  id          String     @id @default(uuid())
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  comment String
-  user        User?      @relation(fields: [userId], references: [id])
-  userId      Int?
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  comment   String
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
 }
-
 
 // NOTE: It's highly recommended to use an enum for the token type
 //       but enums only work in Postgres.

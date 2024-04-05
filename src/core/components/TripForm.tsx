@@ -83,35 +83,49 @@ function TripForm() {
       value: "adventurous",
     },
     {
-      label: "🌹 Romance",
-      value: "romantic",
-    },
-    {
-      label: "🏺 History",
-      value: "historic",
+      label: "🎭 Culture",
+      value: "cultural",
     },
     {
       label: "🍜 Foodie",
       value: "foodie",
     },
     {
-      label: "🌊 Relax",
-      value: "relaxing",
+      label: "🏺 History",
+      value: "historic",
     },
     {
       label: "🍾 Party",
       value: "party",
     },
+    {
+      label: "🛍️ Shopping",
+      value: "shopping",
+    },
+    {
+      label: "🌊 Relax",
+      value: "relaxing",
+    },
+    {
+      label: "🌹 Romance",
+      value: "romantic",
+    },
   ]
 
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    })
+  }
+
   const sendPrompt = async (values) => {
+    scrollToTop()
     setIsLoading(true)
     const days = Math.max(dateDiffInDays(values.daterange[0], values.daterange[1]), 1)
     let prompt =
       "Create a personalised itinerary for a " +
       values.budget.value +
-      " " +
-      values.activity.map((obj) => obj.value).join(", ") +
       " " +
       values.group.value +
       " trip to " +
@@ -120,22 +134,22 @@ function TripForm() {
       (values.daterange[0] as Date).toDateString() +
       " to " +
       (values.daterange[1] as Date).toDateString() +
-      ". Include specific place recommendations. Write in an engaging, descriptive style with a friendly tone and correct grammar. "
+      ", which includes " +
+      values.activity.map((obj) => obj.value).join(", ") +
+      (values.extras.value ? ". Include this special request: " + values.extras.value : "") +
+      ". Write in an engaging and detailed style with a friendly tone and correct grammar. "
 
-    if (days < 10) {
+    if (days > 7) {
       prompt =
         prompt +
-        "Please ensure each day's itinerary has a header that says, 'Day X:', where X is the number of the day. Split each day into Morning, Afternoon and Evening."
+        "Since this is a longer trip, please group some of the days. Include specific place recommendations. "
     } else {
-      prompt =
-        prompt +
-        "Please format each day's itinerary with a header that says, for example, 'Day X:', where X is the number of the day or 'Day X-Y:'."
+      prompt = prompt + "Include specific place recommendations for each day. "
     }
 
     prompt =
       prompt +
-      "The first word should be 'Day' but should not be used in the content of the day's itinerary. Follow these instructions exactly with no content before or after this."
-
+      "This must be in a JSON format for easy use that follows this exact structure: itinerary: { day: '', plan: '', lat_lngs: {}}. 'Plan' should contain the day's plans, ideally a few sentences. 'lat_lngs' should contain the coordinates and categories of the mentioned places (as they appear in the plan) as a dictionary, each with this format {lng: <lng>, lat: <lat>, category: <category>}. Category can be one of these: Bar, Beach, Building, Cafe, Conservation, Entertainment, Historic site, Hotel, Museum, Park, Religious site, Restaurant, Shopping, Town, Winery or Other. Follow these steps precisely!"
     await fetch("/api/generate", {
       method: "POST",
       headers: {
@@ -154,7 +168,7 @@ function TripForm() {
         }
         mixpanel.track("Created Trip", { destination: values.destination })
         await createTrip(values)
-          .then((trip) => router.push(Routes.TripPage({ id: trip.id })))
+          .then((trip) => router.push(Routes.TripPagev2({ id: trip.id })))
           .catch((e) => console.log(e))
       })
       .catch((e) => console.log(e))
@@ -170,6 +184,7 @@ function TripForm() {
       group: "",
       activity: "",
       budget: "",
+      extras: "",
     },
     onSubmit: sendPrompt,
     validate: (values) => {
@@ -267,6 +282,8 @@ function TripForm() {
                   value={formik.values.destination}
                   onChange={formik.handleChange}
                   ref={inputRef}
+                  className="tripformInput"
+                  maxLength={40}
                 />
               </InputGroup>
               {formik.errors.destination ? (
@@ -303,6 +320,7 @@ function TripForm() {
                 placeholder="e.g. Friends, Family"
                 options={groupOptions}
                 hideSelectedOptions
+                className="tripformInput"
               />
               {formik.errors.group ? (
                 <div className="errors">{formik.errors.group as string}</div>
@@ -323,6 +341,7 @@ function TripForm() {
                 options={styleOptions}
                 isMulti
                 closeMenuOnSelect={false}
+                className="tripformInput"
               />
 
               {formik.errors.activity ? (
@@ -342,11 +361,28 @@ function TripForm() {
                 placeholder="e.g. Luxury"
                 options={budgetOptions}
                 hideSelectedOptions
+                className="tripformInput"
               />
 
               {formik.errors.budget ? (
                 <div className="errors">{formik.errors.budget as string}</div>
               ) : null}
+            </FormControl>
+
+            <FormControl>
+              <FormLabel className="tripformlabel" htmlFor="Special Request?">
+                Special Request?
+              </FormLabel>
+              <Input
+                id="extras"
+                name="extras"
+                type="text"
+                placeholder="e.g. Pet friendly or best tacos"
+                value={formik.values.extras}
+                onChange={formik.handleChange}
+                className="tripformInput"
+                maxLength={40}
+              />
             </FormControl>
           </VStack>
 
@@ -370,7 +406,7 @@ function TripForm() {
           <Box textAlign="center" fontWeight="600" mt="-2rem" mb="2rem" color="white">
             <Text>Building Your Itinerary...</Text>
             <Text fontWeight="400" fontSize="14px">
-              This can take up to a minute
+              This can take up to a 2 minutes
             </Text>
           </Box>
         </Box>

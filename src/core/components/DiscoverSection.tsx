@@ -29,6 +29,7 @@ function DiscoverSection() {
         zoom: 3,
       })
       result.map((res) => {
+        console.log(res["lng_lat_coordinates"])
         new mapboxgl.Marker({
           color: "#000000",
         })

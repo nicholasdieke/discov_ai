@@ -1,7 +1,7 @@
 import { Flex, Image, Text } from "@chakra-ui/react"
 import { useRouter } from "next/router"
 
-function WeatherInfo({ days }) {
+function WeatherInfo({ days, isMobile }) {
   const router = useRouter()
 
   const getWeatherIcon = (conditions) => {
@@ -49,18 +49,28 @@ function WeatherInfo({ days }) {
     return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0").toUpperCase()}`
   }
 
-  const formatDateString = (dateString) => {
+  const formatDateString = (dateString, isMobile) => {
     const date = new Date(dateString)
-    const formattedDate = new Intl.DateTimeFormat("en-US", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-    }).format(date)
-    return formattedDate
+
+    if (isMobile) {
+      const formattedDate = new Intl.DateTimeFormat("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "numeric",
+      }).format(date)
+      return formattedDate
+    } else {
+      const formattedDate = new Intl.DateTimeFormat("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      }).format(date)
+      return formattedDate
+    }
   }
 
   return (
-    <Flex overflow="auto">
+    <Flex overflow="auto" mb="1rem">
       {days.map((day) => (
         <Flex
           alignItems="center"
@@ -73,9 +83,10 @@ function WeatherInfo({ days }) {
           p="0.5rem"
           maxW={{ base: "100px", md: "190px" }}
           minW={{ base: "85px", md: "160px" }}
+          fontSize={isMobile ? "14px" : "18px"}
         >
-          <Text mb="0.5rem" fontWeight="600">
-            {formatDateString(day.datetime)}
+          <Text mb="0.5rem" whiteSpace="nowrap" fontWeight="600">
+            {formatDateString(day.datetime, isMobile)}
           </Text>
 
           <Image

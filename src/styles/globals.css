@@ -44,6 +44,10 @@ i {
   opacity: 100%;
 }
 
+.mapboxgl-popup-content {
+  z-index: 10;
+}
+
 /* Main trip form */
 
 .tripform {
@@ -58,7 +62,7 @@ i {
 
 .tripformlabel {
   color: white;
-  font-size: 18px !important;
+  font-size: 16px !important;
 }
 
 #group > div > div > div,
@@ -69,6 +73,20 @@ i {
   background: transparent;
 }
 
+#__next
+  > div
+  > div
+  > div.css-8muvpf
+  > div.css-vzerxc
+  > div.chakra-stack.css-yc8rcg
+  > div
+  > div
+  > form
+  > div
+  > div.chakra-stack.css-v3yw5e
+  > div:nth-child(1)
+  > div
+  .react-datepicker-wrapper,
 .react-datepicker-wrapper {
   width: 100%;
 }
@@ -86,12 +104,21 @@ i {
   padding-right: 0.5rem;
   padding-top: 2px;
   padding-bottom: 2px;
+  background-color: #6161614e;
+  border-radius: 5px;
+  white-space: nowrap;
 }
 
-.countryInfoGroup {
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-  border-radius: 5px;
+.collapseButton {
+  width: 100%;
+  margin-bottom: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 7px;
+}
+.collapseButton:hover {
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .discoverform {
@@ -200,6 +227,18 @@ i {
   height: 300px;
 }
 
+.mapboxgl-control-container {
+  display: none;
+}
+
+mapboxgl-interactive.mapboxgl-touch-drag-pan.mapboxgl-touch-zoom-rotate {
+  height: 100vh;
+}
+
+.mapboxgl-popup-content {
+  color: black;
+}
+
 .mapContainer2 {
   position: fixed;
   top: 0;
@@ -208,6 +247,30 @@ i {
   border-radius: 5px;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 .scrollBox {
   overflow-y: scroll;
+}
+
+#destination,
+#origin,
+#extras,
+#group > div,
+.react-datepicker-wrapper > div > input,
+#activity > div,
+#budget > div,
+#distance > div,
+#specactivity,
+#touristy > div {
+  border: 0px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+.css-hfbj6y > hr {
+  border: 0px;
 }
