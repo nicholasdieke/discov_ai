@@ -60,12 +60,12 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
 
   const budgetOptions = [
     {
-      label: "🪙 Basic",
-      value: "cheap",
+      label: "🪙 Cheap",
+      value: "small",
     },
     {
-      label: "💸 Comfortable",
-      value: "middle-priced",
+      label: "💸 Average",
+      value: "average",
     },
     {
       label: "💎 Luxury",

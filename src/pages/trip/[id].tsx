@@ -2,7 +2,7 @@ import { BlitzPage, Routes } from "@blitzjs/next"
 import { invoke } from "@blitzjs/rpc"
 import "mapbox-gl/dist/mapbox-gl.css"
 
-import { Box, Button, Flex, Heading, Spinner, Text, useToast } from "@chakra-ui/react"
+import { Box, Button, Flex, Heading, Spinner, Text } from "@chakra-ui/react"
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Trip } from "db"
@@ -11,28 +11,23 @@ import mixpanel from "mixpanel-browser"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import Script from "next/script"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import "react-datepicker/dist/react-datepicker.css"
 import { renderToStaticMarkup } from "react-dom/server"
 import { useMediaQuery } from "react-responsive"
 import Itinerary from "src/core/components/Itinerary"
 import getTrip from "src/core/queries/getTrip"
 
-const TripPagev2: BlitzPage = () => {
+const TripPage: BlitzPage = () => {
   const router = useRouter()
   const tripId = router.query.id as string
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [pins, setPins] = useState([])
   const [latLong, setLatLong] = useState(["", ""])
-  const [myMap, setMyMap] = useState()
-  const [isMapExpanded, setIsMapExpanded] = useState(false)
 
-  const toast = useToast()
   const maps_key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
   const isMobile = useMediaQuery({ maxWidth: 767 })
-
-  mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN)
 
   const [myTrip, setMyTrip] = useState<Trip | null | undefined>(undefined)
 
@@ -62,6 +57,7 @@ const TripPagev2: BlitzPage = () => {
   }
 
   useEffect(() => {
+    mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN)
     getDetails(tripId)
   }, [tripId])
 
@@ -92,89 +88,95 @@ const TripPagev2: BlitzPage = () => {
     const mapContainerRef = useRef(null)
     const isMobile = useMediaQuery({ maxWidth: 767 })
 
-    const createMarkers = (map, pins) => {
-      markers.forEach((marker) => marker.remove())
-      markers = []
-      const icon = renderToStaticMarkup(<FontAwesomeIcon icon={faExternalLinkAlt} height="20px" />)
+    const createMarkers = useCallback(
+      (map, pins) => {
+        markers.forEach((marker) => marker.remove())
+        markers = []
+        const icon = renderToStaticMarkup(
+          <FontAwesomeIcon icon={faExternalLinkAlt} height="15px" />
+        )
 
-      pins.forEach((place) =>
-        Object.keys(place).forEach((name) => {
-          // Create a DOM element for each marker.
-          const el = document.createElement("div")
-          const width = 45
-          const height = 45
-          el.className = "marker"
-          el.style.backgroundImage = `url('/location-icons/${place[name][
-            "category"
-          ].toLowerCase()}.svg')`
-          el.style.width = `${width}px`
-          el.style.height = `${height}px`
-          el.style.backgroundSize = "100%"
-          el.style.borderRadius = "50%"
-          el.style.boxShadow = "0px 0px 10px rgba(0, 0, 0, 0.15)"
+        pins.forEach((place) =>
+          Object.keys(place).forEach((name) => {
+            const el = document.createElement("div")
+            const width = 45
+            const height = 45
+            el.className = "marker"
+            el.style.backgroundImage = `url('/location-icons/${place[name][
+              "category"
+            ].toLowerCase()}.svg')`
+            el.style.width = `${width}px`
+            el.style.height = `${height}px`
+            el.style.backgroundSize = "100%"
+            el.style.borderRadius = "50%"
+            el.style.boxShadow = "0px 0px 10px rgba(0, 0, 0, 0.15)"
 
-          const popupContent = `
+            const popupContent = `
           <div style="display: flex; align-items: center;">
-    <p style="margin-right: 5px; font-size: 16px; font-weight: 500;">${name}</p>
+    <p style="margin-right: 8px; font-size: 16px; font-weight: 500;">${name}</p>
     <a style="z-index: 20;" href='http://maps.google.com/?q=${name}, ${myTrip?.destination}' target="_blank">${icon}</a>
 </div>
 
         `
 
-          const marker = new mapboxgl.Marker(el)
-            .setLngLat([place[name]["lng"], place[name]["lat"]])
-            .setPopup(
-              new mapboxgl.Popup({ offset: 25, closeButton: false, closeOnClick: true }).setHTML(
-                popupContent
+            const marker = new mapboxgl.Marker(el)
+              .setLngLat([place[name]["lng"], place[name]["lat"]])
+              .setPopup(
+                new mapboxgl.Popup({ offset: 25, closeButton: false, closeOnClick: true }).setHTML(
+                  popupContent
+                )
               )
-            )
-            .addTo(map)
+              .addTo(map)
 
-          marker.getPopup().on("open", () => {
-            const anchorElement = marker.getPopup().getElement().querySelector("a")
-            if (anchorElement) {
-              anchorElement.addEventListener("touchend", () => {
-                anchorElement.click()
+            marker.getPopup().on("open", () => {
+              const anchorElement = marker.getPopup().getElement().querySelector("a")
+              if (anchorElement) {
+                anchorElement.addEventListener("touchend", () => {
+                  anchorElement.click()
+                })
+              }
+            })
+
+            el.addEventListener("click", () => {
+              map.flyTo({
+                bearing: 0,
+                center: place[name],
+                zoom: Math.max(map.getZoom(), 13),
+                pitch: 0,
+                duration: 500,
               })
-            }
-          })
-
-          el.addEventListener("click", () => {
-            map.flyTo({
-              bearing: 0,
-              center: place[name],
-              zoom: Math.max(map.getZoom(), 13),
-              pitch: 0,
-              duration: 500,
             })
-          })
-          el.addEventListener("touchend", () => {
-            map.flyTo({
-              bearing: 0,
-              center: place[name],
-              zoom: Math.max(map.getZoom(), 13),
-              pitch: 0,
-              duration: 500,
+            el.addEventListener("touchend", () => {
+              map.flyTo({
+                bearing: 0,
+                center: place[name],
+                zoom: Math.max(map.getZoom(), 13),
+                pitch: 0,
+                duration: 500,
+              })
             })
+
+            markers.push(marker)
           })
+        )
+      },
+      [pins]
+    )
 
-          markers.push(marker)
-        })
-      )
-    }
-
-    // mapbox://styles/discovai/clsuhe2yz000h01qzg5d2cahb
     const initializeMap = () => {
       mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/streets-v11",
         center: [latLong[1], latLong[0]],
-        zoom: myTrip?.destination.includes(",") ? 11 : 6,
+        zoom: myTrip?.destination.includes(",") ? 12 : 6,
       })
 
       map.on("load", function () {
+        map.addControl(new mapboxgl.NavigationControl())
+        map.addControl(new mapboxgl.FullscreenControl())
         map.resize()
+        createMarkers(map, pins)
       })
 
       return map
@@ -182,7 +184,6 @@ const TripPagev2: BlitzPage = () => {
 
     useEffect(() => {
       map = initializeMap()
-      createMarkers(map, pins)
 
       return () => {
         if (map) {
@@ -190,12 +191,12 @@ const TripPagev2: BlitzPage = () => {
           markers.forEach((marker) => marker.remove())
         }
       }
-    }, [pins, isMapExpanded])
+    }, [pins])
 
     return (
       <Box
-        h={isMobile ? (isMapExpanded ? "100vh" : "225px") : "100vh"}
-        w={isMobile ? "100%" : "50%"}
+        h={isMobile ? "225px" : "100vh"}
+        w={isMobile ? "100%" : "40%"}
         borderRadius={isMobile ? "7px" : "0px"}
         overflow="hidden"
       >
@@ -252,19 +253,10 @@ const TripPagev2: BlitzPage = () => {
                 latLong={latLong}
                 showMapPin={showMapPin}
                 isMobile
-                isMapExpanded={isMapExpanded}
-                setIsMapExpanded={setIsMapExpanded}
               />
             ) : (
               <>
-                <Itinerary
-                  trip={myTrip}
-                  map={null}
-                  latLong={latLong}
-                  showMapPin={showMapPin}
-                  isMapExpanded={null}
-                  setIsMapExpanded={null}
-                />
+                <Itinerary trip={myTrip} map={null} latLong={latLong} showMapPin={showMapPin} />
                 <MapboxMap />
               </>
             )}
@@ -297,4 +289,4 @@ const TripPagev2: BlitzPage = () => {
   )
 }
 
-export default TripPagev2
+export default TripPage

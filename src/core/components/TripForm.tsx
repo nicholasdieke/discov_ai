@@ -1,3 +1,4 @@
+import { Routes } from "@blitzjs/next"
 import {
   Box,
   Button,
@@ -12,9 +13,6 @@ import {
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Select } from "chakra-react-select"
-// import Select from "react-select"
-
-import { Routes } from "@blitzjs/next"
 import { useFormik } from "formik"
 import Lottie from "lottie-react"
 import mixpanel from "mixpanel-browser"
@@ -147,9 +145,33 @@ function TripForm() {
       prompt = prompt + "Include specific place recommendations for each day. "
     }
 
-    prompt =
-      prompt +
-      "This must be in a JSON format for easy use that follows this exact structure: itinerary: { day: '', plan: '', lat_lngs: {}}. 'Plan' should contain the day's plans, ideally a few sentences. 'lat_lngs' should contain the coordinates and categories of the mentioned places (as they appear in the plan) as a dictionary, each with this format {lng: <lng>, lat: <lat>, category: <category>}. Category can be one of these: Bar, Beach, Building, Cafe, Conservation, Entertainment, Historic site, Hotel, Museum, Park, Religious site, Restaurant, Shopping, Town, Winery or Other. Follow these steps precisely!"
+    const structurePart = `
+    Please provide an itinerary in a valid JSON format. The structure should be as follows:
+
+    {
+      "itinerary": [
+        {
+          "day": "",
+          "plan": "",
+          "lat_lngs": {
+            "place_name": {
+              "lng": <lng>,
+              "lat": <lat>,
+              "category": "<category>"
+            }
+          }
+        }
+      ]
+    }
+
+    - The \`plan\` should contain a few sentences describing the day's activities.
+    - The \`lat_lngs\` should include the coordinates and categories of each place mentioned in the \`plan\`, formatted as a dictionary.
+    - Each place should follow this format: {lng: <lng>, lat: <lat>, category: <category>}.
+    - The \`category\` can be one of the following: Bar, Beach, Building, Cafe, Conservation, Entertainment, Historic site, Hotel, Museum, Park, Religious site, Restaurant, Shopping, Town, Winery, or Other.
+    - Ensure that the \`itinerary\` is an array, with each day represented as an object within this array. Follow these instructions precisely!
+    `
+    prompt = prompt + structurePart
+
     await fetch("/api/generate", {
       method: "POST",
       headers: {
@@ -168,13 +190,12 @@ function TripForm() {
         }
         mixpanel.track("Created Trip", { destination: values.destination })
         await createTrip(values)
-          .then((trip) => router.push(Routes.TripPagev2({ id: trip.id })))
+          .then((trip) => router.push(Routes.TripPage({ id: trip.id })))
           .catch((e) => console.log(e))
       })
       .catch((e) => console.log(e))
   }
 
-  // Handling the form
   const formik = useFormik({
     validateOnChange: false,
     validateOnBlur: true,
@@ -406,7 +427,7 @@ function TripForm() {
           <Box textAlign="center" fontWeight="600" mt="-2rem" mb="2rem" color="white">
             <Text>Building Your Itinerary...</Text>
             <Text fontWeight="400" fontSize="14px">
-              This can take up to a 2 minutes
+              This can take up to a minute
             </Text>
           </Box>
         </Box>

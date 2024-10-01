@@ -18,7 +18,6 @@ function GeneralInfo({ countryData, isMobile }) {
 
   return (
     <SimpleGrid gap="0.5rem" columns={2} flexDir="row" mb="1rem" mx="0.5rem">
-      {/*       <InfoBox icon={faBuildingFlag} value={countryData.capital} /> */}
       <InfoBox icon={faMapMarked} value={countryData.name.common + " " + countryData.flag} />
       <InfoBox icon={faLanguage} value={Object.values(countryData.languages).join(", ")} />
       <InfoBox

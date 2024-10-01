@@ -227,14 +227,6 @@ i {
   height: 300px;
 }
 
-.mapboxgl-control-container {
-  display: none;
-}
-
-mapboxgl-interactive.mapboxgl-touch-drag-pan.mapboxgl-touch-zoom-rotate {
-  height: 100vh;
-}
-
 .mapboxgl-popup-content {
   color: black;
 }

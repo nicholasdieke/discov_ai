@@ -30,9 +30,7 @@ import {
   faChevronUp,
   faCircleInfo,
   faClipboard,
-  faCompress,
   faEnvelope,
-  faExpand,
   faMapPin,
   faShareNodes,
   faSun,
@@ -46,21 +44,11 @@ import WeatherInfo from "src/core/components/WeatherInfo"
 import FlightPopover from "./FlightPopover"
 import GeneralInfo from "./GeneralInfo"
 
-const Itinerary = ({
-  trip,
-  latLong,
-  showMapPin,
-  map,
-  isMobile = false,
-  isMapExpanded,
-  setIsMapExpanded,
-}) => {
+const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
   const [photoUrl, setPhotoUrl] = useState("")
   const [weatherData, setWeatherData] = useState()
   const [countryData, setCountryData] = useState()
   const [inFuture, setInFuture] = useState(false)
-  const [longTrip, setLongTrip] = useState(false)
-  const [showFlights, setShowFlights] = useState(false)
   const [showGeneralInfo, setShowGeneralInfo] = useState(true)
   const [showTours, setShowTours] = useState(true)
   const [showBeforeYouGo, setShowBeforeYouGo] = useState(true)
@@ -98,14 +86,7 @@ const Itinerary = ({
       })
       .catch((e) => console.log(e))
   }
-  const dateDiffInDays = (a, b) => {
-    const _MS_PER_DAY = 1000 * 60 * 60 * 24
-    // Discard the time and time-zone information.
-    const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate())
-    const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate())
 
-    return Math.floor((utc2 - utc1) / _MS_PER_DAY)
-  }
   const dateOptions: Intl.DateTimeFormatOptions = {
     day: "2-digit",
     month: "short",
@@ -169,7 +150,6 @@ const Itinerary = ({
       return formattedText
     }, day.plan)
 
-    // Render the plan with HTML
     useEffect(() => {
       const clickListeners = locations.map((location) => {
         const { lat, lng } = day.lat_lngs[location]
@@ -219,7 +199,6 @@ const Itinerary = ({
         .split("T")[0]
     )
     setInFuture(trip.daterange[0]! > new Date())
-    setLongTrip(dateDiffInDays(trip.daterange[0], trip.daterange[1]) >= 10)
   }, [])
 
   return (
@@ -227,8 +206,8 @@ const Itinerary = ({
       <Flex
         flexDir="column"
         h="100vh"
-        w={isMobile ? "100%" : "50%"}
-        maxW={isMobile ? "100%" : "50%"}
+        w={isMobile ? "100%" : "60%"}
+        maxW={isMobile ? "100%" : "60%"}
         overflowY="scroll"
         overflowX="hidden"
       >
@@ -357,27 +336,14 @@ const Itinerary = ({
         </Flex>
         {!!map && (
           <Box
-            mx={isMapExpanded ? "0" : "1rem"}
+            mx="1rem"
             mt="0.5rem"
-            top={isMapExpanded ? "0" : "3"}
+            top="3"
             left="0"
             right="0"
-            pos={isMapExpanded ? "absolute" : "sticky"}
+            pos="sticky"
             boxShadow="0px 0px 40px #1e1e1e"
           >
-            <IconButton
-              mr="0.5rem"
-              mt="0.5rem"
-              position="absolute"
-              top="0"
-              right="0"
-              zIndex="1"
-              icon={<FontAwesomeIcon icon={isMapExpanded ? faCompress : faExpand} height="22px" />}
-              aria-label="Collapse"
-              onClick={() => {
-                setIsMapExpanded(!isMapExpanded)
-              }}
-            />
             {map}
           </Box>
         )}
