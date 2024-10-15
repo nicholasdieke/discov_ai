@@ -56,7 +56,8 @@ export function ResetPasswordForm() {
             onSubmit={async (values) => {
               try {
                 await resetPasswordMutation({ ...values, token })
-                router.push(Routes.MyTripsPage().href)
+                  .then(() => router.push(Routes.MyTripsPage().href))
+                  .catch((e) => console.log(e))
               } catch (error) {
                 if (error.name === "ResetPasswordError") {
                   setFormError(error.message)

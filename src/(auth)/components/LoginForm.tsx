@@ -112,7 +112,7 @@ export const LoginForm = (props: LoginFormProps) => {
                 <Box textAlign="center" mt="1rem">
                   <Link href={Routes.ForgotPasswordPage().href}>Forgot your password?</Link>
                   <Box mt="1rem">
-                    Don't have an account?{" "}
+                    Do not have an account?{" "}
                     <Link color="#3498db" href={Routes.SignUpPage().href}>
                       Sign Up
                     </Link>
