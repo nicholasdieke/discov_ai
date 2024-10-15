@@ -13,8 +13,8 @@ export default function MyTripsPage() {
 
   useEffect(() => {
     const fetchTrips = async () => {
-      const tripsResult = await invoke(getTripsByUser, null)
-      setTrips(tripsResult)
+      const tripsResult = await invoke(getTripsByUser, null).catch((e) => console.log(e))
+      if (tripsResult) setTrips(tripsResult)
     }
 
     fetchTrips()
@@ -33,7 +33,7 @@ export default function MyTripsPage() {
             {!!trips && (
               <SimpleGrid spacing={4} w="full" minChildWidth="250px" mb="3rem">
                 {trips.map((trip) => (
-                  <TripCard trip={trip} />
+                  <TripCard key={trip.id} trip={trip} />
                 ))}
               </SimpleGrid>
             )}
