@@ -1894,13 +1894,6 @@
   resolved "https://registry.npmjs.org/@emotion/hash/-/hash-0.9.1.tgz"
   integrity sha512-gJB6HLm5rYwSLI6PQa+X1t5CFGrv1J1TWG+sOyMCeKz2ojaj6Fnl/rZEspogG+cvqbt4AE/2eIyD2QfLKTBNlQ==
 
-"@emotion/is-prop-valid@^0.8.2":
-  version "0.8.8"
-  resolved "https://registry.npmjs.org/@emotion/is-prop-valid/-/is-prop-valid-0.8.8.tgz"
-  integrity sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA==
-  dependencies:
-    "@emotion/memoize" "0.7.4"
-
 "@emotion/is-prop-valid@^1.2.1":
   version "1.2.1"
   resolved "https://registry.npmjs.org/@emotion/is-prop-valid/-/is-prop-valid-1.2.1.tgz"
@@ -1912,11 +1905,6 @@
   version "0.8.1"
   resolved "https://registry.npmjs.org/@emotion/memoize/-/memoize-0.8.1.tgz"
   integrity sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==
-
-"@emotion/memoize@0.7.4":
-  version "0.7.4"
-  resolved "https://registry.npmjs.org/@emotion/memoize/-/memoize-0.7.4.tgz"
-  integrity sha512-Ja/Vfqe3HpuzRsG1oBtWTHk2PGZ7GR+2Vz5iYGelAw8dx32K0y7PjVuxK6z1nMpZOqAFsRUPCkK1YjJ56qJlgw==
 
 "@emotion/react@^11.8.1", "@emotion/react@11.11.3":
   version "11.11.3"
@@ -2216,10 +2204,10 @@
   dependencies:
     webpack-bundle-analyzer "4.3.0"
 
-"@next/env@14.2.14":
-  version "14.2.14"
-  resolved "https://registry.npmjs.org/@next/env/-/env-14.2.14.tgz"
-  integrity sha512-/0hWQfiaD5//LvGNgc8PjvyqV50vGK0cADYzaoOOGN8fxzBn3iAiaq3S0tCRnFBldq0LVveLcxCTi41ZoYgAgg==
+"@next/env@14.2.15":
+  version "14.2.15"
+  resolved "https://registry.npmjs.org/@next/env/-/env-14.2.15.tgz"
+  integrity sha512-S1qaj25Wru2dUpcIZMjxeMVSwkt8BK4dmWHHiBuRstcIyOsMapqT4A4jSB6onvqeygkSSmOkyny9VVx8JIGamQ==
 
 "@next/eslint-plugin-next@14.2.14":
   version "14.2.14"
@@ -2228,10 +2216,10 @@
   dependencies:
     glob "10.3.10"
 
-"@next/swc-darwin-arm64@14.2.14":
-  version "14.2.14"
-  resolved "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-14.2.14.tgz"
-  integrity sha512-bsxbSAUodM1cjYeA4o6y7sp9wslvwjSkWw57t8DtC8Zig8aG8V6r+Yc05/9mDzLKcybb6EN85k1rJDnMKBd9Gw==
+"@next/swc-darwin-arm64@14.2.15":
+  version "14.2.15"
+  resolved "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-14.2.15.tgz"
+  integrity sha512-Rvh7KU9hOUBnZ9TJ28n2Oa7dD9cvDBKua9IKx7cfQQ0GoYUwg9ig31O2oMwH3wm+pE3IkAQ67ZobPfEgurPZIA==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -5480,14 +5468,12 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
-framer-motion@10.18.0:
-  version "10.18.0"
-  resolved "https://registry.npmjs.org/framer-motion/-/framer-motion-10.18.0.tgz"
-  integrity sha512-oGlDh1Q1XqYPksuTD/usb0I70hq95OUzmL9+6Zd+Hs4XV0oaISBa/UUMSjYiq6m8EUF32132mOJ8xVZS+I0S6w==
+framer-motion@11.11.9:
+  version "11.11.9"
+  resolved "https://registry.npmjs.org/framer-motion/-/framer-motion-11.11.9.tgz"
+  integrity sha512-XpdZseuCrZehdHGuW22zZt3SF5g6AHJHJi7JwQIigOznW4Jg1n0oGPMJQheMaKLC+0rp5gxUKMRYI6ytd3q4RQ==
   dependencies:
     tslib "^2.4.0"
-  optionalDependencies:
-    "@emotion/is-prop-valid" "^0.8.2"
 
 framesync@6.1.2:
   version "6.1.2"
@@ -7477,12 +7463,12 @@ neo-async@^2.5.0:
   resolved "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
-next@14.2.14:
-  version "14.2.14"
-  resolved "https://registry.npmjs.org/next/-/next-14.2.14.tgz"
-  integrity sha512-Q1coZG17MW0Ly5x76shJ4dkC23woLAhhnDnw+DfTc7EpZSGuWrlsZ3bZaO8t6u1Yu8FVfhkqJE+U8GC7E0GLPQ==
+next@14.2.15:
+  version "14.2.15"
+  resolved "https://registry.npmjs.org/next/-/next-14.2.15.tgz"
+  integrity sha512-h9ctmOokpoDphRvMGnwOJAedT6zKhwqyZML9mDtspgf4Rh3Pn7UTYKqePNoDvhsWBAO5GoPNYshnAUGIazVGmw==
   dependencies:
-    "@next/env" "14.2.14"
+    "@next/env" "14.2.15"
     "@swc/helpers" "0.5.5"
     busboy "1.6.0"
     caniuse-lite "^1.0.30001579"
@@ -7490,15 +7476,15 @@ next@14.2.14:
     postcss "8.4.31"
     styled-jsx "5.1.1"
   optionalDependencies:
-    "@next/swc-darwin-arm64" "14.2.14"
-    "@next/swc-darwin-x64" "14.2.14"
-    "@next/swc-linux-arm64-gnu" "14.2.14"
-    "@next/swc-linux-arm64-musl" "14.2.14"
-    "@next/swc-linux-x64-gnu" "14.2.14"
-    "@next/swc-linux-x64-musl" "14.2.14"
-    "@next/swc-win32-arm64-msvc" "14.2.14"
-    "@next/swc-win32-ia32-msvc" "14.2.14"
-    "@next/swc-win32-x64-msvc" "14.2.14"
+    "@next/swc-darwin-arm64" "14.2.15"
+    "@next/swc-darwin-x64" "14.2.15"
+    "@next/swc-linux-arm64-gnu" "14.2.15"
+    "@next/swc-linux-arm64-musl" "14.2.15"
+    "@next/swc-linux-x64-gnu" "14.2.15"
+    "@next/swc-linux-x64-musl" "14.2.15"
+    "@next/swc-win32-arm64-msvc" "14.2.15"
+    "@next/swc-win32-ia32-msvc" "14.2.15"
+    "@next/swc-win32-x64-msvc" "14.2.15"
 
 nice-try@^1.0.4:
   version "1.0.5"
