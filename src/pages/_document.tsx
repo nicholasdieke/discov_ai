@@ -1,4 +1,5 @@
 import Document, { Head, Html, Main, NextScript } from "next/document"
+import { BlitzProvider } from "src/blitz-client"
 
 class MyDocument extends Document {
   // Only uncomment if you need to customize this behaviour
@@ -18,8 +19,10 @@ class MyDocument extends Document {
           ></script>
         </Head>
         <body>
-          <Main />
-          <NextScript />
+          <BlitzProvider>
+            <Main />
+            <NextScript />
+          </BlitzProvider>
         </body>
       </Html>
     )

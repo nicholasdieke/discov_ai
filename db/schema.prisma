@@ -69,6 +69,7 @@ model Trip {
   activity    String
   group       String
   extras      String?
+  imageUrl    String?
   itinerary   Json       @default("{}")
   budget      String?
   user        User?      @relation(fields: [userId], references: [id])

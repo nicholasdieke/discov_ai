@@ -3,7 +3,14 @@ import { AuthenticationError, AuthorizationError } from "blitz"
 import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
 
-import { ChakraProvider, extendTheme } from "@chakra-ui/react"
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  ChakraProvider,
+  extendTheme,
+} from "@chakra-ui/react"
 
 const theme = extendTheme({
   colors: {
@@ -15,20 +22,20 @@ const theme = extendTheme({
       variants: {
         primary: {
           background: "#3498db",
-          transition: "0.2s ease-in-out",
-          transitionDuration: "0.2s",
+          transition: "0.1s ease-in-out",
+          transitionDuration: "0.1s",
           color: "#ecf0f1",
-          boxShadow: "0 0 20px #00000037",
+          //boxShadow: "0 0 20px #00000037",
           _hover: {
             background: "#76acd0",
           },
         },
         secondary: {
           background: "#2ecc71",
-          transition: "0.2s ease-in-out",
-          transitionDuration: "0.2s",
+          transition: "0.1s ease-in-out",
+          transitionDuration: "0.1s",
           color: "white",
-          boxShadow: "0 0 20px #00000037",
+          //boxShadow: "0 0 20px #00000037",
           _hover: {
             background: "#8ddeb0",
           },
@@ -45,13 +52,42 @@ const theme = extendTheme({
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
-    return <div>Error: You are not authenticated</div>
+    return (
+      <Alert
+        status="error"
+        variant="subtle"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        textAlign="center"
+        height="100vh"
+        width="100vw"
+      >
+        <AlertIcon boxSize="40px" mr={0} />
+        <AlertTitle mt={4} mb={1} fontSize="lg">
+          You are not authenticated
+        </AlertTitle>
+        <AlertDescription maxWidth="sm">Please login to view this page.</AlertDescription>
+      </Alert>
+    )
   } else if (error instanceof AuthorizationError) {
     return (
-      <ErrorComponent
-        statusCode={error.statusCode}
-        title="Sorry, you are not authorized to access this"
-      />
+      <Alert
+        status="error"
+        variant="subtle"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        textAlign="center"
+        height="100vh"
+        width="100vw"
+      >
+        <AlertIcon boxSize="40px" mr={0} />
+        <AlertTitle mt={4} mb={1} fontSize="lg">
+          You are not authorised
+        </AlertTitle>
+        <AlertDescription maxWidth="sm">{error.statusCode}</AlertDescription>
+      </Alert>
     )
   } else {
     return (

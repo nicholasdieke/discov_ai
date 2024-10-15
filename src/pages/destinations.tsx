@@ -56,7 +56,7 @@ const DestinationPage: BlitzPage = () => {
           <Image alt="bg-image" src="/planet.jpg" objectFit="cover" h="100%" w="100%" />
         </Box>
         <Box h="100%" minH="100vh" px={{ base: "1.5rem", lg: "6rem" }} bgColor="#00000053">
-          <Header theme="white" />
+          <Header />
           <Flex alignItems={"center"} w="100%" flexDir="column" minH="90vh">
             <VStack
               w="100%"

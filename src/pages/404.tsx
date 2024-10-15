@@ -11,16 +11,9 @@ export default function Page404() {
   const router = useRouter()
 
   return (
-    <Box
-      // className="App"
-      backgroundColor="#1a1c21"
-      h="100%"
-      minH="100vh"
-      color="white"
-      overflow="hidden"
-    >
+    <Box backgroundColor="#1a1c21" h="100%" minH="100vh" color="white" overflow="hidden">
       <Box h="100%" minH="100vh" px={{ base: "2rem", lg: "7.5rem" }}>
-        <Header theme="white" />
+        <Header />
         <Flex
           alignItems={"center"}
           justifyContent="center"

@@ -181,13 +181,22 @@ function TripForm() {
     })
       .then((response) => response.json())
       .then(async (response) => {
+        var imageUrl = undefined
+
+        await fetch("/api/getDestPhoto?destination=" + values.destination)
+          .then((response) => response.json())
+          .then((response) => (imageUrl = response.result[0].urls.regular || ""))
+          .catch((e) => console.log(e))
+
         values = {
           ...values,
           group: values.group.label,
           activity: values.activity.map((obj) => obj.value).join(", "),
           itinerary: response.result,
           budget: values.budget.label,
+          imageUrl: imageUrl,
         }
+
         mixpanel.track("Created Trip", { destination: values.destination })
         await createTrip(values)
           .then((trip) => router.push(Routes.TripPage({ id: trip.id })))

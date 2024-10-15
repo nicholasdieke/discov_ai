@@ -14,8 +14,8 @@ import Script from "next/script"
 import { useCallback, useEffect, useRef, useState } from "react"
 import "react-datepicker/dist/react-datepicker.css"
 import { renderToStaticMarkup } from "react-dom/server"
-import { useMediaQuery } from "react-responsive"
 import Itinerary from "src/core/components/Itinerary"
+import useIsMobile from "src/core/hooks/useIsMobile"
 import getTrip from "src/core/queries/getTrip"
 
 const TripPage: BlitzPage = () => {
@@ -27,8 +27,7 @@ const TripPage: BlitzPage = () => {
   const [latLong, setLatLong] = useState(["", ""])
 
   const maps_key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-  const isMobile = useMediaQuery({ maxWidth: 767 })
-
+  const isMobile = useIsMobile()
   const [myTrip, setMyTrip] = useState<Trip | null | undefined>(undefined)
 
   const getDetails = (tripId) => {
@@ -86,8 +85,7 @@ const TripPage: BlitzPage = () => {
 
   const MapboxMap = () => {
     const mapContainerRef = useRef(null)
-    const isMobile = useMediaQuery({ maxWidth: 767 })
-
+    const isMobile = useIsMobile()
     const createMarkers = useCallback(
       (map, pins) => {
         markers.forEach((marker) => marker.remove())

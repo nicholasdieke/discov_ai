@@ -5,7 +5,7 @@ import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 import mixpanel from "mixpanel-browser"
 import { RefObject, useEffect, useRef, useState } from "react"
-import { useMediaQuery } from "react-responsive"
+import useIsMobile from "../hooks/useIsMobile"
 import DiscoverForm from "./DiscoverForm"
 
 function DiscoverSection() {
@@ -13,8 +13,7 @@ function DiscoverSection() {
   const [images, setImages] = useState([])
   const [originLatLng, setOriginLatLng] = useState([])
   const [showMap, setShowMap] = useState(false)
-  const isMobile = useMediaQuery({ maxWidth: 767 })
-
+  const isMobile = useIsMobile()
   mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN)
 
   const MapboxMap = () => {
@@ -29,7 +28,6 @@ function DiscoverSection() {
         zoom: 3,
       })
       result.map((res) => {
-        console.log(res["lng_lat_coordinates"])
         new mapboxgl.Marker({
           color: "#000000",
         })

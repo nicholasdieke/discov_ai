@@ -45,7 +45,6 @@ import FlightPopover from "./FlightPopover"
 import GeneralInfo from "./GeneralInfo"
 
 const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
-  const [photoUrl, setPhotoUrl] = useState("")
   const [weatherData, setWeatherData] = useState()
   const [countryData, setCountryData] = useState()
   const [inFuture, setInFuture] = useState(false)
@@ -62,12 +61,6 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
     trip?.destination.split(", ")[0]
   } I made on DiscovAI! www.discovai.com${router.asPath}`
 
-  const getPhoto = (destination) => {
-    fetch("/api/getDestPhoto?destination=" + destination)
-      .then((response) => response.json())
-      .then((response) => setPhotoUrl(response.result[0].urls.regular || ""))
-      .catch((e) => console.log(e))
-  }
   const getWeather = (destination, fromDate, toDate) => {
     fetch(
       "/api/getWeatherInfo?destination=" +
@@ -187,7 +180,6 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
   }
 
   useEffect(() => {
-    getPhoto(trip.destination)
     getCountryInfo(trip.destination.split(", ")[1])
     getWeather(
       trip.destination,
@@ -215,7 +207,7 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
           h={{ base: "150px", lg: "250px" }}
           bgPos="center"
           bgRepeat="no-repeat"
-          bgImage={photoUrl}
+          bgImage={trip.imageUrl}
           bgSize="cover"
           pos="relative"
         >

@@ -1,3 +1,4 @@
+"use client"
 import { BlitzPage } from "@blitzjs/next"
 import { Box, Flex, Heading, Text, VStack } from "@chakra-ui/react"
 import mixpanel from "mixpanel-browser"
@@ -67,7 +68,7 @@ const Home: BlitzPage = () => {
           />
         </Box>
         <Box h="100%" minH="100vh" px={{ base: "1.5rem", lg: "6rem" }} bgColor="#00000033">
-          <Header theme="white" />
+          <Header />
           <Flex alignItems={"center"} w="100%" flexDir={{ base: "column", md: "row" }} minH="90vh">
             <VStack
               w={{ base: "100%", md: "50%" }}
