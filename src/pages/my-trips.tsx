@@ -12,12 +12,9 @@ export default function MyTripsPage() {
   const [trips, setTrips] = useState<Trip[] | undefined | null>(undefined)
 
   useEffect(() => {
-    const fetchTrips = async () => {
-      const tripsResult = await invoke(getTripsByUser, null).catch((e) => console.log(e))
-      if (tripsResult) setTrips(tripsResult)
-    }
-
-    fetchTrips()
+    invoke(getTripsByUser, null)
+      .then((tripsResult) => setTrips(tripsResult))
+      .catch((e) => console.log(e))
   }, [])
 
   return (
