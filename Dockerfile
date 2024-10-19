@@ -1,40 +1,45 @@
-# create a standard base image that has all the defaults
-FROM node:18-alpine as base
+FROM node:18.20
+
+# Set the build-time arguments and environment variables
 ARG DATABASE_URL
 ARG SESSION_SECRET_KEY
-ENV NODE_ENV=production
-ENV PATH /home/node/app/node_modules/.bin:$PATH
-ENV TINI_VERSION v0.19.0
-EXPOSE 3000
-WORKDIR /home/node/app
-RUN apk add --no-cache make g++ python3 libsodium-dev openssl libtool autoconf automake \ 
-	&& rm -rf /var/cache/apk/* \
-	&& chown -R node:node /home/node/app
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
-USER node
-COPY --chown=node:node package*.json yarn.lock* ./
-RUN rm -f package-lock.json && yarn install --frozen-lockfile --prefer-offline && yarn cache clean --force
+ARG OPENAI_API_KEY
+ARG NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+ARG UNSPLASH_API_KEY
+ARG WEATHER_API_KEY
+ARG NEXT_PUBLIC_MIXPANEL_TOKEN
+ARG NEXT_PUBLIC_MAPBOX_TOKEN
+ARG PORT=3000
+ENV DATABASE_URL ${DATABASE_URL}
+ENV SESSION_SECRET_KEY=${SESSION_SECRET_KEY}
+ENV OPENAI_API_KEY ${OPENAI_API_KEY}
+ENV NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+ENV UNSPLASH_API_KEY ${UNSPLASH_API_KEY}
+ENV WEATHER_API_KEY ${WEATHER_API_KEY}
+ENV NEXT_PUBLIC_MIXPANEL_TOKEN ${NEXT_PUBLIC_MIXPANEL_TOKEN}
+ENV NEXT_PUBLIC_MAPBOX_TOKEN ${NEXT_PUBLIC_MAPBOX_TOKEN}
 
-# create a build image
-FROM base as build
-ENV NODE_ENV=development
-ENV DATABASE_URL=$DATABASE_URL
-COPY --chown=node:node . .
-RUN yarn install --prefer-offline && yarn cache clean --force \ 
-	&&blitz prisma migrate deploy --preview-feature \
-	&& blitz prisma generate && blitz build
-USER node
+# Set the working directory
+WORKDIR /usr/src/app
 
-# create a production image
-FROM base as prod
-ENV NODE_ENV=production
-ENV SESSION_SECRET_KEY=$SESSION_SECRET_KEY
-COPY --chown=node:node --from=build /home/node/app/public /home/node/app/public
-COPY --chown=node:node --from=build /home/node/app/.blitz /home/node/app/.blitz
-COPY --chown=node:node --from=build /home/node/app/db /home/node/app/db
-COPY --chown=node:node --from=build /home/node/app/blitz.config.js /home/node/app/blitz.config.js
-ENTRYPOINT ["/tini", "--"]
-EXPOSE 3000
-CMD blitz prisma generate && blitz start
-USER node
+# Copy the package.json and package-lock.json (instead of yarn.lock)
+COPY package.json package-lock.json ./
+COPY db/ ./db/
+
+# Install dependencies using npm
+RUN npm install --legacy-peer-deps
+
+# Run the Prisma migration using Blitz.js and Prisma
+RUN npx blitz prisma migrate deploy
+
+# Copy the rest of the application files
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Expose the port
+EXPOSE ${PORT}
+
+# Define the default command to run the application
+CMD npm start -- -p ${PORT}
