@@ -92,7 +92,7 @@ export default function Header({ theme = "white", showAuth = true }) {
           <MenuButton
             as={IconButton}
             aria-label="Options"
-            icon={<FontAwesomeIcon icon={faBars} />}
+            icon={<FontAwesomeIcon icon={faBars} height="24px" />}
             colorScheme="whiteAlpha"
           />
           <MenuList color="black">
