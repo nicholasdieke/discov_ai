@@ -25,7 +25,7 @@ jobs:
 
       - name: Build and push Docker image to ACR
         run: |
-          docker build -t discovairegistry.azurecr.io/discovai_app:latest .  --platform=linux/amd64 --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }}
+          docker build -t discovairegistry.azurecr.io/discovai_app:latest .  --platform=linux/amd64 --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} --build-arg SESSION_SECRET_KEY=${{ secrets.SESSION_SECRET_KEY }} --build-arg OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} --build-arg NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }} --build-arg UNSPLASH_API_KEY=${{ secrets.UNSPLASH_API_KEY }} --build-arg WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }} --build-arg NEXT_PUBLIC_MIXPANEL_TOKEN=${{ secrets.NEXT_PUBLIC_MIXPANEL_TOKEN }} --build-arg NEXT_PUBLIC_MAPBOX_TOKEN=${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }}
           docker push discovairegistry.azurecr.io/discovai_app:latest
 
   deploy:
