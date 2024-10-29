@@ -21,7 +21,7 @@ jobs:
 
       - name: Build and push Docker image to ACR
         run: |
-          docker build -t discovairegistry.azurecr.io/discovai_app:latest .
+          docker build -t discovairegistry.azurecr.io/discovai_app:latest .  --platform=linux/amd64 --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }}
           docker push discovairegistry.azurecr.io/discovai_app:latest
 
   deploy:
