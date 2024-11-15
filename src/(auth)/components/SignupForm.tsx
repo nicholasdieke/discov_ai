@@ -22,6 +22,8 @@ import Header from "src/core/components/Header"
 import { toFormikValidationSchema } from "zod-formik-adapter"
 import signup from "../mutations/signup"
 import { Signup } from "../validations"
+import { GoogleLogin } from "./GoogleLogin"
+import { OrDivider } from "./OrDivider"
 
 type SignupFormProps = {
   onSuccess?: () => void
@@ -118,6 +120,9 @@ export const SignupForm = (props: SignupFormProps) => {
                     {formError}
                   </div>
                 )}
+
+                <OrDivider />
+                <GoogleLogin />
                 <Box textAlign="center" mt="1rem">
                   <Box mt="1rem">
                     Already have an account?{" "}

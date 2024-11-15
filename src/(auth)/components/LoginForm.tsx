@@ -23,6 +23,8 @@ import Header from "src/core/components/Header"
 import { toFormikValidationSchema } from "zod-formik-adapter"
 import login from "../mutations/login"
 import { Login } from "../validations"
+import { GoogleLogin } from "./GoogleLogin"
+import { OrDivider } from "./OrDivider"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
@@ -109,6 +111,9 @@ export const LoginForm = (props: LoginFormProps) => {
                     {formError}
                   </div>
                 )}
+
+                <OrDivider />
+                <GoogleLogin />
                 <Box textAlign="center" mt="1rem">
                   <Link href={Routes.ForgotPasswordPage().href}>Forgot your password?</Link>
                   <Box mt="1rem">
