@@ -13,10 +13,8 @@ export default api(
           {
             clientID: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-            callbackURL:
-              process.env.NODE_ENV === "production"
-                ? "https://discovai.com/api/auth/google/callback"
-                : "http://localhost:3000/api/auth/google/callback",
+            callbackURL: "https://discovai.com/api/auth/google/callback",
+            //"http://localhost:3000/api/auth/google/callback",
             scope: "openid email profile",
           },
           async function verify(_issuer, profile, cb) {
