@@ -20,29 +20,35 @@ export default api(
             scope: "openid email profile",
           },
           async function verify(_issuer, profile, cb) {
-            const email = profile.emails && profile.emails[0]?.value
+            try {
+              console.log("Profile", profile)
+              const email = profile.emails && profile.emails[0]?.value
 
-            if (!email) {
-              return cb(new Error("Google OAuth response doesn't have email."))
+              if (!email) {
+                return cb(new Error("Google OAuth response doesn't have email."))
+              }
+
+              const user = await db.user.upsert({
+                where: { email },
+                create: {
+                  email,
+                  name: profile.displayName,
+                  role: "USER",
+                },
+                update: { email },
+              })
+
+              const publicData = {
+                userId: user.id,
+                roles: [user.role],
+                source: "google",
+                name: user.name,
+              }
+              cb(undefined, { publicData })
+            } catch (error) {
+              console.error("Authentication error:", error) // Debugging production issues
+              return cb(error, false)
             }
-
-            const user = await db.user.upsert({
-              where: { email },
-              create: {
-                email,
-                name: profile.displayName,
-                role: "USER",
-              },
-              update: { email },
-            })
-
-            const publicData = {
-              userId: user.id,
-              roles: [user.role],
-              source: "google",
-              name: user.name,
-            }
-            cb(undefined, { publicData })
           }
         ),
       },

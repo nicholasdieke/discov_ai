@@ -140,23 +140,3 @@ export default function Header({ theme = "white", showAuth = true }) {
     </Flex>
   )
 }
-
-/* {!!session.userId && (
-  <>
-    <MenuItem
-      onClick={() => router.push(Routes.MyTripsPage())}
-      icon={<FontAwesomeIcon icon={faUser} height="14px" />}
-    >
-      My Account
-    </MenuItem>
-    <MenuItem
-      onClick={async () => {
-        await logoutMutation()
-        router.reload()
-      }}
-      icon={<FontAwesomeIcon icon={faRightFromBracket} height="14px" />}
-    >
-      Log Out
-    </MenuItem>
-  </>
-)} */
