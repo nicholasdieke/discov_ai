@@ -31,17 +31,6 @@ function TripCard({ trip }) {
           </HStack>
         </Stack>
       </CardBody>
-      {/*<Divider />
-       <CardFooter>
-        <ButtonGroup spacing="2">
-          <Button variant="solid" colorScheme="blue">
-            Buy now
-          </Button>
-          <Button variant="ghost" colorScheme="blue">
-            Add to cart
-          </Button>
-        </ButtonGroup>
-      </CardFooter> */}
     </Card>
   )
 }

@@ -1,15 +1,17 @@
 "use client"
 import { Routes } from "@blitzjs/next"
 import { invoke } from "@blitzjs/rpc"
-import { Box, Flex, Heading, HStack, SimpleGrid } from "@chakra-ui/react"
+import { Box, Button, Flex, Heading, HStack, SimpleGrid } from "@chakra-ui/react"
 import { Trip } from "db"
+import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import Header from "src/core/components/Header"
 import TripCard from "src/core/components/TripCard"
 import getTripsByUser from "src/core/queries/getTripsByUser"
 
 export default function MyTripsPage() {
-  const [trips, setTrips] = useState<Trip[] | undefined | null>(undefined)
+  const [trips, setTrips] = useState<Trip[] | undefined | null>([])
+  const router = useRouter()
 
   useEffect(() => {
     invoke(getTripsByUser, null)
@@ -26,9 +28,28 @@ export default function MyTripsPage() {
             My Trips
           </Heading>
           <HStack w="full">
-            {!trips && <>No Trips</>}
-            {!!trips && (
-              <SimpleGrid spacing={4} w="full" minChildWidth="250px" mb="3rem">
+            {!trips || !!trips.length ? (
+              <Flex
+                alignItems={"center"}
+                justifyContent="center"
+                mt={{ base: "1rem", md: "6rem" }}
+                w="100%"
+                flexDir="column"
+              >
+                <Heading color="white" size="lg" textAlign="center" mt="5rem" mb="1rem">
+                  No trips yet.
+                </Heading>
+                <Button
+                  variant="primary"
+                  mt="1rem"
+                  width="200px"
+                  onClick={() => router.push(Routes.Home())}
+                >
+                  Create my first trip!
+                </Button>
+              </Flex>
+            ) : (
+              <SimpleGrid spacing={5} columns={{ base: 1, sm: 2, md: 3, xl: 4 }} w="full" mb="3rem">
                 {trips.map((trip) => (
                   <TripCard key={trip.id} trip={trip} />
                 ))}

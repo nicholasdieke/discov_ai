@@ -21,7 +21,6 @@ export default async function createTrip(input: z.infer<typeof CreateTrip>, ctx?
     ...data,
     userId: userId || null, // Add userId if present, otherwise set it to null
   }
-
   const trip = await db.trip.create({ data: tripData })
 
   return trip

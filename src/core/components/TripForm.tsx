@@ -45,15 +45,19 @@ function TripForm() {
 
   const budgetOptions = [
     {
-      label: "🪙 Basic",
-      value: "cheap",
+      label: "💰 On a budget",
+      value: "budget",
     },
     {
-      label: "💸 Comfortable",
-      value: "middle-priced",
+      label: "💰💰 Sensibly priced",
+      value: "sensibly-priced",
     },
     {
-      label: "💎 Luxury",
+      label: "💰💰💰 Upscale",
+      value: "upscale",
+    },
+    {
+      label: "💰💰💰💰 Luxury",
       value: "luxury",
     },
   ]

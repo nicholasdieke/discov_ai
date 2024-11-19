@@ -1,13 +1,9 @@
 // File to generate the prompt for OpenAI API
-import { Configuration, OpenAIApi } from "openai"
-
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-const openai = new OpenAIApi(configuration)
+import OpenAI from "openai"
+const openai = new OpenAI()
 
 export default async function (req, res) {
-  if (!configuration.apiKey) {
+  if (!openai.apiKey) {
     res.status(500).json({
       error: {
         message: "OpenAI API key not configured, please follow instructions in README.md",
@@ -17,14 +13,14 @@ export default async function (req, res) {
   }
 
   try {
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: req.body }],
       temperature: 0.6,
-      max_tokens: 4096,
+      max_completion_tokens: 4096,
       response_format: { type: "json_object" },
     })
-    res.status(200).json({ result: completion.data.choices[0].message.content })
+    res.status(200).json({ result: completion.choices[0].message.content })
   } catch (error) {
     if (error.response) {
       console.error(error.response.status, error.response.data)
