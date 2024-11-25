@@ -1,34 +1,28 @@
-import {
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  PopoverTrigger as OrigPopoverTrigger,
-  Popover,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverContent,
-  useDisclosure,
-} from "@chakra-ui/react"
+import { Button, Flex, IconButton, Input } from "@chakra-ui/react"
 import { faChevronRight, faLocationDot, faPlaneDeparture } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import mixpanel from "mixpanel-browser"
+import { useRouter } from "next/router"
 import { useEffect, useRef, useState } from "react"
 import "react-datepicker/dist/react-datepicker.css"
-
-export const PopoverTrigger: React.FC<{ children: React.ReactNode }> = OrigPopoverTrigger
+import { InputGroup } from "src/components/ui/input-group"
+import {
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverRoot,
+  PopoverTitle,
+  PopoverTrigger,
+} from "src/components/ui/popover"
 
 const FlightPopover = ({ myTrip, latLong }) => {
   const autoCompleteRef = useRef<google.maps.places.Autocomplete>()
   const inputRef = useRef<HTMLInputElement>(null)
   const [origin, setOrigin] = useState("")
   const [destCode, setDestCode] = useState("")
+  const router = useRouter()
 
-  const { onOpen, onClose, isOpen } = useDisclosure()
+  const [open, setOpen] = useState(false)
 
   const cityCodes = new Map([
     ["london", "LON"],
@@ -131,77 +125,63 @@ const FlightPopover = ({ myTrip, latLong }) => {
   }, [])
 
   return (
-    <Popover
-      isOpen={isOpen}
-      onOpen={onOpen}
-      onClose={onClose}
+    <PopoverRoot
+      open={open}
+      onOpenChange={(e) => setOpen(e.open)}
       placement="bottom"
-      closeOnBlur={false}
+      closeOnInteractOutside={false}
     >
-      <PopoverTrigger>
-        <Button
-          leftIcon={<FontAwesomeIcon icon={faPlaneDeparture} height="16px" />}
-          rightIcon={<FontAwesomeIcon icon={faChevronRight} height="16px" />}
-          onClick={() => mixpanel.track("Opened Flights")}
-          variant="secondary"
-        >
+      <PopoverTrigger asChild>
+        <Button onClick={() => mixpanel.track("Opened Flights")}>
+          <FontAwesomeIcon icon={faPlaneDeparture} height="16px" />
           See Flights
+          <FontAwesomeIcon icon={faChevronRight} height="16px" />
         </Button>
       </PopoverTrigger>
       <PopoverContent p={5} bg="gray.700" color="#ffffffdb" borderColor="#ffffff70">
-        {/* <ReactFocusLock returnFocus persistentFocus={false}> */}
         <PopoverArrow />
-        <PopoverCloseButton />
-        <form>
+        <PopoverBody>
+          <PopoverTitle fontWeight="medium">Departure city or airport</PopoverTitle>
           <Flex alignItems="flex-end">
-            <FormControl mr="0.5rem">
-              <FormLabel htmlFor="Departure city or airport">Departure city or airport</FormLabel>
-              <InputGroup>
-                <InputLeftElement pointerEvents="none">
-                  <FontAwesomeIcon icon={faLocationDot} height="20px" />
-                </InputLeftElement>
-                <Input
-                  id="destination"
-                  name="destination"
-                  type="text"
-                  placeholder="City or State"
-                  value={origin}
-                  onChange={(e) => setOrigin(e.target.value)}
-                  ref={inputRef}
-                />
-              </InputGroup>
-            </FormControl>
-            <a
-              style={{ pointerEvents: !origin ? "none" : "auto" }}
-              href={
-                !origin
-                  ? "#"
-                  : `https://www.kayak.com/flights/${
-                      origin.split(",")[0]
-                    },nearby-${destCode},nearby/${
-                      addDay(myTrip.daterange[0] as Date)
-                        .toISOString()
-                        .split("T")[0]
-                    }/${
-                      addDay(myTrip.daterange[1] as Date)
-                        .toISOString()
-                        .split("T")[0]
-                    }?sort=bestflight_a`
-              }
-              target="_blank"
-              rel="noreferrer"
-            >
-              <IconButton
-                icon={<FontAwesomeIcon icon={faPlaneDeparture} height="20px" />}
-                variant="primary"
-                aria-label="Search Flights"
-                disabled={!origin}
+            <InputGroup startElement={<FontAwesomeIcon icon={faLocationDot} height="20px" />}>
+              <Input
+                id="destination"
+                name="destination"
+                type="text"
+                placeholder="City or State"
+                value={origin}
+                onChange={(e) => setOrigin(e.target.value)}
+                ref={inputRef}
               />
-            </a>
+            </InputGroup>
+            <IconButton
+              variant="primary"
+              aria-label="Search Flights"
+              disabled={!origin}
+              onClick={() =>
+                window.open(
+                  !origin
+                    ? "#"
+                    : `https://www.kayak.com/flights/${
+                        origin.split(",")[0]
+                      },nearby-${destCode},nearby/${
+                        addDay(myTrip.daterange[0] as Date)
+                          .toISOString()
+                          .split("T")[0]
+                      }/${
+                        addDay(myTrip.daterange[1] as Date)
+                          .toISOString()
+                          .split("T")[0]
+                      }?sort=bestflight_a`
+                )
+              }
+            >
+              <FontAwesomeIcon icon={faPlaneDeparture} height="20px" />
+            </IconButton>
           </Flex>
-        </form>
+        </PopoverBody>
       </PopoverContent>
-    </Popover>
+    </PopoverRoot>
   )
 }
 

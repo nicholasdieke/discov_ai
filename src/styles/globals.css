@@ -40,10 +40,6 @@ i {
   text-shadow: 0px 0px 25px #ffffffbd;
 }
 
-.menuItems:hover {
-  opacity: 100%;
-}
-
 .mapboxgl-popup-content {
   z-index: 10;
 }
@@ -63,6 +59,10 @@ i {
 .tripformlabel {
   color: white;
   font-size: 16px !important;
+}
+
+.tripformInput {
+  width: 100%;
 }
 
 #group > div > div > div,
@@ -114,11 +114,9 @@ i {
   margin-bottom: 1rem;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
   border-radius: 7px;
-}
-.collapseButton:hover {
-  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .discoverform {
@@ -158,24 +156,37 @@ i {
   color: red;
   font-size: 12px;
   padding-top: 3px;
+  width: 100%;
+  text-align: left;
 }
 
 /* Datepicker */
 
 .react-datapicker__input-text {
   width: 100%;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  align-items: center;
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  border-radius: 0.375rem;
-  padding-inline-start: 2.625rem;
-  padding-inline-end: 1.125rem;
-  font-size: 1rem;
-  border: 1px solid;
-  border-color: inherit;
-  background: inherit;
+  min-width: 2.5rem;
+  outline: 0;
+  position: relative;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  text-align: start;
+  border-radius: var(--chakra-radii-l2);
+  height: 2.5rem;
+  --focus-color: var(--chakra-colors-color-palette-focus-ring);
+  --error-color: var(--chakra-colors-border-error);
+  font-size: var(--chakra-font-sizes-sm);
+  line-height: 1.25rem;
+  padding-inline: var(--chakra-spacing-3);
+  padding-inline-start: calc(var(--input-height) - 6px);
+  --input-height: var(--chakra-sizes-10);
+  border-width: 1px;
+  border-color: var(--chakra-colors-transparent);
+  background: var(--chakra-colors-bg-muted);
+  --bg-currentcolor: var(--chakra-colors-bg-muted);
+  --focus-ring-color: var(--chakra-colors-color-palette-focus-ring);
+  color: var(--chakra-colors-fg-muted);
 }
 
 .react-datepicker__header {
@@ -257,10 +268,10 @@ i {
 #distance > div,
 #specactivity,
 #touristy > div {
-  border: 0px;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
-  font-weight: 600;
+  /* border: 0px;
+  background: rgba(0, 0, 0, 0.5); */
+  /* border-radius: 5px; */
+  /* font-weight: 600; */
 }
 
 .css-hfbj6y > hr {
@@ -291,4 +302,10 @@ i {
   max-width: 450px;
   max-height: 650px;
   padding: 2rem;
+}
+
+.bgVideo {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
 }

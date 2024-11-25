@@ -1,26 +1,33 @@
 import {
   Box,
   Button,
+  createListCollection,
   Flex,
-  FormControl,
-  FormLabel,
   Input,
-  InputGroup,
-  InputLeftElement,
+  Show,
   Text,
   VStack,
 } from "@chakra-ui/react"
-import { Select } from "chakra-react-select"
-// import Select from "react-select"
 
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useFormik } from "formik"
+import { zodResolver } from "@hookform/resolvers/zod"
 import Lottie from "lottie-react"
 import mixpanel from "mixpanel-browser"
 import { useRouter } from "next/router"
 import loading_animation from "public/destinations-lottie.json"
 import { useEffect, useRef, useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import { Field } from "src/components/ui/field"
+import { InputGroup } from "src/components/ui/input-group"
+import {
+  SelectContent,
+  SelectItem,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from "src/components/ui/select"
+import { z } from "zod"
 import MyDateRangePicker from "./MyDateRangePicker"
 
 function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
@@ -43,95 +50,110 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
     return Math.floor((utc2 - utc1) / _MS_PER_DAY)
   }
 
-  const distanceOptions = [
-    {
-      label: "🌳 Nearby Adventure",
-      value: "rechable by car or train",
-    },
-    {
-      label: "🌊 Moderate Distance",
-      value: "a 1-4 hour flight away",
-    },
-    {
-      label: "🌍 Far Away",
-      value: "far away",
-    },
-  ]
+  const distanceOptions = createListCollection({
+    items: [
+      {
+        label: "🌳 Nearby Adventure",
+        value: "rechable by car or train",
+      },
+      {
+        label: "🌊 Moderate Distance",
+        value: "a 1-4 hour flight away",
+      },
+      {
+        label: "🌍 Far Away",
+        value: "far away",
+      },
+    ],
+  })
 
-  const budgetOptions = [
-    {
-      label: "🪙 Cheap",
-      value: "small",
-    },
-    {
-      label: "💸 Average",
-      value: "average",
-    },
-    {
-      label: "💎 Luxury",
-      value: "luxury",
-    },
-  ]
+  const budgetOptions = createListCollection({
+    items: [
+      {
+        label: "💰 On a budget",
+        value: "budget",
+      },
+      {
+        label: "💰💰 Sensibly priced",
+        value: "sensibly-priced",
+      },
+      {
+        label: "💰💰💰 Upscale",
+        value: "upscale",
+      },
+      {
+        label: "💰💰💰💰 Luxury",
+        value: "luxury",
+      },
+    ],
+  })
 
-  const touristyOptions = [
-    {
-      label: "💎 Hidden Gem",
-      value: "hidden gem",
-    },
-    {
-      label: "💃 Trendy Hotspot",
-      value: "Trendy Hotspot",
-    },
-    {
-      label: "🌍 Tourist Magnet",
-      value: "tourist magnet",
-    },
-  ]
+  const touristyOptions = createListCollection({
+    items: [
+      {
+        label: "💎 Hidden Gem",
+        value: "hidden gem",
+      },
+      {
+        label: "💃 Trendy Hotspot",
+        value: "Trendy Hotspot",
+      },
+      {
+        label: "🌍 Tourist Magnet",
+        value: "tourist magnet",
+      },
+    ],
+  })
 
-  const groupOptions = [
-    {
-      label: "👫 Friends",
-      value: "friends",
-    },
-    {
-      label: "👪 Family",
-      value: "family",
-    },
-    {
-      label: "🤸 Solo",
-      value: "solo",
-    },
-    {
-      label: "💑 Couple",
-      value: "couple",
-    },
-  ]
-  const styleOptions = [
-    {
-      label: "⛰️ Adventure",
-      value: "adventurous",
-    },
-    {
-      label: "🌹 Romance",
-      value: "romantic",
-    },
-    {
-      label: "🏺 History",
-      value: "historic",
-    },
-    {
-      label: "🍜 Foodie",
-      value: "foodie",
-    },
-    {
-      label: "🌊 Relax",
-      value: "relaxing",
-    },
-    {
-      label: "🍾 Party",
-      value: "party",
-    },
-  ]
+  const groupOptions = createListCollection({
+    items: [
+      {
+        label: "👫 Friends",
+        value: "friends",
+      },
+      {
+        label: "👪 Family",
+        value: "family",
+      },
+      {
+        label: "🤸 Solo",
+        value: "solo",
+      },
+      {
+        label: "💑 Couple",
+        value: "couple",
+      },
+    ],
+  })
+
+  const styleOptions = createListCollection({
+    items: [
+      {
+        label: "⛰️ Adventure",
+        value: "adventurous",
+      },
+      {
+        label: "🌹 Romance",
+        value: "romantic",
+      },
+      {
+        label: "🏺 History",
+        value: "historic",
+      },
+      {
+        label: "🍜 Foodie",
+        value: "foodie",
+      },
+      {
+        label: "🌊 Relax",
+        value: "relaxing",
+      },
+      {
+        label: "🍾 Party",
+        value: "party",
+      },
+    ],
+  })
 
   const getPhoto = (destination) => {
     return fetch("/api/getDestPhoto?destination=" + destination)
@@ -147,20 +169,50 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
     setImages(destImages)
   }
 
-  const sendPrompt = async (values) => {
+  const script =
+    "https://maps.googleapis.com/maps/api/js?key=" +
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY +
+    "&libraries=places"
+
+  const discoverformSchema = z.object({
+    origin: z.string({ message: "Origin is required" }),
+    daterange: z.date({ message: "Daterange is required" }).array(),
+    group: z.string({ message: "Group is required" }).array(),
+    activity: z.string({ message: "Activity is required" }).array(),
+    budget: z.string({ message: "Budget is required" }).array(),
+    distance: z.string({ message: "Distance is required" }).array(),
+    touristy: z.string({ message: "Touristiness is required" }).array(),
+    specactivity: z.string().optional().default(""),
+  })
+
+  type DiscoverFormValues = z.infer<typeof discoverformSchema>
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors },
+    control,
+  } = useForm<DiscoverFormValues>({
+    resolver: zodResolver(discoverformSchema),
+  })
+
+  const onSubmit = handleSubmit(async () => {
+    const values = getValues()
     setIsLoading(true)
     let prompt = `I am planning a ${
-      values.group.value
+      values.group[0]
     } trip and would like some recommendations. I will be traveling from ${(
       values.daterange[0] as Date
     ).toDateString()} to ${(values.daterange[1] as Date).toDateString()} and have a ${
-      values.budget.value
-    } budget. I want a ${values.activity.map((obj) => obj.value).join(", ")} trip ${
-      values.specactivity.value === "" ? "" : ", where I can " + values.specactivity
+      values.budget[0]
+    } budget. I want a ${values.activity.map((obj) => obj).join(", ")} trip ${
+      values.specactivity === "" ? "" : ", where I can " + values.specactivity
     }. I'm based in ${values.origin} and prefer destinations that are ${
-      values.distance.value
+      values.distance[0]
     } and considered a ${
-      values.touristy.value
+      values.touristy[0]
     }. Can you recommend five destinations and activities for me to consider. Provide them in JSON format with the following keys: destination, description (4-6 sentences) and lng_lat_coordinates (formatted like 44.8681, 13.8481). Here is an example of the correct format: { “destinations”: [{"destination": "destination"}, {"description": “description”},{“lng_lat_coordinates”: “44.1, 0.4”}, …]}. Do not include triple backticks and the word json.`
 
     await fetch("/api/generate", {
@@ -179,62 +231,6 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
         mixpanel.track("Searched for Destinations", values)
       })
       .catch((e) => console.log(e))
-  }
-  const script =
-    "https://maps.googleapis.com/maps/api/js?key=" +
-    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY +
-    "&libraries=places"
-
-  // Handling the form
-  const formik = useFormik({
-    validateOnChange: false,
-    validateOnBlur: true,
-    initialValues: {
-      origin: "",
-      daterange: "",
-      group: "",
-      activity: "",
-      budget: "",
-      distance: "",
-      touristy: "",
-      specactivity: "",
-    },
-    onSubmit: sendPrompt,
-    validate: (values) => {
-      let errors: Partial<{
-        origin: string
-        daterange: string
-        group: string
-        activity: string
-        budget: string
-        distance: string
-        touristy: string
-        specactivity: string
-      }> = {}
-      if (!values.daterange || values.daterange[1] == null) {
-        errors.daterange = "Daterange Required"
-      }
-      if (!values.distance) {
-        errors.distance = "Distance Required"
-      }
-      if (!values.origin) {
-        errors.origin = "Origin Required"
-      }
-      if (!values.group) {
-        errors.group = "Group Required"
-      }
-      if (!values.activity || values.activity.length === 0) {
-        errors.activity = "Activity Required"
-      }
-      if (!values.budget) {
-        errors.budget = "Budget Required"
-      }
-      if (!values.touristy) {
-        errors.touristy = "Touristy Required"
-      }
-
-      return errors
-    },
   })
 
   const autoCompleteRef = useRef<google.maps.places.Autocomplete>()
@@ -275,7 +271,7 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
                 ["country", "continent"].some((code) => comp!.types.includes(code))
               ) {
                 places.push(comp.long_name)
-                await formik.setFieldValue("origin", places.join(", "))
+                setValue("origin", places.join(", "))
                 break
               }
             }
@@ -288,171 +284,221 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
   return (
     <Box className="tripform" w={{ base: "100%", sm: "80%" }}>
       <script src={script} onLoad={() => setLoaded(true)} />
-      {!isLoading && (
-        <form autoComplete="off" onSubmit={formik.handleSubmit}>
+      <Show when={!isLoading}>
+        <form onSubmit={onSubmit}>
           <Flex color="white" flexDir={{ base: "column", sm: "row" }}>
-            <VStack
-              spacing="1rem"
-              w={{ base: "100%", sm: "50%" }}
-              mr={{ base: "0rem", sm: "1rem" }}
-            >
-              <FormControl>
-                <FormLabel className="tripformlabel" htmlFor="From Where?">
-                  From Where?
-                </FormLabel>
-                <InputGroup>
-                  <InputLeftElement color="white" pointerEvents="none">
-                    <FontAwesomeIcon icon={faLocationDot} height="20px" />
-                  </InputLeftElement>
+            <VStack gap="1rem" w={{ base: "100%", sm: "50%" }} mr={{ base: "0rem", sm: "1rem" }}>
+              <Field
+                label="From Where?"
+                invalid={!!errors.origin}
+                errorText={errors.origin?.message}
+              >
+                <InputGroup
+                  className="tripformInput"
+                  startElement={<FontAwesomeIcon icon={faLocationDot} height="20px" />}
+                >
                   <Input
                     id="origin"
-                    name="origin"
                     type="text"
                     placeholder="Enter your City"
-                    value={formik.values.origin}
-                    onChange={formik.handleChange}
+                    variant="subtle"
+                    {...register("origin", { required: "First name is required" })}
                     ref={inputRef}
                   />
                 </InputGroup>
-                {formik.errors.destination ? (
-                  <div className="errors">{formik.errors.destination as string}</div>
-                ) : null}
-              </FormControl>
-              <FormControl zIndex={10}>
-                <FormLabel className="tripformlabel" htmlFor="When?">
-                  When?
-                </FormLabel>
+              </Field>
+              <Field
+                zIndex={10}
+                label="When?"
+                invalid={!!errors.daterange}
+                errorText={errors.daterange?.message}
+              >
                 <MyDateRangePicker
                   onChange={async (update) => {
                     setDateRange(update)
-                    await formik.setFieldValue("daterange", update)
+                    setValue("daterange", update)
                   }}
                   startDate={startDate}
                   endDate={endDate}
                 />
-                {formik.errors.daterange ? (
-                  <div className="errors">{formik.errors.daterange as string}</div>
-                ) : null}
-              </FormControl>
+              </Field>
 
-              <FormControl>
-                <FormLabel className="tripformlabel" htmlFor="How far?">
-                  How far?
-                </FormLabel>
-                <Select
-                  id="distance"
+              <Field
+                label="How far?"
+                invalid={!!errors.distance}
+                errorText={errors.distance?.message}
+              >
+                <Controller
+                  control={control}
                   name="distance"
-                  onChange={(e) => formik.setFieldValue("distance", e)}
-                  value={formik.values.distance}
-                  placeholder="e.g. Nearby Adventure"
-                  options={distanceOptions}
+                  render={({ field }) => (
+                    <SelectRoot
+                      name={field.name}
+                      value={field.value}
+                      onInteractOutside={() => field.onBlur()}
+                      collection={distanceOptions}
+                      variant="subtle"
+                    >
+                      <SelectTrigger>
+                        <SelectValueText placeholder="e.g. Nearby Adventure" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {distanceOptions.items.map((distance) => (
+                          <SelectItem item={distance} key={distance.value}>
+                            {distance.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </SelectRoot>
+                  )}
                 />
-                {formik.errors.distance ? (
-                  <div className="errors">{formik.errors.distance as string}</div>
-                ) : null}
-              </FormControl>
+              </Field>
 
-              <FormControl>
-                <FormLabel className="tripformlabel" htmlFor="Who?">
-                  Who?
-                </FormLabel>
-                <Select
-                  id="group"
+              <Field label="Who?" invalid={!!errors.group} errorText={errors.group?.message}>
+                <Controller
+                  control={control}
                   name="group"
-                  onChange={(e) => formik.setFieldValue("group", e)}
-                  value={formik.values.group}
-                  placeholder="e.g. Friends, Family"
-                  options={groupOptions}
+                  render={({ field }) => (
+                    <SelectRoot
+                      name={field.name}
+                      value={field.value}
+                      onValueChange={({ value }) => field.onChange(value)}
+                      onInteractOutside={() => field.onBlur()}
+                      collection={groupOptions}
+                      variant="subtle"
+                    >
+                      <SelectTrigger>
+                        <SelectValueText placeholder="e.g. Friends, Family" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {groupOptions.items.map((group) => (
+                          <SelectItem item={group} key={group.value}>
+                            {group.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </SelectRoot>
+                  )}
                 />
-                {formik.errors.group ? (
-                  <div className="errors">{formik.errors.group as string}</div>
-                ) : null}
-              </FormControl>
+              </Field>
             </VStack>
             <VStack
-              spacing="1rem"
+              gap="1rem"
               w={{ base: "100%", sm: "50%" }}
               ml={{ base: "0rem", sm: "1rem" }}
               mt={{ base: "1rem", sm: "0rem" }}
             >
-              <FormControl>
-                <FormLabel className="tripformlabel" htmlFor="What?">
-                  What?
-                </FormLabel>
-                <Select
-                  classNamePrefix="react-select"
-                  id="activity"
+              <Field label="What?" invalid={!!errors.activity} errorText={errors.activity?.message}>
+                <Controller
+                  control={control}
                   name="activity"
-                  onChange={(e) => formik.setFieldValue("activity", e)}
-                  value={formik.values.activity}
-                  placeholder="e.g. Relax, Adventure"
-                  options={styleOptions}
-                  isMulti
-                  closeMenuOnSelect={false}
+                  render={({ field }) => (
+                    <SelectRoot
+                      name={field.name}
+                      value={field.value}
+                      onValueChange={({ value }) => field.onChange(value)}
+                      onInteractOutside={() => field.onBlur()}
+                      collection={styleOptions}
+                      variant="subtle"
+                      multiple
+                      closeOnSelect={false}
+                    >
+                      <SelectTrigger>
+                        <SelectValueText placeholder="e.g. Relax, Adventure" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {styleOptions.items.map((style) => (
+                          <SelectItem item={style} key={style.value}>
+                            {style.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </SelectRoot>
+                  )}
                 />
+              </Field>
 
-                {formik.errors.activity ? (
-                  <div className="errors">{formik.errors.activity as string}</div>
-                ) : null}
-              </FormControl>
-
-              <FormControl>
-                <FormLabel className="tripformlabel" htmlFor="What Exactly?">
-                  What Exactly?
-                </FormLabel>
+              <Field
+                label="What exactly?"
+                invalid={!!errors.specactivity}
+                errorText={errors.specactivity?.message}
+              >
                 <Input
+                  className="tripformInput"
                   id="specactivity"
-                  name="specactivity"
-                  onChange={formik.handleChange}
-                  value={formik.values.specactivity}
                   placeholder="e.g. Snorkel, Horse Ride"
+                  variant="subtle"
+                  {...register("specactivity")}
                 />
-              </FormControl>
+              </Field>
 
-              <FormControl>
-                <FormLabel className="tripformlabel" htmlFor="How much?">
-                  How much?
-                </FormLabel>
-                <Select
-                  id="budget"
+              <Field label="How much?" invalid={!!errors.budget} errorText={errors.budget?.message}>
+                <Controller
+                  control={control}
                   name="budget"
-                  onChange={(e) => formik.setFieldValue("budget", e)}
-                  value={formik.values.budget}
-                  placeholder="e.g. Luxury"
-                  options={budgetOptions}
+                  render={({ field }) => (
+                    <SelectRoot
+                      name={field.name}
+                      value={field.value}
+                      onValueChange={({ value }) => field.onChange(value)}
+                      onInteractOutside={() => field.onBlur()}
+                      collection={budgetOptions}
+                      variant="subtle"
+                    >
+                      <SelectTrigger>
+                        <SelectValueText placeholder="e.g. Luxury" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {budgetOptions.items.map((budget) => (
+                          <SelectItem item={budget} key={budget.value}>
+                            {budget.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </SelectRoot>
+                  )}
                 />
+              </Field>
 
-                {formik.errors.budget ? (
-                  <div className="errors">{formik.errors.budget as string}</div>
-                ) : null}
-              </FormControl>
-
-              <FormControl>
-                <FormLabel className="tripformlabel" htmlFor="Touristy?">
-                  Touristy?
-                </FormLabel>
-                <Select
-                  id="touristy"
+              <Field
+                label="Touristy?"
+                invalid={!!errors.touristy}
+                errorText={errors.touristy?.message}
+              >
+                <Controller
+                  control={control}
                   name="touristy"
-                  onChange={(e) => formik.setFieldValue("touristy", e)}
-                  value={formik.values.touristy}
-                  placeholder="e.g. Hidden Gem"
-                  options={touristyOptions}
+                  render={({ field }) => (
+                    <SelectRoot
+                      name={field.name}
+                      value={field.value}
+                      onInteractOutside={() => field.onBlur()}
+                      collection={touristyOptions}
+                      variant="subtle"
+                    >
+                      <SelectTrigger>
+                        <SelectValueText placeholder="e.g. Hidden Gem" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {touristyOptions.items.map((touristy) => (
+                          <SelectItem item={touristy} key={touristy.value}>
+                            {touristy.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </SelectRoot>
+                  )}
                 />
-
-                {formik.errors.touristy ? (
-                  <div className="errors">{formik.errors.touristy as string}</div>
-                ) : null}
-              </FormControl>
+              </Field>
             </VStack>
           </Flex>
 
-          <Button type="submit" variant="primary" mt="1rem" width="full">
-            Find Destinations!
+          <Button type="submit" onClick={() => onSubmit()} mt="1rem" width="full">
+            Find Destinations
           </Button>
         </form>
-      )}
-      {isLoading && (
+      </Show>
+      <Show when={isLoading}>
         <Box>
           <Lottie
             animationData={loading_animation}
@@ -471,7 +517,7 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
             </Text>
           </Box>
         </Box>
-      )}
+      </Show>
     </Box>
   )
 }

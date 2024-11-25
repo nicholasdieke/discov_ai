@@ -4,28 +4,23 @@ import { useSession } from "@blitzjs/auth"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import {
+  Box,
   Button,
   Flex,
   HStack,
   IconButton,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
+  MenuRoot,
+  MenuTrigger,
+  Show,
   Text,
 } from "@chakra-ui/react"
-import {
-  faBars,
-  faEarthEurope,
-  faRightFromBracket,
-  faRightToBracket,
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons"
+import { faBars } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import mixpanel from "mixpanel-browser"
 import { useRouter } from "next/router"
+import { LuLogIn, LuLogOut, LuLuggage, LuUserPlus } from "react-icons/lu"
 import logout from "src/(auth)/mutations/logout"
+import { MenuContent, MenuItem, MenuSeparator } from "src/components/ui/menu"
 import useIsMobile from "../hooks/useIsMobile"
 import UserMenu from "./UserMenu"
 
@@ -43,7 +38,7 @@ export default function Header({ theme = "white", showAuth = true }) {
   return (
     <Flex
       justifyContent="space-between"
-      pb={{ base: "0.5rem", md: "1.5rem" }}
+      pb={{ base: "0.5rem", tablet: "1.5rem" }}
       pt="1.5rem"
       alignItems="center"
       color={theme}
@@ -58,17 +53,13 @@ export default function Header({ theme = "white", showAuth = true }) {
       >
         DiscovAI
       </Text>
-      {!isMobile && (
+      <Show when={!isMobile}>
         <HStack>
           <Button
             size="lg"
             variant="ghost"
             onClick={() => router.push(Routes.Home())}
-            opacity={currentRoute === Routes.Home().pathname ? 1 : 0.75}
-            hidden={isMobile && currentRoute === Routes.Home().pathname}
-            className="menuItems"
-            colorScheme="white"
-            px="1rem"
+            /* opacity={currentRoute === Routes.Home().pathname ? 1 : 0.75} */
           >
             Itineraries
           </Button>
@@ -76,67 +67,64 @@ export default function Header({ theme = "white", showAuth = true }) {
             size="lg"
             variant="ghost"
             onClick={() => router.push(Routes.DestinationPage())}
-            opacity={currentRoute === Routes.DestinationPage().pathname ? 1 : 0.75}
-            hidden={isMobile && currentRoute === Routes.DestinationPage().pathname}
-            className="menuItems"
-            colorScheme="white"
-            px="1rem"
+            /* opacity={currentRoute === Routes.DestinationPage().pathname ? 1 : 0.75} */
           >
             Destinations
           </Button>
           {showAuth && <UserMenu />}
         </HStack>
-      )}
-      {isMobile && (
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            aria-label="Options"
-            icon={<FontAwesomeIcon icon={faBars} height="24px" />}
-            colorScheme="whiteAlpha"
-          />
-          <MenuList color="black">
-            <MenuItem onClick={() => router.push(Routes.Home())}>Itineraries</MenuItem>
-            <MenuItem onClick={() => router.push(Routes.DestinationPage())}>Destinations</MenuItem>
-            <MenuDivider />
-            {!session.userId && (
-              <>
-                <MenuItem
-                  icon={<FontAwesomeIcon icon={faRightToBracket} height="14px" />}
-                  onClick={() => router.push(Routes.LoginPage())}
-                >
+      </Show>
+      <Show when={isMobile}>
+        <MenuRoot>
+          <MenuTrigger>
+            <IconButton aria-label="Options" variant="ghost">
+              <FontAwesomeIcon icon={faBars} height="24px" />
+            </IconButton>
+          </MenuTrigger>
+          <MenuContent>
+            <MenuItem value="Itineraries" asChild>
+              <a href={Routes.Home().href}>Itineraries</a>
+            </MenuItem>
+            <MenuItem value="Destinations" asChild>
+              <a href={Routes.DestinationPage().href}>Destinations</a>
+            </MenuItem>
+            <MenuSeparator />
+            <Show when={!session.userId}>
+              <MenuItem asChild value="Log In">
+                <a href={Routes.LoginPage().href}>
+                  <LuLogIn />
                   Log In
-                </MenuItem>
-                <MenuItem
-                  icon={<FontAwesomeIcon icon={faUserPlus} height="14px" />}
-                  onClick={() => router.push(Routes.SignUpPage())}
-                >
+                </a>
+              </MenuItem>
+              <MenuItem asChild value="Sign Up">
+                <a href={Routes.SignUpPage().href}>
+                  <LuUserPlus />
                   Sign Up
-                </MenuItem>
-              </>
-            )}
-            {!!session.userId && (
-              <>
-                <MenuItem
-                  onClick={() => router.push(Routes.MyTripsPage())}
-                  icon={<FontAwesomeIcon icon={faEarthEurope} height="14px" />}
-                >
+                </a>
+              </MenuItem>
+            </Show>
+            <Show when={session.userId}>
+              <MenuItem asChild value="My Trips">
+                <a href={Routes.MyTripsPage().href}>
+                  <LuLuggage />
                   My Trips
-                </MenuItem>
-                <MenuItem
+                </a>
+              </MenuItem>
+              <MenuItem asChild value="Log Out">
+                <Box
                   onClick={async () => {
                     await logoutMutation()
                     router.reload()
                   }}
-                  icon={<FontAwesomeIcon icon={faRightFromBracket} height="14px" />}
                 >
+                  <LuLogOut />
                   Log Out
-                </MenuItem>
-              </>
-            )}
-          </MenuList>
-        </Menu>
-      )}
+                </Box>
+              </MenuItem>
+            </Show>
+          </MenuContent>
+        </MenuRoot>
+      </Show>
     </Flex>
   )
 }

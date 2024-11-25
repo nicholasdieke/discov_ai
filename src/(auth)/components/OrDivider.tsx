@@ -1,14 +1,14 @@
 "use client"
-import { Divider, HStack, Text } from "@chakra-ui/react"
+import { HStack, Separator, Text } from "@chakra-ui/react"
 
 export function OrDivider() {
   return (
     <HStack width="100%" mb="1rem">
-      <Divider />
+      <Separator />
       <Text color="whiteAlpha.600" flexShrink="0">
         or
       </Text>
-      <Divider />
+      <Separator />
     </HStack>
   )
 }

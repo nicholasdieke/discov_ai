@@ -2,71 +2,60 @@
 import { useSession } from "@blitzjs/auth"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
-import { Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react"
-import {
-  faEarthEurope,
-  faRightFromBracket,
-  faRightToBracket,
-  faUserCircle,
-  faUserPlus,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Box, Button, MenuTrigger, Show } from "@chakra-ui/react"
 import router from "next/router"
+import { LuLogIn, LuLogOut, LuLuggage, LuUserCircle, LuUserPlus } from "react-icons/lu"
 import logout from "src/(auth)/mutations/logout"
+import { MenuContent, MenuItem, MenuRoot } from "src/components/ui/menu"
 
 function UserMenu() {
   const session = useSession({ suspense: false })
   const [logoutMutation] = useMutation(logout)
 
   return (
-    <Menu>
-      <MenuButton
-        as={Button}
-        leftIcon={<FontAwesomeIcon icon={faUserCircle} height="30px" />}
-        colorScheme="white"
-        px="1rem"
-        h="30px"
-      >
-        {session.name}
-      </MenuButton>
-      <MenuList color="black">
-        {!session.userId && (
-          <>
-            <MenuItem
-              icon={<FontAwesomeIcon icon={faRightToBracket} height="14px" />}
-              onClick={() => router.push(Routes.LoginPage())}
-            >
+    <MenuRoot>
+      <MenuTrigger asChild>
+        <Button variant="ghost" px="1rem" size="lg">
+          <LuUserCircle />
+          {session.name}
+        </Button>
+      </MenuTrigger>
+      <MenuContent>
+        <Show when={!session.userId}>
+          <MenuItem asChild value="Log In">
+            <a href={Routes.LoginPage().href}>
+              <LuLogIn />
               Log In
-            </MenuItem>
-            <MenuItem
-              icon={<FontAwesomeIcon icon={faUserPlus} height="14px" />}
-              onClick={() => router.push(Routes.SignUpPage())}
-            >
+            </a>
+          </MenuItem>
+          <MenuItem asChild value="Sign Up">
+            <a href={Routes.SignUpPage().href}>
+              <LuUserPlus />
               Sign Up
-            </MenuItem>
-          </>
-        )}
-        {!!session.userId && (
-          <>
-            <MenuItem
-              onClick={() => router.push(Routes.MyTripsPage())}
-              icon={<FontAwesomeIcon icon={faEarthEurope} height="14px" />}
-            >
+            </a>
+          </MenuItem>
+        </Show>
+        <Show when={session.userId}>
+          <MenuItem asChild value="My Trips">
+            <a href={Routes.MyTripsPage().href}>
+              <LuLuggage />
               My Trips
-            </MenuItem>
-            <MenuItem
+            </a>
+          </MenuItem>
+          <MenuItem asChild value="Log Out">
+            <Box
               onClick={async () => {
                 await logoutMutation()
                 router.reload()
               }}
-              icon={<FontAwesomeIcon icon={faRightFromBracket} height="14px" />}
             >
+              <LuLogOut />
               Log Out
-            </MenuItem>
-          </>
-        )}
-      </MenuList>
-    </Menu>
+            </Box>
+          </MenuItem>
+        </Show>
+      </MenuContent>
+    </MenuRoot>
   )
 }
 

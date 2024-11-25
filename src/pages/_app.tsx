@@ -3,16 +3,10 @@ import { AuthenticationError, AuthorizationError } from "blitz"
 import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
 
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-  ChakraProvider,
-  extendTheme,
-} from "@chakra-ui/react"
+import { Alert } from "src/components/ui/alert"
+import { Provider } from "src/components/ui/provider"
 
-const theme = extendTheme({
+/* const theme = extendTheme({
   colors: {
     primary: "#ecf0f1",
     border: "#2c3e50,",
@@ -48,7 +42,7 @@ const theme = extendTheme({
       },
     },
   },
-})
+}) */
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -62,13 +56,8 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
         textAlign="center"
         height="100vh"
         width="100vw"
-      >
-        <AlertIcon boxSize="40px" mr={0} />
-        <AlertTitle mt={4} mb={1} fontSize="lg">
-          You are not authenticated
-        </AlertTitle>
-        <AlertDescription maxWidth="sm">Please login to view this page.</AlertDescription>
-      </Alert>
+        title="You are not authenticated. Please login to view this page."
+      />
     )
   } else if (error instanceof AuthorizationError) {
     return (
@@ -81,13 +70,8 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
         textAlign="center"
         height="100vh"
         width="100vw"
-      >
-        <AlertIcon boxSize="40px" mr={0} />
-        <AlertTitle mt={4} mb={1} fontSize="lg">
-          You are not authorised
-        </AlertTitle>
-        <AlertDescription maxWidth="sm">{error.statusCode}</AlertDescription>
-      </Alert>
+        title={"You are not authorised. " + error.statusCode}
+      />
     )
   } else {
     return (
@@ -102,11 +86,11 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
 function MyApp({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
   return (
-    <ChakraProvider theme={theme}>
+    <Provider>
       <ErrorBoundary FallbackComponent={RootErrorFallback}>
         {getLayout(<Component {...pageProps} />)}
       </ErrorBoundary>
-    </ChakraProvider>
+    </Provider>
   )
 }
 

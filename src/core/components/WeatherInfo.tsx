@@ -1,9 +1,6 @@
 import { Flex, Image, Text } from "@chakra-ui/react"
-import { useRouter } from "next/router"
 
 function WeatherInfo({ days, isMobile }) {
-  const router = useRouter()
-
   const getWeatherIcon = (conditions) => {
     switch (conditions) {
       case "snow":

@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading, Text, VStack } from "@chakra-ui/react"
+import { Box, Button, Flex, Heading, Show, Text, VStack } from "@chakra-ui/react"
 import { faSearch } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import mapboxgl from "mapbox-gl"
@@ -94,15 +94,15 @@ function DiscoverSection() {
 
   return (
     <Flex ref={myRef} w="100%" justifyContent="center">
-      {!images.length && (
+      <Show when={!images.length}>
         <DiscoverForm
           setResult={setResult}
           images={images}
           setImages={setImages}
           setOriginLatLng={setOriginLatLng}
         />
-      )}
-      {!!result.length && !!images.length && (
+      </Show>
+      <Show when={!!result.length && !!images.length}>
         <Flex flexDir="column" alignItems="center" w="100%">
           <Flex
             className="discoverform"
@@ -112,7 +112,7 @@ function DiscoverSection() {
             ml={isMobile ? "0rem" : "2rem"}
             flexDir={isMobile ? "column" : "row"}
           >
-            {isMobile && (
+            <Show when={isMobile}>
               <Button
                 w="100%"
                 mb="0.5rem"
@@ -125,8 +125,8 @@ function DiscoverSection() {
               >
                 Show {showMap ? "Results" : "Map"}
               </Button>
-            )}
-            {((isMobile && !showMap) || !isMobile) && (
+            </Show>
+            <Show when={(isMobile && !showMap) || !isMobile}>
               <Box display="block" overflowY="scroll" height="100%" w="100%">
                 {result.map((destination, index) => {
                   return (
@@ -153,8 +153,10 @@ function DiscoverSection() {
                   )
                 })}
               </Box>
-            )}
-            {((isMobile && showMap) || !isMobile) && <MapboxMap />}
+            </Show>
+            <Show when={(isMobile && showMap) || !isMobile}>
+              <MapboxMap />
+            </Show>
           </Flex>
           <Button
             mt="2rem"
@@ -171,7 +173,7 @@ function DiscoverSection() {
             <Text ml="0.5rem">New Search</Text>
           </Button>
         </Flex>
-      )}
+      </Show>
     </Flex>
   )
 }

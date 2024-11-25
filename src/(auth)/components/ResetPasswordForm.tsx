@@ -69,7 +69,7 @@ export function ResetPasswordForm() {
           >
             {({ handleSubmit, handleChange, isSubmitting, errors, touched, values }) => (
               <form onSubmit={handleSubmit}>
-                <VStack spacing={4}>
+                <VStack gap={4}>
                   <FormControl isInvalid={!!errors.password && touched.password}>
                     <FormLabel htmlFor="password">New Password</FormLabel>
                     <Field

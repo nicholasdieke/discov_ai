@@ -1,15 +1,15 @@
-import { InputGroup, InputLeftElement } from "@chakra-ui/react"
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
+import { InputGroup } from "src/components/ui/input-group"
 
 function MyDateRangePicker({ onChange, startDate, endDate }) {
   return (
-    <InputGroup>
-      <InputLeftElement color="white">
-        <FontAwesomeIcon icon={faCalendarDays} height="20px"/>
-      </InputLeftElement>
+    <InputGroup
+      className="tripformInput"
+      startElement={<FontAwesomeIcon icon={faCalendarDays} height="20px" />}
+    >
       <DatePicker
         className="react-datapicker__input-text"
         onChange={onChange}

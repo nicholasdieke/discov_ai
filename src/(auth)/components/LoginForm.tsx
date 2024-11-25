@@ -1,28 +1,16 @@
 "use client"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Heading,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Link,
-  VStack,
-} from "@chakra-ui/react"
+import { Box, Button, Flex, Heading, Input, Link, Show, Stack } from "@chakra-ui/react"
 import { AuthenticationError, PromiseReturnType } from "blitz"
-import { Formik } from "formik"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { Field } from "src/components/ui/field"
+import { PasswordInput } from "src/components/ui/password-input"
 import Header from "src/core/components/Header"
-import { toFormikValidationSchema } from "zod-formik-adapter"
+import { z } from "zod"
 import login from "../mutations/login"
-import { Login } from "../validations"
 import { GoogleLogin } from "./GoogleLogin"
 import { OrDivider } from "./OrDivider"
 
@@ -38,6 +26,36 @@ export const LoginForm = (props: LoginFormProps) => {
   const [formError, setFormError] = useState("")
   const handleClick = () => setShow(!show)
 
+  const loginformSchema = z.object({
+    email: z.string({ message: "Email is required" }),
+    password: z.string({ message: "Password is required" }),
+  })
+
+  type LoginFormValues = z.infer<typeof loginformSchema>
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors },
+    control,
+  } = useForm<LoginFormValues>()
+
+  const onSubmit = handleSubmit(async () => {
+    const values = getValues()
+    try {
+      await loginMutation(values)
+      router.push(Routes.MyTripsPage().href)
+    } catch (error) {
+      if (error instanceof AuthenticationError) {
+        setFormError("Invalid email or password")
+      } else {
+        setFormError("An unexpected error occurred. Please try again.")
+      }
+    }
+  })
+
   return (
     <Box className="authBg">
       <Box pos="absolute" top="0" w="full" px={{ base: "1.5rem", lg: "6rem" }}>
@@ -47,86 +65,47 @@ export const LoginForm = (props: LoginFormProps) => {
         <Heading mb="2rem" textAlign="center">
           Welcome back
         </Heading>
+        <form onSubmit={onSubmit}>
+          <Stack gap="4" align="flex-start" maxW="sm">
+            <Field label="Email" invalid={!!errors.email} errorText={errors.email?.message}>
+              <Input variant="subtle" {...register("email", { required: "Email is required" })} />
+            </Field>
 
-        <Formik
-          validationSchema={toFormikValidationSchema(Login)}
-          initialValues={{ email: "", password: "" }}
-          onSubmit={async (values) => {
-            try {
-              await loginMutation(values)
-              router.push(Routes.MyTripsPage().href)
-            } catch (error) {
-              if (error instanceof AuthenticationError) {
-                setFormError("Invalid email or password")
-              } else {
-                setFormError("An unexpected error occurred. Please try again.")
-              }
-            }
-          }}
-        >
-          {({ handleSubmit, handleChange, isSubmitting, errors, touched, values }) => (
-            <form onSubmit={handleSubmit}>
-              <VStack spacing={4}>
-                <FormControl isInvalid={!!errors.email && touched.email}>
-                  <FormLabel htmlFor="email">Email address</FormLabel>
-                  <InputGroup>
-                    <Input
-                      name="email"
-                      placeholder="Email address"
-                      value={values.email}
-                      onChange={handleChange}
-                    />
-                  </InputGroup>
+            <Field
+              label="Password"
+              invalid={!!errors.password}
+              errorText={errors.password?.message}
+            >
+              <PasswordInput
+                variant="subtle"
+                {...register("password", { required: "Password is required" })}
+              />
+            </Field>
 
-                  <FormErrorMessage>{errors.email}</FormErrorMessage>
-                </FormControl>
+            <Show when={formError}>
+              <div role="alert" style={{ color: "red" }}>
+                {formError}
+              </div>
+            </Show>
 
-                <FormControl isInvalid={!!errors.password && touched.password}>
-                  <FormLabel htmlFor="password">Password</FormLabel>
+            <Button type="submit" w="full" onClick={onSubmit}>
+              Submit
+            </Button>
 
-                  <InputGroup>
-                    <Input
-                      name="password"
-                      pr="4.5rem"
-                      type={show ? "text" : "password"}
-                      placeholder="Password"
-                      value={values.password}
-                      onChange={handleChange}
-                    />
-                    <InputRightElement width="4.5rem">
-                      <Button h="1.75rem" size="sm" colorScheme="whiteAlpha" onClick={handleClick}>
-                        {show ? "Hide" : "Show"}
-                      </Button>
-                    </InputRightElement>
-                  </InputGroup>
-                  <FormErrorMessage>{errors.password}</FormErrorMessage>
-                </FormControl>
+            <OrDivider />
+            <GoogleLogin />
+          </Stack>
+        </form>
 
-                <Button w="100%" mt="1rem" type="submit" variant="primary" disabled={isSubmitting}>
-                  Login
-                </Button>
-
-                {formError && (
-                  <div role="alert" style={{ color: "red" }}>
-                    {formError}
-                  </div>
-                )}
-
-                <OrDivider />
-                <GoogleLogin />
-                <Box textAlign="center" mt="1rem">
-                  <Link href={Routes.ForgotPasswordPage().href}>Forgot your password?</Link>
-                  <Box mt="1rem">
-                    Do not have an account?{" "}
-                    <Link color="#3498db" href={Routes.SignUpPage().href}>
-                      Sign Up
-                    </Link>
-                  </Box>
-                </Box>
-              </VStack>
-            </form>
-          )}
-        </Formik>
+        <Box textAlign="center" mt="1rem">
+          {/* <Link href={Routes.ForgotPasswordPage().href}>Forgot your password?</Link> */}
+          <Box mt="1rem">
+            Do not have an account?{" "}
+            <Link color="#3498db" href={Routes.SignUpPage().href}>
+              Sign Up
+            </Link>
+          </Box>
+        </Box>
       </Flex>
     </Box>
   )

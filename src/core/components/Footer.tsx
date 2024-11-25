@@ -1,33 +1,28 @@
-import {
-  Button,
-  Flex,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-  Textarea,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react"
+import { Button, Flex, Text, Textarea, useDisclosure } from "@chakra-ui/react"
 import mixpanel from "mixpanel-browser"
 import { useState } from "react"
+import {
+  DialogActionTrigger,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "src/components/ui/dialog"
+import { toaster } from "src/components/ui/toaster"
 import createFeedback from "../mutations/createFeedback"
 
 function Footer({ theme }) {
   mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN)
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { open, onOpen, onClose } = useDisclosure()
   const [comment, setComment] = useState("")
-  const toast = useToast()
   const onSubmit = async () => {
     await createFeedback({ comment }).catch((e) => console.log(e))
-
     onClose()
     mixpanel.track("Submitted Feedback")
-    toast({
+    toaster.create({
       title: "Feedback Submitted.",
       description: "Thank you for your feedback.",
       status: "success",
@@ -46,30 +41,34 @@ function Footer({ theme }) {
       color={theme}
     >
       <Text>© 2024 DiscovAI</Text>
-      <Button variant="unstyled" onClick={onOpen}>
-        Give Feedback
-      </Button>
-      <Modal isOpen={isOpen} onClose={onClose} size="md">
-        <ModalOverlay />
-        <ModalContent bg="gray.700" color="white">
-          <ModalHeader>Give Feedback</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
+
+      <DialogRoot open={open} onClose={onClose} size="md">
+        <DialogTrigger asChild>
+          <Button variant="unstyled">Give Feedback</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Give Feedback</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
             <Textarea
               h="150px"
               placeholder="Please enter your feedback here"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
-          </ModalBody>
+          </DialogBody>
 
-          <ModalFooter>
+          <DialogFooter>
+            <DialogActionTrigger asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogActionTrigger>
             <Button variant="primary" disabled={comment === ""} mr={3} onClick={onSubmit}>
               Submit
             </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          </DialogFooter>
+        </DialogContent>
+      </DialogRoot>
     </Flex>
   )
 }

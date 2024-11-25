@@ -2,35 +2,22 @@ import { Routes } from "@blitzjs/next"
 import "mapbox-gl/dist/mapbox-gl.css"
 
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Box,
   Button,
   Flex,
   HStack,
   Heading,
   IconButton,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
+  Show,
   Text,
   VStack,
-  useToast,
 } from "@chakra-ui/react"
 import {
   faBed,
   faCalendarDays,
   faCar,
-  faChevronDown,
   faChevronRight,
-  faChevronUp,
   faCircleInfo,
-  faClipboard,
-  faEnvelope,
   faMapPin,
   faShareNodes,
   faSun,
@@ -40,22 +27,26 @@ import mixpanel from "mixpanel-browser"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import "react-datepicker/dist/react-datepicker.css"
-import WeatherInfo from "src/core/components/WeatherInfo"
+import { LuClipboard, LuMailOpen, LuMessageCircle } from "react-icons/lu"
+import {
+  AccordionItem,
+  AccordionItemContent,
+  AccordionItemTrigger,
+  AccordionRoot,
+} from "src/components/ui/accordion"
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "src/components/ui/menu"
+import { toaster } from "src/components/ui/toaster"
 import FlightPopover from "./FlightPopover"
 import GeneralInfo from "./GeneralInfo"
+import WeatherInfo from "./WeatherInfo"
 
 const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
   const [weatherData, setWeatherData] = useState()
   const [countryData, setCountryData] = useState()
   const [inFuture, setInFuture] = useState(false)
-  const [showGeneralInfo, setShowGeneralInfo] = useState(true)
-  const [showTours, setShowTours] = useState(true)
-  const [showBeforeYouGo, setShowBeforeYouGo] = useState(true)
-  const [showWeather, setShowWeather] = useState(true)
   const [showItinerary, setShowItinerary] = useState(true)
 
   const router = useRouter()
-  const toast = useToast()
 
   const shareMessage = `Check out the trip to ${
     trip?.destination.split(", ")[0]
@@ -92,15 +83,7 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
       () => {}
     )
   }
-  const showToast = () => {
-    toast({
-      title: "Trip Copied",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      position: "bottom-right",
-    })
-  }
+
   const getCountryInfo = (country) => {
     fetch("/api/getCountryInfo?country=" + country)
       .then((response) => response.json())
@@ -204,10 +187,10 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
         overflowX="hidden"
       >
         <Flex
-          h={{ base: "150px", lg: "250px" }}
+          height={{ base: "250px", sm: "150px", lg: "250px" }}
           bgPos="center"
           bgRepeat="no-repeat"
-          bgImage={trip.imageUrl}
+          bgImage={`url(${trip.imageUrl})`}
           bgSize="cover"
           pos="relative"
         >
@@ -215,7 +198,7 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
             p="1.5rem"
             alignItems="flex-end"
             justifyContent="left"
-            h={{ base: "150px", lg: "250px" }}
+            h="inherit"
             bgColor="rgb(0,0,0,0.5)"
             w="100%"
           >
@@ -231,88 +214,69 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
               </Text>
             </Flex>
             <Flex pos="absolute" top="1rem" right="1rem">
-              <Menu>
-                {isMobile ? (
-                  <MenuButton
-                    as={IconButton}
-                    icon={<FontAwesomeIcon icon={faShareNodes} height="18px" />}
-                    _focus={{ boxShadow: "outline" }}
-                    variant="secondary"
-                  ></MenuButton>
-                ) : (
-                  <MenuButton
-                    as={Button}
-                    leftIcon={<FontAwesomeIcon icon={faShareNodes} height="18px" />}
-                    _focus={{ boxShadow: "outline" }}
-                    variant="secondary"
-                  >
-                    Share
-                  </MenuButton>
-                )}
+              <MenuRoot>
+                <Show when={isMobile}>
+                  <MenuTrigger asChild>
+                    <IconButton _focus={{ boxShadow: "outline" }}>
+                      <FontAwesomeIcon icon={faShareNodes} height="18px" />
+                    </IconButton>
+                  </MenuTrigger>
+                </Show>
+                <Show when={!isMobile}>
+                  <MenuTrigger asChild>
+                    <Button _focus={{ boxShadow: "outline" }}>
+                      <FontAwesomeIcon icon={faShareNodes} height="18px" />
+                      Share
+                    </Button>
+                  </MenuTrigger>
+                </Show>
 
-                <MenuList bg="gray.700" borderWidth="0px">
-                  <a
-                    href={`whatsapp://send?text=${shareMessage}`}
-                    data-action="share/whatsapp/share"
-                  >
-                    <MenuItem
-                      _hover={{ bg: "gray.600" }}
-                      _focus={{ bg: "gray.600" }}
-                      bg="inherit"
+                <MenuContent>
+                  <MenuItem value="whatsapp" asChild>
+                    <a
+                      href={`whatsapp://send?text=${shareMessage}`}
+                      data-action="share/whatsapp/share"
                       onClick={() => mixpanel.track("Shared Trip", { platform: "WhatsApp" })}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 448 512"
-                      >
-                        <path
-                          fill="#25d366"
-                          d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"
-                        />
-                      </svg>
-                      <Text ml="0.5rem">WhatsApp</Text>
-                    </MenuItem>
-                  </a>
-                  <a
-                    href={`mailto:?body=${shareMessage}body&subject=${
-                      trip.destination.split(",")[0]
-                    } Trip | DiscovAI`}
-                  >
-                    <MenuItem
-                      _hover={{ bg: "gray.600" }}
-                      _focus={{ bg: "gray.600" }}
-                      bg="inherit"
+                      <LuMessageCircle />
+                      <Box flex="1">Whatsapp</Box>
+                    </a>
+                  </MenuItem>
+
+                  <MenuItem value="email" asChild>
+                    <a
+                      href={`mailto:?body=${shareMessage}body&subject=${
+                        trip.destination.split(",")[0]
+                      } Trip | DiscovAI`}
                       onClick={() => mixpanel.track("Shared Trip", { platform: "Email" })}
                     >
-                      <FontAwesomeIcon icon={faEnvelope} height="16px" />
-                      <Text ml="0.5rem">Email</Text>
-                    </MenuItem>
-                  </a>
-                  <a
-                    onClick={(e) => {
-                      copyURI(e)
-                      showToast()
-                    }}
-                  >
-                    {!!navigator.clipboard && (
-                      <MenuItem
-                        _hover={{ bg: "gray.600" }}
-                        _focus={{ bg: "gray.600" }}
-                        bg="inherit"
-                        onClick={() => mixpanel.track("Shared Trip", { platform: "Clipboard" })}
+                      <LuMailOpen />
+                      <Box flex="1">Email</Box>
+                    </a>
+                  </MenuItem>
+
+                  <Show when={!!navigator.clipboard}>
+                    <MenuItem value="clipboard" asChild>
+                      <Box
+                        onClick={(e) => {
+                          copyURI(e)
+                          toaster.create({
+                            description: "File saved successfully",
+                            type: "info",
+                          })
+                          mixpanel.track("Shared Trip", { platform: "Clipboard" })
+                        }}
                       >
-                        <FontAwesomeIcon icon={faClipboard} height="16px" />
-                        <Text ml="0.5rem">Clipboard</Text>
-                      </MenuItem>
-                    )}
-                  </a>
-                </MenuList>
-              </Menu>
+                        <LuClipboard />
+                        <Box flex="1">Clipboard</Box>
+                      </Box>
+                    </MenuItem>
+                  </Show>
+                </MenuContent>
+              </MenuRoot>
             </Flex>
 
-            <VStack spacing="0.5rem" color="primary" alignItems="flex-start">
+            <VStack gap="0.5rem" color="primary" alignItems="flex-start">
               <Heading fontSize={{ base: "25px", md: "35px", lg: "45px" }}>
                 {trip.destination}
               </Heading>
@@ -326,7 +290,7 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
             </VStack>
           </Flex>
         </Flex>
-        {!!map && (
+        <Show when={!!map}>
           <Box
             mx="1rem"
             mt="0.5rem"
@@ -338,7 +302,7 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
           >
             {map}
           </Box>
-        )}
+        </Show>
         <Flex
           p={isMobile ? "0.5rem" : "1.5rem"}
           mb="1rem"
@@ -358,137 +322,100 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
                     Personalised Itinerary
                   </Heading>
                 </Flex>
-                <FontAwesomeIcon icon={showItinerary ? faChevronUp : faChevronDown} height="10px" />
               </Flex>
-              {showItinerary && (
-                <Accordion
-                  defaultIndex={Array.from(
-                    { length: JSON.parse(trip.itinerary).itinerary.length },
-                    (_, i) => i
-                  )}
-                  allowMultiple
-                  w="100%"
-                  borderColor="#2c3e50"
-                  mb="1rem"
-                >
-                  {JSON.parse(trip.itinerary).itinerary.map((day, index) => (
-                    <AccordionItem key={"Day-Accordion-" + index}>
-                      <AccordionButton>
-                        <Box
-                          as="span"
-                          fontWeight="700"
-                          fontSize={isMobile ? "16px" : "18px"}
-                          py={isMobile ? "0.5rem" : "1rem"}
-                          w="100%"
-                          flex="1"
-                          textAlign="left"
-                        >
-                          {day.day}
-                        </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
+              <AccordionRoot
+                defaultValue={Array.from(
+                  { length: JSON.parse(trip.itinerary).itinerary.length },
+                  (_, i) => i
+                )}
+                multiple
+                w="100%"
+                //borderColor="#2c3e50"
+                mb="1rem"
+                variant="plain"
+              >
+                {JSON.parse(trip.itinerary).itinerary.map((day, index) => (
+                  <AccordionItem key={"Day-Accordion-" + index} value={index}>
+                    <AccordionItemTrigger>{day.day}</AccordionItemTrigger>
 
-                      <AccordionPanel>
-                        <VStack spacing="1rem" alignItems="start">
-                          <Text fontSize={isMobile ? "16px" : "18px"}>
-                            <PlanWithLinks day={day} showMapPin={showMapPin} />
-                          </Text>
-                        </VStack>
-                      </AccordionPanel>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              )}
+                    <AccordionItemContent>
+                      <VStack gap="1rem" alignItems="start">
+                        <Text fontSize={isMobile ? "16px" : "18px"}>
+                          <PlanWithLinks day={day} showMapPin={showMapPin} />
+                        </Text>
+                      </VStack>
+                    </AccordionItemContent>
+                  </AccordionItem>
+                ))}
+              </AccordionRoot>
             </Box>
-            {!!countryData && (
+            <Show when={!!countryData}>
               <Box w="100%">
-                <Flex
-                  className="collapseButton"
-                  as="button"
-                  onClick={() => setShowGeneralInfo(!showGeneralInfo)}
-                >
+                <Flex className="collapseButton">
                   <Flex alignItems="center">
                     <FontAwesomeIcon icon={faCircleInfo} height="22px" />
                     <Heading ml="0.5rem" fontSize={isMobile ? "18px" : "20px"}>
                       General Information
                     </Heading>
                   </Flex>
-                  <FontAwesomeIcon
-                    icon={showGeneralInfo ? faChevronUp : faChevronDown}
-                    height="10px"
-                  />
                 </Flex>
-                {showGeneralInfo && <GeneralInfo isMobile={isMobile} countryData={countryData} />}
+                <GeneralInfo isMobile={isMobile} countryData={countryData} />{" "}
               </Box>
-            )}
-            {!!weatherData && (
+            </Show>
+            <Show when={!!weatherData}>
               <Box w="100%">
-                <Flex
-                  className="collapseButton"
-                  as="button"
-                  onClick={() => setShowWeather(!showWeather)}
-                >
+                <Flex className="collapseButton">
                   <Flex alignItems="center">
                     <FontAwesomeIcon icon={faSun} height="22px" />
                     <Heading ml="0.5rem" fontSize={isMobile ? "18px" : "20px"}>
                       Weather
                     </Heading>
                   </Flex>
-                  <FontAwesomeIcon icon={showWeather ? faChevronUp : faChevronDown} height="10px" />
                 </Flex>
-                {showWeather && <WeatherInfo isMobile={isMobile} days={weatherData} />}
+                <WeatherInfo isMobile={isMobile} days={weatherData} />{" "}
               </Box>
-            )}
+            </Show>
 
             <Box w="100%">
-              <Flex className="collapseButton" as="button" onClick={() => setShowTours(!showTours)}>
+              <Flex className="collapseButton">
                 <Flex alignItems="center">
                   <FontAwesomeIcon icon={faCircleInfo} height="22px" />
                   <Heading ml="0.5rem" fontSize={isMobile ? "18px" : "20px"}>
                     Tours
                   </Heading>
                 </Flex>
-                <FontAwesomeIcon icon={showTours ? faChevronUp : faChevronDown} height="10px" />
               </Flex>
-              {showTours && (
-                <div id="widget-container">
-                  <div
-                    data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
-                    data-gyg-locale-code="en-US"
-                    data-gyg-widget="activities"
-                    data-gyg-number-of-items="3"
-                    data-gyg-partner-id="9WU9RNS"
-                    data-gyg-excluded-tour-ids="435198,406786"
-                    data-gyg-q={trip.destination}
-                  ></div>
-                </div>
-              )}
+              <div id="widget-container">
+                <div
+                  data-gyg-href="https://widget.getyourguide.com/default/activities.frame"
+                  data-gyg-locale-code="en-US"
+                  data-gyg-widget="activities"
+                  data-gyg-number-of-items="3"
+                  data-gyg-partner-id="9WU9RNS"
+                  data-gyg-excluded-tour-ids="435198,406786"
+                  data-gyg-q={trip.destination}
+                ></div>
+              </div>
             </Box>
 
-            {inFuture && (
+            <Show when={inFuture}>
               <Box w="100%">
-                <Flex
-                  className="collapseButton"
-                  as="button"
-                  onClick={() => setShowBeforeYouGo(!showBeforeYouGo)}
-                >
+                <Flex className="collapseButton">
                   <Flex alignItems="center">
                     <FontAwesomeIcon icon={faCircleInfo} height="22px" />
                     <Heading ml="0.5rem" fontSize={isMobile ? "18px" : "20px"}>
                       Before You Go
                     </Heading>
                   </Flex>
-                  <FontAwesomeIcon
-                    icon={showBeforeYouGo ? faChevronUp : faChevronDown}
-                    height="10px"
-                  />
                 </Flex>
-                {showBeforeYouGo && (
-                  <Flex gap="0.5rem" flexDir={{ base: "column", md: "row" }}>
-                    {latLong[0] !== "" && <FlightPopover myTrip={trip} latLong={latLong} />}
-
-                    <a
-                      href={
+                <Flex gap="0.5rem" flexDir={{ base: "column", md: "row" }}>
+                  <Show when={latLong[0] !== ""}>
+                    <FlightPopover myTrip={trip} latLong={latLong} />
+                  </Show>
+                  <Button
+                    onClick={() => {
+                      mixpanel.track("Opened Stays")
+                      window.open(
                         trip.budget?.includes("Luxury")
                           ? `https://www.tablethotels.com/en/${trip.destination
                               .split(", ")[0]
@@ -516,48 +443,37 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
                                 .toISOString()
                                 .split("T")[0]
                             }&group_adults=2&no_rooms=1`
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Button
-                        leftIcon={<FontAwesomeIcon icon={faBed} height="16px" />}
-                        rightIcon={<FontAwesomeIcon icon={faChevronRight} height="16px" />}
-                        w="100%"
-                        onClick={() => mixpanel.track("Opened Stays")}
-                        variant="secondary"
-                      >
-                        See Stays
-                      </Button>
-                    </a>
+                      )
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faBed} height="16px" />
+                    See Stays
+                    <FontAwesomeIcon icon={faChevronRight} height="16px" />
+                  </Button>
 
-                    <a
-                      href={`https://www.kayak.com/cars/${trip.destination.split(" ").join("")}/${
-                        addDay(trip.daterange[0] as Date)
-                          .toISOString()
-                          .split("T")[0]
-                      }/${
-                        addDay(trip.daterange[1] as Date)
-                          .toISOString()
-                          .split("T")[0]
-                      };map?sort=rank_a`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Button
-                        leftIcon={<FontAwesomeIcon icon={faCar} height="16px" />}
-                        rightIcon={<FontAwesomeIcon icon={faChevronRight} height="16px" />}
-                        w="100%"
-                        onClick={() => mixpanel.track("Opened Cars")}
-                        variant="secondary"
-                      >
-                        See Cars
-                      </Button>
-                    </a>
-                  </Flex>
-                )}
+                  <Button
+                    onClick={() => {
+                      mixpanel.track("Opened Cars")
+                      window.open(
+                        `https://www.kayak.com/cars/${trip.destination.split(" ").join("")}/${
+                          addDay(trip.daterange[0] as Date)
+                            .toISOString()
+                            .split("T")[0]
+                        }/${
+                          addDay(trip.daterange[1] as Date)
+                            .toISOString()
+                            .split("T")[0]
+                        };map?sort=rank_a`
+                      )
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faCar} height="16px" />
+                    See Cars
+                    <FontAwesomeIcon icon={faChevronRight} height="16px" />
+                  </Button>
+                </Flex>
               </Box>
-            )}
+            </Show>
           </Flex>
         </Flex>
       </Flex>

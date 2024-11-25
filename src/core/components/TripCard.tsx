@@ -1,6 +1,7 @@
 import { Routes } from "@blitzjs/next"
-import { Card, CardBody, Heading, HStack, Image, Stack, Tag, Text } from "@chakra-ui/react"
+import { Card, Heading, HStack, Image, Stack, Text } from "@chakra-ui/react"
 import { useRouter } from "next/router"
+import { Tag } from "src/components/ui/tag"
 
 function TripCard({ trip }) {
   const router = useRouter()
@@ -10,28 +11,28 @@ function TripCard({ trip }) {
     year: "numeric",
   }
   return (
-    <Card
+    <Card.Root
       backgroundColor="#ffffff21"
       color="white"
       cursor="pointer"
       maxW="xs"
       onClick={() => router.push(Routes.TripPage({ id: trip.id }))}
     >
-      <CardBody>
+      <Card.Body>
         <Image src={trip.imageUrl} alt={trip.destination + " photo"} borderRadius="lg" />
-        <Stack mt="6" spacing="3">
+        <Stack mt="6" gap="3">
           <Heading size="md">{trip.destination}</Heading>
           <Text>
             {trip.daterange[0]?.toLocaleDateString("en-US", dateOptions)} -{" "}
             {trip.daterange[1]?.toLocaleDateString("en-US", dateOptions)}
           </Text>
-          <HStack spacing={2}>
+          <HStack gap={2}>
             <Tag whiteSpace="nowrap">{trip.group}</Tag>
             <Tag whiteSpace="nowrap">{trip.budget}</Tag>
           </HStack>
         </Stack>
-      </CardBody>
-    </Card>
+      </Card.Body>
+    </Card.Root>
   )
 }
 

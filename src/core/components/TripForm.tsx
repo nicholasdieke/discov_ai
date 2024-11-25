@@ -1,24 +1,24 @@
 import { Routes } from "@blitzjs/next"
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Text,
-  VStack,
-} from "@chakra-ui/react"
+import { Box, Button, createListCollection, Input, Show, Text, VStack } from "@chakra-ui/react"
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Select } from "chakra-react-select"
-import { useFormik } from "formik"
+import { zodResolver } from "@hookform/resolvers/zod"
 import Lottie from "lottie-react"
 import mixpanel from "mixpanel-browser"
 import { useRouter } from "next/router"
 import loading_animation from "public/plane_loading.json"
 import { useEffect, useRef, useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import { Field } from "src/components/ui/field"
+import { InputGroup } from "src/components/ui/input-group"
+import {
+  SelectContent,
+  SelectItem,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from "src/components/ui/select"
+import { z } from "zod"
 import createTrip from "../mutations/createTrip"
 import MyDateRangePicker from "./MyDateRangePicker"
 
@@ -43,76 +43,83 @@ function TripForm() {
     return Math.floor((utc2 - utc1) / _MS_PER_DAY)
   }
 
-  const budgetOptions = [
-    {
-      label: "💰 On a budget",
-      value: "budget",
-    },
-    {
-      label: "💰💰 Sensibly priced",
-      value: "sensibly-priced",
-    },
-    {
-      label: "💰💰💰 Upscale",
-      value: "upscale",
-    },
-    {
-      label: "💰💰💰💰 Luxury",
-      value: "luxury",
-    },
-  ]
-  const groupOptions = [
-    {
-      label: "👫 Friends",
-      value: "friends",
-    },
-    {
-      label: "👪 Family",
-      value: "family",
-    },
-    {
-      label: "🤸 Solo",
-      value: "solo",
-    },
-    {
-      label: "💑 Couple",
-      value: "couple",
-    },
-  ]
-  const styleOptions = [
-    {
-      label: "⛰️ Adventure",
-      value: "adventurous",
-    },
-    {
-      label: "🎭 Culture",
-      value: "cultural",
-    },
-    {
-      label: "🍜 Foodie",
-      value: "foodie",
-    },
-    {
-      label: "🏺 History",
-      value: "historic",
-    },
-    {
-      label: "🍾 Party",
-      value: "party",
-    },
-    {
-      label: "🛍️ Shopping",
-      value: "shopping",
-    },
-    {
-      label: "🌊 Relax",
-      value: "relaxing",
-    },
-    {
-      label: "🌹 Romance",
-      value: "romantic",
-    },
-  ]
+  const budgetOptions = createListCollection({
+    items: [
+      {
+        label: "💰 On a budget",
+        value: "budget",
+      },
+      {
+        label: "💰💰 Sensibly priced",
+        value: "sensibly-priced",
+      },
+      {
+        label: "💰💰💰 Upscale",
+        value: "upscale",
+      },
+      {
+        label: "💰💰💰💰 Luxury",
+        value: "luxury",
+      },
+    ],
+  })
+  const groupOptions = createListCollection({
+    items: [
+      {
+        label: "👫 Friends",
+        value: "friends",
+      },
+      {
+        label: "👪 Family",
+        value: "family",
+      },
+      {
+        label: "🤸 Solo",
+        value: "solo",
+      },
+      {
+        label: "💑 Couple",
+        value: "couple",
+      },
+    ],
+  })
+
+  const styleOptions = createListCollection({
+    items: [
+      {
+        label: "⛰️ Adventure",
+        value: "adventurous",
+      },
+      {
+        label: "🎭 Culture",
+        value: "cultural",
+      },
+      {
+        label: "🍜 Foodie",
+        value: "foodie",
+      },
+      {
+        label: "🏺 History",
+        value: "historic",
+      },
+      {
+        label: "🍾 Party",
+        value: "party",
+      },
+      {
+        label: "🛍️ Shopping",
+        value: "shopping",
+      },
+      {
+        label: "🌊 Relax",
+        value: "relaxing",
+      },
+      {
+        label: "🌹 Romance",
+        value: "romantic",
+      },
+    ],
+  })
 
   function scrollToTop() {
     window.scrollTo({
@@ -121,15 +128,38 @@ function TripForm() {
     })
   }
 
-  const sendPrompt = async (values) => {
+  const tripformSchema = z.object({
+    destination: z.string({ message: "Destination is required" }),
+    daterange: z.date({ message: "Daterange is required" }).array(),
+    group: z.string({ message: "Group is required" }).array(),
+    activity: z.string({ message: "Activity is required" }).array(),
+    budget: z.string({ message: "Budget is required" }).array(),
+    extras: z.string().optional().default(""),
+  })
+
+  type TripFormValues = z.infer<typeof tripformSchema>
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors },
+    control,
+  } = useForm<TripFormValues>({
+    resolver: zodResolver(tripformSchema),
+  })
+
+  const onSubmit = handleSubmit(async () => {
+    const values = getValues()
     scrollToTop()
     setIsLoading(true)
     const days = Math.max(dateDiffInDays(values.daterange[0], values.daterange[1]), 1)
     let prompt =
       "Create a personalised itinerary for a " +
-      values.budget.value +
+      values.budget[0] +
       " " +
-      values.group.value +
+      values.group[0] +
       " trip to " +
       values.destination +
       " from  " +
@@ -137,8 +167,8 @@ function TripForm() {
       " to " +
       (values.daterange[1] as Date).toDateString() +
       ", which includes " +
-      values.activity.map((obj) => obj.value).join(", ") +
-      (values.extras.value ? ". Include this special request: " + values.extras.value : "") +
+      values.activity.join(", ") +
+      (values.extras ? ". Include this special request: " + values.extras : "") +
       ". Write in an engaging and detailed style with a friendly tone and correct grammar. "
 
     if (days > 7) {
@@ -192,60 +222,21 @@ function TripForm() {
           .then((response) => (imageUrl = response.result[0].urls.regular || ""))
           .catch((e) => console.log(e))
 
-        values = {
+        const valuesWithItinerary = {
           ...values,
-          group: values.group.label,
-          activity: values.activity.map((obj) => obj.value).join(", "),
+          group: values.group[0]!,
+          activity: values.activity.join(", "),
           itinerary: response.result,
-          budget: values.budget.label,
+          budget: values.budget[0],
           imageUrl: imageUrl,
         }
 
         mixpanel.track("Created Trip", { destination: values.destination })
-        await createTrip(values)
+        await createTrip(valuesWithItinerary)
           .then((trip) => router.push(Routes.TripPage({ id: trip.id })))
           .catch((e) => console.log(e))
       })
       .catch((e) => console.log(e))
-  }
-
-  const formik = useFormik({
-    validateOnChange: false,
-    validateOnBlur: true,
-    initialValues: {
-      destination: "",
-      daterange: "",
-      group: "",
-      activity: "",
-      budget: "",
-      extras: "",
-    },
-    onSubmit: sendPrompt,
-    validate: (values) => {
-      let errors: Partial<{
-        destination: string
-        daterange: string
-        group: string
-        activity: string
-        budget: string
-      }> = {}
-      if (!values.destination) {
-        errors.destination = "Destination Required"
-      }
-      if (!values.daterange || values.daterange[1] == null) {
-        errors.daterange = "Daterange Required"
-      }
-      if (!values.group) {
-        errors.group = "Group Required"
-      }
-      if (!values.activity || values.activity.length === 0) {
-        errors.activity = "Activity Required"
-      }
-      if (!values.budget) {
-        errors.budget = "Budget Required"
-      }
-      return errors
-    },
   })
 
   useEffect(() => {
@@ -278,7 +269,7 @@ function TripForm() {
                 ["country", "continent"].some((code) => comp!.types.includes(code))
               ) {
                 places.push(comp.long_name)
-                await formik.setFieldValue("destination", places.join(", "))
+                setValue("destination", places.join(", "))
                 break
               }
             }
@@ -296,136 +287,155 @@ function TripForm() {
   return (
     <Box className="tripform" w={{ base: "100%", sm: "350px" }}>
       <script src={script} onLoad={() => setLoaded(true)} />
-
-      {!isLoading && (
-        <form autoComplete="off" onSubmit={formik.handleSubmit}>
-          <VStack spacing="0.75rem" color="white">
-            <FormControl>
-              <FormLabel className="tripformlabel" htmlFor="Where?">
-                Where?
-              </FormLabel>
-              <InputGroup>
-                <InputLeftElement color="white" pointerEvents="none">
-                  <FontAwesomeIcon icon={faLocationDot} height="20px" />
-                </InputLeftElement>
+      <Show when={!isLoading}>
+        <form onSubmit={onSubmit}>
+          <VStack gap="0.75rem" color="white">
+            <Field
+              label="Where?"
+              invalid={!!errors.destination}
+              errorText={errors.destination?.message}
+            >
+              <InputGroup
+                className="tripformInput"
+                startElement={<FontAwesomeIcon icon={faLocationDot} height="20px" />}
+              >
                 <Input
                   id="destination"
-                  name="destination"
                   type="text"
                   placeholder="City, State or Country"
-                  value={formik.values.destination}
-                  onChange={formik.handleChange}
-                  ref={inputRef}
-                  className="tripformInput"
                   maxLength={40}
+                  variant="subtle"
+                  {...register("destination", { required: "First name is required" })}
+                  ref={inputRef}
                 />
               </InputGroup>
-              {formik.errors.destination ? (
-                <div className="errors">{formik.errors.destination as string}</div>
-              ) : null}
-            </FormControl>
+            </Field>
 
-            <FormControl zIndex={10}>
-              <FormLabel className="tripformlabel" htmlFor="When?">
-                When?
-              </FormLabel>
+            <Field
+              zIndex={10}
+              label="When?"
+              invalid={!!errors.daterange}
+              errorText={errors.daterange?.message}
+            >
               <MyDateRangePicker
                 onChange={async (update) => {
                   setDateRange(update)
-                  await formik.setFieldValue("daterange", update)
+                  setValue("daterange", update)
                 }}
                 startDate={startDate}
                 endDate={endDate}
               />
-              {formik.errors.daterange ? (
-                <div className="errors">{formik.errors.daterange as string}</div>
-              ) : null}
-            </FormControl>
+            </Field>
 
-            <FormControl>
-              <FormLabel className="tripformlabel" htmlFor="Who?">
-                Who?
-              </FormLabel>
-              <Select
-                id="group"
+            <Field label="Who?" invalid={!!errors.group} errorText={errors.group?.message}>
+              <Controller
+                control={control}
                 name="group"
-                onChange={(e) => formik.setFieldValue("group", e)}
-                value={formik.values.group}
-                placeholder="e.g. Friends, Family"
-                options={groupOptions}
-                hideSelectedOptions
-                className="tripformInput"
+                render={({ field }) => (
+                  <SelectRoot
+                    name={field.name}
+                    value={field.value}
+                    onValueChange={({ value }) => field.onChange(value)}
+                    onInteractOutside={() => field.onBlur()}
+                    collection={groupOptions}
+                    variant="subtle"
+                  >
+                    <SelectTrigger>
+                      <SelectValueText placeholder="e.g. Friends, Family" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {groupOptions.items.map((group) => (
+                        <SelectItem item={group} key={group.value}>
+                          {group.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectRoot>
+                )}
               />
-              {formik.errors.group ? (
-                <div className="errors">{formik.errors.group as string}</div>
-              ) : null}
-            </FormControl>
+            </Field>
 
-            <FormControl>
-              <FormLabel className="tripformlabel" htmlFor="What?">
-                What?
-              </FormLabel>
-              <Select
-                classNamePrefix="react-select"
-                id="activity"
+            <Field label="What?" invalid={!!errors.activity} errorText={errors.activity?.message}>
+              <Controller
+                control={control}
                 name="activity"
-                onChange={(e) => formik.setFieldValue("activity", e)}
-                value={formik.values.activity}
-                placeholder="e.g. Relax, Adventure"
-                options={styleOptions}
-                isMulti
-                closeMenuOnSelect={false}
-                className="tripformInput"
+                render={({ field }) => (
+                  <SelectRoot
+                    name={field.name}
+                    value={field.value}
+                    onValueChange={({ value }) => field.onChange(value)}
+                    onInteractOutside={() => field.onBlur()}
+                    collection={styleOptions}
+                    variant="subtle"
+                    multiple
+                    closeOnSelect={false}
+                  >
+                    <SelectTrigger>
+                      <SelectValueText placeholder="e.g. Relax, Adventure" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {styleOptions.items.map((style) => (
+                        <SelectItem item={style} key={style.value}>
+                          {style.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectRoot>
+                )}
               />
+            </Field>
 
-              {formik.errors.activity ? (
-                <div className="errors">{formik.errors.activity as string}</div>
-              ) : null}
-            </FormControl>
-
-            <FormControl>
-              <FormLabel className="tripformlabel" htmlFor="How much?">
-                How much?
-              </FormLabel>
-              <Select
-                id="budget"
+            <Field label="How much?" invalid={!!errors.budget} errorText={errors.budget?.message}>
+              <Controller
+                control={control}
                 name="budget"
-                onChange={(e) => formik.setFieldValue("budget", e)}
-                value={formik.values.budget}
-                placeholder="e.g. Luxury"
-                options={budgetOptions}
-                hideSelectedOptions
-                className="tripformInput"
+                render={({ field }) => (
+                  <SelectRoot
+                    name={field.name}
+                    value={field.value}
+                    onValueChange={({ value }) => field.onChange(value)}
+                    onInteractOutside={() => field.onBlur()}
+                    collection={budgetOptions}
+                    variant="subtle"
+                  >
+                    <SelectTrigger>
+                      <SelectValueText placeholder="e.g. Luxury" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {budgetOptions.items.map((budget) => (
+                        <SelectItem item={budget} key={budget.value}>
+                          {budget.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectRoot>
+                )}
               />
+            </Field>
 
-              {formik.errors.budget ? (
-                <div className="errors">{formik.errors.budget as string}</div>
-              ) : null}
-            </FormControl>
-
-            <FormControl>
-              <FormLabel className="tripformlabel" htmlFor="Special Request?">
-                Special Request?
-              </FormLabel>
+            <Field
+              label="Special Request?"
+              invalid={!!errors.extras}
+              errorText={errors.extras?.message}
+            >
               <Input
                 id="extras"
-                name="extras"
                 type="text"
                 placeholder="e.g. Pet friendly or best tacos"
-                value={formik.values.extras}
-                onChange={formik.handleChange}
                 className="tripformInput"
                 maxLength={40}
+                variant="subtle"
+                {...register("extras")}
               />
-            </FormControl>
+            </Field>
           </VStack>
 
-          <Button type="submit" variant="primary" mt="1rem" width="full">
-            Build Itinerary!
+          <Button type="submit" onClick={() => onSubmit()} mt="1rem" width="full">
+            Build Itinerary
           </Button>
         </form>
-      )}
-      {isLoading && (
+      </Show>
+      <Show when={isLoading}>
         <Box>
           <Lottie
             animationData={loading_animation}
@@ -444,7 +454,7 @@ function TripForm() {
             </Text>
           </Box>
         </Box>
-      )}
+      </Show>
     </Box>
   )
 }

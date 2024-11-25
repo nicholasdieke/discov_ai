@@ -1,27 +1,51 @@
 "use client"
 import { useMutation } from "@blitzjs/rpc"
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Heading,
-  Input,
-  InputGroup,
-  VStack,
-} from "@chakra-ui/react"
-import { Formik } from "formik"
+import { Box, Flex, Heading, Input, Show, Stack } from "@chakra-ui/react"
+import { PromiseReturnType } from "blitz"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { Button } from "src/components/ui/button"
+import { Field } from "src/components/ui/field"
 import Header from "src/core/components/Header"
-import { toFormikValidationSchema } from "zod-formik-adapter"
+import { z } from "zod"
 import forgotPassword from "../mutations/forgotPassword"
-import { ForgotPassword } from "../validations"
 
-export function ForgotPasswordForm() {
-  const [forgotPasswordMutation, { isSuccess }] = useMutation(forgotPassword)
+type ForgotPasswordFormProps = {
+  onSuccess?: (user: PromiseReturnType<typeof forgotPassword>) => void
+}
+
+export const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
+  const [forgotPasswordMutation] = useMutation(forgotPassword)
+  const router = useRouter()
+
+  const [show, setShow] = useState(false)
   const [formError, setFormError] = useState("")
+  const handleClick = () => setShow(!show)
+
+  const forgotPasswordSchema = z.object({
+    email: z.string({ message: "Email is required" }),
+  })
+
+  type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    formState: { errors },
+    control,
+  } = useForm<ForgotPasswordValues>()
+
+  const onSubmit = handleSubmit(async () => {
+    const values = getValues()
+    try {
+      await forgotPasswordMutation(values)
+    } catch (error: any) {
+      setFormError("Sorry, we had an unexpected error. Please try again.")
+    }
+  })
 
   return (
     <Box className="authBg">
@@ -31,64 +55,24 @@ export function ForgotPasswordForm() {
       <Flex className="authFormBox">
         <Heading mb="2rem" textAlign="center">
           Forgot your password?
-        </Heading>{" "}
-        <>
-          {isSuccess ? (
-            <div>
-              <h2>Request Submitted</h2>
-              <p>
-                If your email is in our system, you will receive instructions to reset your password
-                shortly.
-              </p>
-            </div>
-          ) : (
-            <Formik
-              validationSchema={toFormikValidationSchema(ForgotPassword)}
-              initialValues={{ email: "" }}
-              onSubmit={async (values) => {
-                try {
-                  await forgotPasswordMutation(values)
-                } catch (error: any) {
-                  setFormError("Sorry, we had an unexpected error. Please try again.")
-                }
-              }}
-            >
-              {({ handleSubmit, handleChange, isSubmitting, errors, touched, values }) => (
-                <form onSubmit={handleSubmit}>
-                  <VStack spacing={4}>
-                    <FormControl isInvalid={!!errors.email && touched.email}>
-                      <FormLabel htmlFor="email">Email address</FormLabel>
-                      <InputGroup>
-                        <Input
-                          name="email"
-                          placeholder="Email address"
-                          value={values.email}
-                          onChange={handleChange}
-                        />
-                      </InputGroup>
+        </Heading>
+        <form onSubmit={onSubmit}>
+          <Stack gap="4" align="flex-start" maxW="sm">
+            <Field label="Email" invalid={!!errors.email} errorText={errors.email?.message}>
+              <Input variant="subtle" {...register("email", { required: "Email is required" })} />
+            </Field>
 
-                      <FormErrorMessage>{errors.email}</FormErrorMessage>
-                    </FormControl>
-                    <Button
-                      w="100%"
-                      mt="1rem"
-                      type="submit"
-                      variant="primary"
-                      disabled={isSubmitting}
-                    >
-                      Send Reset Password Instructions
-                    </Button>
-                    {formError && (
-                      <div role="alert" style={{ color: "red" }}>
-                        {formError}
-                      </div>
-                    )}
-                  </VStack>
-                </form>
-              )}
-            </Formik>
-          )}
-        </>
+            <Show when={formError}>
+              <div role="alert" style={{ color: "red" }}>
+                {formError}
+              </div>
+            </Show>
+
+            <Button type="submit" w="full" onClick={onSubmit}>
+              Send Reset Password Instructions
+            </Button>
+          </Stack>
+        </form>
       </Flex>
     </Box>
   )

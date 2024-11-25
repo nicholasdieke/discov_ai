@@ -2,7 +2,7 @@ import { BlitzPage, Routes } from "@blitzjs/next"
 import { invoke } from "@blitzjs/rpc"
 import "mapbox-gl/dist/mapbox-gl.css"
 
-import { Box, Button, Flex, Heading, Spinner, Text } from "@chakra-ui/react"
+import { Box, Button, Flex, Heading, Show, Spinner, Text } from "@chakra-ui/react"
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Trip } from "db"
@@ -242,32 +242,29 @@ const TripPage: BlitzPage = () => {
         color="primary"
         flexDir="row"
       >
-        {!loading && !!myTrip && (
-          <>
-            {isMobile ? (
-              <Itinerary
-                trip={myTrip}
-                map={<MapboxMap />}
-                latLong={latLong}
-                showMapPin={showMapPin}
-                isMobile
-              />
-            ) : (
-              <>
-                <Itinerary trip={myTrip} map={null} latLong={latLong} showMapPin={showMapPin} />
-                <MapboxMap />
-              </>
-            )}
-          </>
-        )}
+        <Show when={!loading && !!myTrip}>
+          <Show when={isMobile}>
+            <Itinerary
+              trip={myTrip}
+              map={<MapboxMap />}
+              latLong={latLong}
+              showMapPin={showMapPin}
+              isMobile
+            />
+          </Show>
+          <Show when={!isMobile}>
+            <Itinerary trip={myTrip} map={null} latLong={latLong} showMapPin={showMapPin} />
+            <MapboxMap />
+          </Show>
+        </Show>
 
-        {loading && (
+        <Show when={loading}>
           <Flex alignItems="center" justifyContent="center" w="100%" flexDir="column">
             <Spinner size="xl" />
             <Text mt="2rem">Loading Trip...</Text>
           </Flex>
-        )}
-        {notFound && !myTrip && (
+        </Show>
+        <Show when={notFound && !myTrip}>
           <Flex alignItems="center" justifyContent="center" w="100%" flexDir="column">
             <Heading color="#ffffffdb" size="lg" textAlign="center" mt="5rem" mb="1rem">
               Sorry, this trip does not exist.
@@ -281,7 +278,7 @@ const TripPage: BlitzPage = () => {
               Go Home!
             </Button>
           </Flex>
-        )}
+        </Show>
       </Flex>
     </>
   )

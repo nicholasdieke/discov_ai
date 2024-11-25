@@ -13,10 +13,7 @@ const Home: BlitzPage = () => {
 
   useEffect(() => {
     mixpanel.track("Viewed Home Page")
-
-    return () => {
-      // Define any cleanup code here
-    }
+    return () => {}
   }, [])
 
   return (
@@ -56,13 +53,12 @@ const Home: BlitzPage = () => {
       </Head>
       <Box h="100%" pos="relative">
         <Box w="100%" zIndex="-10" h="100%" pos="absolute">
-          {/* <Image alt="bg-image" src="/bg-4.jpg" objectFit="cover" h="100%" w="100%" /> */}
           <video
             playsInline
             loop
             muted
             autoPlay
-            style={{ objectFit: "cover", height: "100%", width: "100%" }}
+            className="bgVideo"
             poster="/bgimageposter-min.png"
             src="https://www.dropbox.com/scl/fi/uxqo4kgk4ka9fw4hq8ck9/production_id_4328789-720p.mp4?rlkey=1rxw10i0ntxhh0f5v25c3cwc6&raw=1"
           />
@@ -85,6 +81,13 @@ const Home: BlitzPage = () => {
                   md: "3rem",
                   lg: "4 rem",
                   xl: "4.5rem",
+                }}
+                lineHeight={{
+                  base: "2rem",
+                  sm: "2.5rem",
+                  md: "4rem",
+                  lg: "5 rem",
+                  xl: "5.5rem",
                 }}
                 textAlign={{ base: "center", md: "start" }}
                 pb={{ base: "0rem", md: "0.5rem" }}
