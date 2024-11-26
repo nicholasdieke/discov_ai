@@ -9,6 +9,7 @@ import { Field } from "src/components/ui/field"
 import Header from "src/core/components/Header"
 import { z } from "zod"
 import forgotPassword from "../mutations/forgotPassword"
+import { ForgotPassword } from "../validations"
 
 type ForgotPasswordFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof forgotPassword>) => void
@@ -18,11 +19,7 @@ export const ForgotPasswordForm = (_props: ForgotPasswordFormProps) => {
   const [forgotPasswordMutation] = useMutation(forgotPassword)
   const [formError, setFormError] = useState("")
 
-  const forgotPasswordSchema = z.object({
-    email: z.string().email({ message: "Email is required" }),
-  })
-
-  type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>
+  type ForgotPasswordValues = z.infer<typeof ForgotPassword>
 
   const {
     register,

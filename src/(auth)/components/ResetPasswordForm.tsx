@@ -1,32 +1,54 @@
 "use client"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Heading,
-  Input,
-  VStack,
-} from "@chakra-ui/react"
-import { Field, Formik } from "formik"
-import Link from "next/link"
+import { Box, Flex, Heading, Show, Stack } from "@chakra-ui/react"
+import { PromiseReturnType } from "blitz"
 import { useSearchParams } from "next/navigation"
-import router from "next/router"
+import { useRouter } from "next/router"
 import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { Button } from "src/components/ui/button"
+import { Field } from "src/components/ui/field"
+import { PasswordInput } from "src/components/ui/password-input"
 import Header from "src/core/components/Header"
-import { toFormikValidationSchema } from "zod-formik-adapter"
+import { z } from "zod"
 import resetPassword from "../mutations/resetPassword"
 import { ResetPassword } from "../validations"
 
-export function ResetPasswordForm() {
+type ResetPasswordFormProps = {
+  onSuccess?: (user: PromiseReturnType<typeof resetPassword>) => void
+}
+
+export const ResetPasswordForm = (_props: ResetPasswordFormProps) => {
   const searchParams = useSearchParams()
   const token = searchParams?.get("token")?.toString()
-  const [resetPasswordMutation, { isSuccess }] = useMutation(resetPassword)
+  const [resetPasswordMutation] = useMutation(resetPassword)
   const [formError, setFormError] = useState("")
+  const router = useRouter()
+
+  type ResetPasswordValues = z.infer<typeof ResetPassword>
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<ResetPasswordValues>()
+
+  const onSubmit = handleSubmit(async () => {
+    const values = getValues()
+    try {
+      await resetPasswordMutation({ ...values, token })
+        .then(() => router.push(Routes.MyTripsPage().href))
+        .catch((e) => console.log(e))
+    } catch (error) {
+      if (error.name === "ResetPasswordError") {
+        setFormError(error.message)
+      } else {
+        setFormError("Sorry, we had an unexpected error. Please try again.")
+      }
+    }
+  })
 
   return (
     <Box className="authBg">
@@ -35,89 +57,43 @@ export function ResetPasswordForm() {
       </Box>
       <Flex className="authFormBox">
         <Heading mb="2rem" textAlign="center">
-          Set a New Password
+          Reset password
         </Heading>
+        <form onSubmit={onSubmit}>
+          <Stack gap="4" align="flex-start" maxW="sm">
+            <Field
+              label="Password"
+              invalid={!!errors.password}
+              errorText={errors.password?.message}
+            >
+              <PasswordInput
+                variant="subtle"
+                {...register("password", { required: "Password is required" })}
+              />
+            </Field>
 
-        {isSuccess ? (
-          <div>
-            <h2>Password Reset Successfully</h2>
-            <p>
-              Go to the <Link href="/">homepage</Link>
-            </p>
-          </div>
-        ) : (
-          <Formik
-            validationSchema={toFormikValidationSchema(ResetPassword)}
-            initialValues={{
-              password: "",
-              passwordConfirmation: "",
-              token,
-            }}
-            onSubmit={async (values) => {
-              try {
-                await resetPasswordMutation({ ...values, token })
-                  .then(() => router.push(Routes.MyTripsPage().href))
-                  .catch((e) => console.log(e))
-              } catch (error) {
-                if (error.name === "ResetPasswordError") {
-                  setFormError(error.message)
-                } else {
-                  setFormError("Sorry, we had an unexpected error. Please try again.")
-                }
-              }
-            }}
-          >
-            {({ handleSubmit, handleChange, isSubmitting, errors, touched, values }) => (
-              <form onSubmit={handleSubmit}>
-                <VStack gap={4}>
-                  <FormControl isInvalid={!!errors.password && touched.password}>
-                    <FormLabel htmlFor="password">New Password</FormLabel>
-                    <Field
-                      as={Input}
-                      name="password"
-                      pr="4.5rem"
-                      type="password"
-                      placeholder="Password"
-                      value={values.password}
-                      onChange={handleChange}
-                    />
-                    <FormErrorMessage>{errors.password}</FormErrorMessage>
-                  </FormControl>
+            <Field
+              label="Confirm Password"
+              invalid={!!errors.confirmPassword}
+              errorText={errors.confirmPassword?.message}
+            >
+              <PasswordInput
+                variant="subtle"
+                {...register("confirmPassword", { required: "Confirm password is required" })}
+              />
+            </Field>
 
-                  <FormControl isInvalid={!!errors.password && touched.password}>
-                    <FormLabel htmlFor="password">Confirm New Password</FormLabel>
-                    <Field
-                      as={Input}
-                      name="passwordConfirmation"
-                      pr="4.5rem"
-                      type="password"
-                      placeholder="Confirm your password"
-                      value={values.passwordConfirmation}
-                      onChange={handleChange}
-                    />
-                    <FormErrorMessage>{errors.passwordConfirmation}</FormErrorMessage>
-                  </FormControl>
+            <Show when={formError}>
+              <div role="alert" style={{ color: "red" }}>
+                {formError}
+              </div>
+            </Show>
 
-                  <Button
-                    w="100%"
-                    mt="1rem"
-                    type="submit"
-                    variant="primary"
-                    disabled={isSubmitting}
-                  >
-                    Reset Password
-                  </Button>
-
-                  {formError && (
-                    <div role="alert" style={{ color: "red" }}>
-                      {formError}
-                    </div>
-                  )}
-                </VStack>
-              </form>
-            )}
-          </Formik>
-        )}
+            <Button type="submit" w="full" onClick={onSubmit}>
+              Send Reset Password Instructions
+            </Button>
+          </Stack>
+        </form>
       </Flex>
     </Box>
   )

@@ -11,6 +11,7 @@ import { PasswordInput } from "src/components/ui/password-input"
 import Header from "src/core/components/Header"
 import { z } from "zod"
 import signup from "../mutations/signup"
+import { Signup } from "../validations"
 import { GoogleLogin } from "./GoogleLogin"
 import { OrDivider } from "./OrDivider"
 
@@ -24,13 +25,7 @@ export const SignupForm = (_props: SignupFormProps) => {
 
   const [formError, setFormError] = useState("")
 
-  const signupformSchema = z.object({
-    name: z.string().min(1, { message: "Name is required" }),
-    email: z.string().email({ message: "Email is required" }),
-    password: z.string().min(1, { message: "Password is required" }),
-  })
-
-  type SignupFormValues = z.infer<typeof signupformSchema>
+  type SignupFormValues = z.infer<typeof Signup>
 
   const {
     register,
