@@ -74,12 +74,14 @@ export const ResetPasswordForm = (_props: ResetPasswordFormProps) => {
 
             <Field
               label="Confirm Password"
-              invalid={!!errors.confirmPassword}
-              errorText={errors.confirmPassword?.message}
+              invalid={!!errors.passwordConfirmation}
+              errorText={errors.passwordConfirmation?.message}
             >
               <PasswordInput
                 variant="subtle"
-                {...register("confirmPassword", { required: "Confirm password is required" })}
+                {...register("passwordConfirmation", {
+                  required: "Password confirmation is required",
+                })}
               />
             </Field>
 
