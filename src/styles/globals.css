@@ -189,6 +189,10 @@ i {
   color: var(--chakra-colors-fg-muted);
 }
 
+.react-datapicker__input-text:not(:placeholder-shown) {
+  color: white; /* Change color when input has a value */
+}
+
 .react-datepicker__header {
   background-color: white !important;
   border-bottom: 0px !important;
@@ -258,22 +262,6 @@ i {
   overflow-y: scroll;
 }
 
-#destination,
-#origin,
-#extras,
-#group > div,
-.react-datepicker-wrapper > div > input,
-#activity > div,
-#budget > div,
-#distance > div,
-#specactivity,
-#touristy > div {
-  /* border: 0px;
-  background: rgba(0, 0, 0, 0.5); */
-  /* border-radius: 5px; */
-  /* font-weight: 600; */
-}
-
 .css-hfbj6y > hr {
   border: 0px;
 }
@@ -308,4 +296,9 @@ i {
   object-fit: cover;
   height: 100%;
   width: 100%;
+}
+
+.privacyPolicy {
+  background-color: white;
+  padding: 2rem;
 }

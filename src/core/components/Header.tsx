@@ -1,22 +1,10 @@
 "use client"
 
+import { MenuContent, MenuItem, MenuRoot, MenuSeparator, MenuTrigger } from "@/components/ui/menu"
 import { useSession } from "@blitzjs/auth"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  IconButton,
-  MenuContent,
-  MenuItem,
-  MenuRoot,
-  MenuSeparator,
-  MenuTrigger,
-  Show,
-  Text,
-} from "@chakra-ui/react"
+import { Box, Button, Flex, HStack, IconButton, Show, Text } from "@chakra-ui/react"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import mixpanel from "mixpanel-browser"
@@ -83,6 +71,7 @@ export default function Header({ theme = "white", showAuth = true }) {
               <FontAwesomeIcon icon={faBars} height="24px" />
             </IconButton>
           </MenuTrigger>
+          {/* @ts-ignore */}
           <MenuContent>
             {/* @ts-ignore */}
             <MenuItem value="Itineraries" asChild>

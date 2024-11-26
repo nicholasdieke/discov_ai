@@ -1,13 +1,11 @@
+import { EmptyState } from "@/components/ui/empty-state"
 import { Routes } from "@blitzjs/next"
-import { Box, Flex, Heading } from "@chakra-ui/react"
+import { Box, Group } from "@chakra-ui/react"
 import { useRouter } from "next/router"
-import "react-datepicker/dist/react-datepicker.css"
+import { LuMapPinOff } from "react-icons/lu"
 import { Button } from "src/components/ui/button"
 import Header from "src/core/components/Header"
 
-// ------------------------------------------------------
-// This page is rendered if a route match is not found
-// ------------------------------------------------------
 export default function Page404() {
   const router = useRouter()
 
@@ -15,20 +13,19 @@ export default function Page404() {
     <Box backgroundColor="#1a1c21" h="100%" minH="100vh" color="white" overflow="hidden">
       <Box h="100%" minH="100vh" px={{ base: "2rem", lg: "7.5rem" }}>
         <Header />
-        <Flex
-          alignItems={"center"}
+        <EmptyState
+          size="lg"
+          icon={<LuMapPinOff />}
+          title="Oops!"
+          description="Sorry, this page does not exist."
+          display="flex"
+          alignItems="center"
           justifyContent="center"
-          mt={{ base: "1rem", md: "6rem" }}
-          w="100%"
-          flexDir="column"
         >
-          <Heading color="white" size="lg" textAlign="center" mt="5rem" mb="1rem">
-            Sorry, this page does not exist.
-          </Heading>
-          <Button mt="1rem" width="200px" onClick={() => router.push(Routes.Home())}>
-            Go Home!
-          </Button>
-        </Flex>
+          <Group>
+            <Button onClick={() => router.push(Routes.Home())}>Go Home</Button>
+          </Group>
+        </EmptyState>
       </Box>
     </Box>
   )
