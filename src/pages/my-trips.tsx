@@ -49,7 +49,7 @@ export default function MyTripsPage() {
             </Show>
             <Show when={!!trips && trips.length && !loading}>
               <Stack gap={5} direction="row" wrap="wrap" w="full" mb="3rem">
-                {trips.map((trip) => (
+                {trips!.map((trip) => (
                   <TripCard key={trip.id} trip={trip} />
                 ))}
               </Stack>

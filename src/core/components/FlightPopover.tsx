@@ -1,19 +1,22 @@
-import { Button, Flex, IconButton, Input } from "@chakra-ui/react"
-import { faChevronRight, faLocationDot, faPlaneDeparture } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import mixpanel from "mixpanel-browser"
-import { useRouter } from "next/router"
-import { useEffect, useRef, useState } from "react"
-import "react-datepicker/dist/react-datepicker.css"
-import { InputGroup } from "src/components/ui/input-group"
 import {
+  Flex,
+  IconButton,
+  Input,
   PopoverArrow,
   PopoverBody,
   PopoverContent,
   PopoverRoot,
   PopoverTitle,
   PopoverTrigger,
-} from "src/components/ui/popover"
+} from "@chakra-ui/react"
+import { faChevronRight, faLocationDot, faPlaneDeparture } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import mixpanel from "mixpanel-browser"
+import { useRouter } from "next/router"
+import { useEffect, useRef, useState } from "react"
+import "react-datepicker/dist/react-datepicker.css"
+import { Button } from "src/components/ui/button"
+import { InputGroup } from "src/components/ui/input-group"
 
 const FlightPopover = ({ myTrip, latLong }) => {
   const autoCompleteRef = useRef<google.maps.places.Autocomplete>()
@@ -131,17 +134,17 @@ const FlightPopover = ({ myTrip, latLong }) => {
       placement="bottom"
       closeOnInteractOutside={false}
     >
-      <PopoverTrigger asChild>
+      <PopoverTrigger>
         <Button onClick={() => mixpanel.track("Opened Flights")}>
           <FontAwesomeIcon icon={faPlaneDeparture} height="16px" />
           See Flights
           <FontAwesomeIcon icon={faChevronRight} height="16px" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent p={5} bg="gray.700" color="#ffffffdb" borderColor="#ffffff70">
+      <PopoverContent>
         <PopoverArrow />
         <PopoverBody>
-          <PopoverTitle fontWeight="medium">Departure city or airport</PopoverTitle>
+          <PopoverTitle>Departure city or airport</PopoverTitle>
           <Flex alignItems="flex-end">
             <InputGroup startElement={<FontAwesomeIcon icon={faLocationDot} height="20px" />}>
               <Input
@@ -155,7 +158,6 @@ const FlightPopover = ({ myTrip, latLong }) => {
               />
             </InputGroup>
             <IconButton
-              variant="primary"
               aria-label="Search Flights"
               disabled={!origin}
               onClick={() =>

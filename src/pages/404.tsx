@@ -1,7 +1,8 @@
 import { Routes } from "@blitzjs/next"
-import { Box, Button, Flex, Heading } from "@chakra-ui/react"
+import { Box, Flex, Heading } from "@chakra-ui/react"
 import { useRouter } from "next/router"
 import "react-datepicker/dist/react-datepicker.css"
+import { Button } from "src/components/ui/button"
 import Header from "src/core/components/Header"
 
 // ------------------------------------------------------
@@ -24,12 +25,7 @@ export default function Page404() {
           <Heading color="white" size="lg" textAlign="center" mt="5rem" mb="1rem">
             Sorry, this page does not exist.
           </Heading>
-          <Button
-            variant="primary"
-            mt="1rem"
-            width="200px"
-            onClick={() => router.push(Routes.Home())}
-          >
+          <Button mt="1rem" width="200px" onClick={() => router.push(Routes.Home())}>
             Go Home!
           </Button>
         </Flex>

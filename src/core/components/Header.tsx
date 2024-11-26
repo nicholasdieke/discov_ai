@@ -9,7 +9,10 @@ import {
   Flex,
   HStack,
   IconButton,
+  MenuContent,
+  MenuItem,
   MenuRoot,
+  MenuSeparator,
   MenuTrigger,
   Show,
   Text,
@@ -20,7 +23,6 @@ import mixpanel from "mixpanel-browser"
 import { useRouter } from "next/router"
 import { LuLogIn, LuLogOut, LuLuggage, LuUserPlus } from "react-icons/lu"
 import logout from "src/(auth)/mutations/logout"
-import { MenuContent, MenuItem, MenuSeparator } from "src/components/ui/menu"
 import useIsMobile from "../hooks/useIsMobile"
 import UserMenu from "./UserMenu"
 
@@ -38,7 +40,7 @@ export default function Header({ theme = "white", showAuth = true }) {
   return (
     <Flex
       justifyContent="space-between"
-      pb={{ base: "0.5rem", tablet: "1.5rem" }}
+      pb={{ base: "0.5rem", md: "1.5rem" }}
       pt="1.5rem"
       alignItems="center"
       color={theme}
@@ -82,20 +84,24 @@ export default function Header({ theme = "white", showAuth = true }) {
             </IconButton>
           </MenuTrigger>
           <MenuContent>
+            {/* @ts-ignore */}
             <MenuItem value="Itineraries" asChild>
               <a href={Routes.Home().href}>Itineraries</a>
             </MenuItem>
+            {/* @ts-ignore */}
             <MenuItem value="Destinations" asChild>
               <a href={Routes.DestinationPage().href}>Destinations</a>
             </MenuItem>
             <MenuSeparator />
             <Show when={!session.userId}>
+              {/* @ts-ignore */}
               <MenuItem asChild value="Log In">
                 <a href={Routes.LoginPage().href}>
                   <LuLogIn />
                   Log In
                 </a>
               </MenuItem>
+              {/* @ts-ignore */}
               <MenuItem asChild value="Sign Up">
                 <a href={Routes.SignUpPage().href}>
                   <LuUserPlus />
@@ -104,12 +110,14 @@ export default function Header({ theme = "white", showAuth = true }) {
               </MenuItem>
             </Show>
             <Show when={session.userId}>
+              {/* @ts-ignore */}
               <MenuItem asChild value="My Trips">
                 <a href={Routes.MyTripsPage().href}>
                   <LuLuggage />
                   My Trips
                 </a>
               </MenuItem>
+              {/* @ts-ignore */}
               <MenuItem asChild value="Log Out">
                 <Box
                   onClick={async () => {

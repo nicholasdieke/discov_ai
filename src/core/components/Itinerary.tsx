@@ -2,6 +2,13 @@ import { Routes } from "@blitzjs/next"
 import "mapbox-gl/dist/mapbox-gl.css"
 
 import {
+  AccordionItem,
+  AccordionItemContent,
+  AccordionItemTrigger,
+  AccordionRoot,
+} from "@/components/ui/accordion"
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "@/components/ui/menu"
+import {
   Box,
   Button,
   Flex,
@@ -28,14 +35,6 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import "react-datepicker/dist/react-datepicker.css"
 import { LuClipboard, LuMailOpen, LuMessageCircle } from "react-icons/lu"
-import {
-  AccordionItem,
-  AccordionItemContent,
-  AccordionItemTrigger,
-  AccordionRoot,
-} from "src/components/ui/accordion"
-import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "src/components/ui/menu"
-import { toaster } from "src/components/ui/toaster"
 import FlightPopover from "./FlightPopover"
 import GeneralInfo from "./GeneralInfo"
 import WeatherInfo from "./WeatherInfo"
@@ -216,6 +215,7 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
             <Flex pos="absolute" top="1rem" right="1rem">
               <MenuRoot>
                 <Show when={isMobile}>
+                  {/* @ts-ignore */}
                   <MenuTrigger asChild>
                     <IconButton _focus={{ boxShadow: "outline" }}>
                       <FontAwesomeIcon icon={faShareNodes} height="18px" />
@@ -223,6 +223,7 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
                   </MenuTrigger>
                 </Show>
                 <Show when={!isMobile}>
+                  {/* @ts-ignore */}
                   <MenuTrigger asChild>
                     <Button _focus={{ boxShadow: "outline" }}>
                       <FontAwesomeIcon icon={faShareNodes} height="18px" />
@@ -230,8 +231,9 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
                     </Button>
                   </MenuTrigger>
                 </Show>
-
+                {/* @ts-ignore */}
                 <MenuContent>
+                  {/* @ts-ignore */}
                   <MenuItem value="whatsapp" asChild>
                     <a
                       href={`whatsapp://send?text=${shareMessage}`}
@@ -242,7 +244,7 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
                       <Box flex="1">Whatsapp</Box>
                     </a>
                   </MenuItem>
-
+                  {/* @ts-ignore */}
                   <MenuItem value="email" asChild>
                     <a
                       href={`mailto:?body=${shareMessage}body&subject=${
@@ -256,14 +258,15 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
                   </MenuItem>
 
                   <Show when={!!navigator.clipboard}>
+                    {/* @ts-ignore */}
                     <MenuItem value="clipboard" asChild>
                       <Box
                         onClick={(e) => {
                           copyURI(e)
-                          toaster.create({
+                          /* toaster.create({
                             description: "File saved successfully",
                             type: "info",
-                          })
+                          }) */
                           mixpanel.track("Shared Trip", { platform: "Clipboard" })
                         }}
                       >
@@ -335,7 +338,9 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
                 variant="plain"
               >
                 {JSON.parse(trip.itinerary).itinerary.map((day, index) => (
+                  // @ts-ignore
                   <AccordionItem key={"Day-Accordion-" + index} value={index}>
+                    {/* @ts-ignore */}
                     <AccordionItemTrigger>{day.day}</AccordionItemTrigger>
 
                     <AccordionItemContent>

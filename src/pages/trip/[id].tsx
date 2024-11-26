@@ -2,7 +2,7 @@ import { BlitzPage, Routes } from "@blitzjs/next"
 import { invoke } from "@blitzjs/rpc"
 import "mapbox-gl/dist/mapbox-gl.css"
 
-import { Box, Button, Flex, Heading, Show, Spinner, Text } from "@chakra-ui/react"
+import { Box, Flex, Heading, Show, Spinner, Text } from "@chakra-ui/react"
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Trip } from "db"
@@ -14,6 +14,7 @@ import Script from "next/script"
 import { useCallback, useEffect, useRef, useState } from "react"
 import "react-datepicker/dist/react-datepicker.css"
 import { renderToStaticMarkup } from "react-dom/server"
+import { Button } from "src/components/ui/button"
 import Itinerary from "src/core/components/Itinerary"
 import useIsMobile from "src/core/hooks/useIsMobile"
 import getTrip from "src/core/queries/getTrip"
@@ -269,12 +270,7 @@ const TripPage: BlitzPage = () => {
             <Heading color="#ffffffdb" size="lg" textAlign="center" mt="5rem" mb="1rem">
               Sorry, this trip does not exist.
             </Heading>
-            <Button
-              variant="primary"
-              mt="1rem"
-              width="200px"
-              onClick={() => router.push(Routes.Home())}
-            >
+            <Button mt="1rem" width="200px" onClick={() => router.push(Routes.Home())}>
               Go Home!
             </Button>
           </Flex>

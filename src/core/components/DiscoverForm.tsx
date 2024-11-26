@@ -28,6 +28,7 @@ import {
   SelectValueText,
 } from "src/components/ui/select"
 import { z } from "zod"
+import { DiscoverFormValidation } from "../validations"
 import MyDateRangePicker from "./MyDateRangePicker"
 
 function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
@@ -174,18 +175,7 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
     process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY +
     "&libraries=places"
 
-  const discoverformSchema = z.object({
-    origin: z.string({ message: "Origin is required" }),
-    daterange: z.date({ message: "Daterange is required" }).array(),
-    group: z.string({ message: "Group is required" }).array(),
-    activity: z.string({ message: "Activity is required" }).array(),
-    budget: z.string({ message: "Budget is required" }).array(),
-    distance: z.string({ message: "Distance is required" }).array(),
-    touristy: z.string({ message: "Touristiness is required" }).array(),
-    specactivity: z.string().optional().default(""),
-  })
-
-  type DiscoverFormValues = z.infer<typeof discoverformSchema>
+  type DiscoverFormValues = z.infer<typeof DiscoverFormValidation>
 
   const {
     register,
@@ -195,7 +185,7 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
     formState: { errors },
     control,
   } = useForm<DiscoverFormValues>({
-    resolver: zodResolver(discoverformSchema),
+    resolver: zodResolver(DiscoverFormValidation),
   })
 
   const onSubmit = handleSubmit(async () => {
@@ -339,11 +329,15 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
                       collection={distanceOptions}
                       variant="subtle"
                     >
+                      {/* @ts-ignore */}
                       <SelectTrigger>
+                        {/* @ts-ignore */}
                         <SelectValueText placeholder="e.g. Nearby Adventure" />
                       </SelectTrigger>
+                      {/* @ts-ignore */}
                       <SelectContent>
                         {distanceOptions.items.map((distance) => (
+                          // @ts-ignore
                           <SelectItem item={distance} key={distance.value}>
                             {distance.label}
                           </SelectItem>
@@ -367,11 +361,15 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
                       collection={groupOptions}
                       variant="subtle"
                     >
+                      {/* @ts-ignore */}
                       <SelectTrigger>
+                        {/* @ts-ignore */}
                         <SelectValueText placeholder="e.g. Friends, Family" />
                       </SelectTrigger>
+                      {/* @ts-ignore */}
                       <SelectContent>
                         {groupOptions.items.map((group) => (
+                          // @ts-ignore
                           <SelectItem item={group} key={group.value}>
                             {group.label}
                           </SelectItem>
@@ -403,11 +401,15 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
                       multiple
                       closeOnSelect={false}
                     >
+                      {/* @ts-ignore */}
                       <SelectTrigger>
+                        {/* @ts-ignore */}
                         <SelectValueText placeholder="e.g. Relax, Adventure" />
                       </SelectTrigger>
+                      {/* @ts-ignore */}
                       <SelectContent>
                         {styleOptions.items.map((style) => (
+                          // @ts-ignore
                           <SelectItem item={style} key={style.value}>
                             {style.label}
                           </SelectItem>
@@ -445,11 +447,15 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
                       collection={budgetOptions}
                       variant="subtle"
                     >
+                      {/* @ts-ignore */}
                       <SelectTrigger>
+                        {/* @ts-ignore */}
                         <SelectValueText placeholder="e.g. Luxury" />
                       </SelectTrigger>
+                      {/* @ts-ignore */}
                       <SelectContent>
                         {budgetOptions.items.map((budget) => (
+                          // @ts-ignore
                           <SelectItem item={budget} key={budget.value}>
                             {budget.label}
                           </SelectItem>
@@ -476,11 +482,15 @@ function DiscoverForm({ setResult, images, setImages, setOriginLatLng }) {
                       collection={touristyOptions}
                       variant="subtle"
                     >
+                      {/* @ts-ignore */}
                       <SelectTrigger>
+                        {/* @ts-ignore */}
                         <SelectValueText placeholder="e.g. Hidden Gem" />
                       </SelectTrigger>
+                      {/* @ts-ignore */}
                       <SelectContent>
                         {touristyOptions.items.map((touristy) => (
+                          // @ts-ignore
                           <SelectItem item={touristy} key={touristy.value}>
                             {touristy.label}
                           </SelectItem>

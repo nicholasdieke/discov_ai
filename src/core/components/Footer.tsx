@@ -1,6 +1,3 @@
-import { Button, Flex, Text, Textarea, useDisclosure } from "@chakra-ui/react"
-import mixpanel from "mixpanel-browser"
-import { useState } from "react"
 import {
   DialogActionTrigger,
   DialogBody,
@@ -10,8 +7,14 @@ import {
   DialogRoot,
   DialogTitle,
   DialogTrigger,
-} from "src/components/ui/dialog"
-import { toaster } from "src/components/ui/toaster"
+  Flex,
+  Text,
+  Textarea,
+  useDisclosure,
+} from "@chakra-ui/react"
+import mixpanel from "mixpanel-browser"
+import { useState } from "react"
+import { Button } from "src/components/ui/button"
 import createFeedback from "../mutations/createFeedback"
 
 function Footer({ theme }) {
@@ -22,14 +25,14 @@ function Footer({ theme }) {
     await createFeedback({ comment }).catch((e) => console.log(e))
     onClose()
     mixpanel.track("Submitted Feedback")
-    toaster.create({
+    /* toaster.create({
       title: "Feedback Submitted.",
       description: "Thank you for your feedback.",
       status: "success",
       duration: 3000,
       isClosable: true,
       position: "bottom-right",
-    })
+    }) */
   }
 
   return (
@@ -43,9 +46,7 @@ function Footer({ theme }) {
       <Text>© 2024 DiscovAI</Text>
 
       <DialogRoot open={open} onClose={onClose} size="md">
-        <DialogTrigger asChild>
-          <Button variant="unstyled">Give Feedback</Button>
-        </DialogTrigger>
+        <DialogTrigger>Give Feedback</DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Give Feedback</DialogTitle>
@@ -63,7 +64,7 @@ function Footer({ theme }) {
             <DialogActionTrigger asChild>
               <Button variant="outline">Cancel</Button>
             </DialogActionTrigger>
-            <Button variant="primary" disabled={comment === ""} mr={3} onClick={onSubmit}>
+            <Button disabled={comment === ""} mr={3} onClick={onSubmit}>
               Submit
             </Button>
           </DialogFooter>

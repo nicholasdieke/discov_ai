@@ -1,5 +1,6 @@
 "use client"
-import { Button, Image } from "@chakra-ui/react"
+import { Image } from "@chakra-ui/react"
+import { Button } from "src/components/ui/button"
 
 export function GoogleLogin() {
   return (

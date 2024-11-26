@@ -1,7 +1,7 @@
+import { Tag } from "@/components/ui/tag"
 import { Routes } from "@blitzjs/next"
 import { Card, Heading, HStack, Image, Stack, Text } from "@chakra-ui/react"
 import { useRouter } from "next/router"
-import { Tag } from "src/components/ui/tag"
 
 function TripCard({ trip }) {
   const router = useRouter()

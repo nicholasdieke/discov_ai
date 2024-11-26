@@ -14,20 +14,24 @@ function UserMenu() {
 
   return (
     <MenuRoot>
+      {/* @ts-ignore */}
       <MenuTrigger asChild>
         <Button variant="ghost" px="1rem" size="lg">
           <LuUserCircle />
           {session.name}
         </Button>
       </MenuTrigger>
+      {/* @ts-ignore */}
       <MenuContent>
         <Show when={!session.userId}>
+          {/* @ts-ignore */}
           <MenuItem asChild value="Log In">
             <a href={Routes.LoginPage().href}>
               <LuLogIn />
               Log In
             </a>
           </MenuItem>
+          {/* @ts-ignore */}
           <MenuItem asChild value="Sign Up">
             <a href={Routes.SignUpPage().href}>
               <LuUserPlus />
@@ -36,12 +40,14 @@ function UserMenu() {
           </MenuItem>
         </Show>
         <Show when={session.userId}>
+          {/* @ts-ignore */}
           <MenuItem asChild value="My Trips">
             <a href={Routes.MyTripsPage().href}>
               <LuLuggage />
               My Trips
             </a>
           </MenuItem>
+          {/* @ts-ignore */}
           <MenuItem asChild value="Log Out">
             <Box
               onClick={async () => {

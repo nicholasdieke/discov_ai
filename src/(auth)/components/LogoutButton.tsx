@@ -1,7 +1,7 @@
 "use client"
 import { useMutation } from "@blitzjs/rpc"
-import { Button } from "@chakra-ui/react"
 import { useRouter } from "next/navigation"
+import { Button } from "src/components/ui/button"
 import logout from "../mutations/logout"
 
 export function LogoutButton({ theme = "white" }) {

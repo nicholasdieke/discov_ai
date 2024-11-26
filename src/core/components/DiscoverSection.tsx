@@ -1,10 +1,11 @@
-import { Box, Button, Flex, Heading, Show, Text, VStack } from "@chakra-ui/react"
+import { Box, Flex, Heading, Show, Text, VStack } from "@chakra-ui/react"
 import { faSearch } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import mapboxgl from "mapbox-gl"
 import "mapbox-gl/dist/mapbox-gl.css"
 import mixpanel from "mixpanel-browser"
 import { RefObject, useEffect, useRef, useState } from "react"
+import { Button } from "src/components/ui/button"
 import useIsMobile from "../hooks/useIsMobile"
 import DiscoverForm from "./DiscoverForm"
 
@@ -160,7 +161,6 @@ function DiscoverSection() {
           </Flex>
           <Button
             mt="2rem"
-            variant="primary"
             onClick={() => {
               setResult([])
               setImages([])
