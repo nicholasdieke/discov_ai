@@ -2,7 +2,6 @@
 import { useMutation } from "@blitzjs/rpc"
 import { Box, Flex, Heading, Input, Show, Stack } from "@chakra-ui/react"
 import { PromiseReturnType } from "blitz"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Button } from "src/components/ui/button"
@@ -15,16 +14,12 @@ type ForgotPasswordFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof forgotPassword>) => void
 }
 
-export const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
+export const ForgotPasswordForm = (_props: ForgotPasswordFormProps) => {
   const [forgotPasswordMutation] = useMutation(forgotPassword)
-  const router = useRouter()
-
-  const [show, setShow] = useState(false)
   const [formError, setFormError] = useState("")
-  const handleClick = () => setShow(!show)
 
   const forgotPasswordSchema = z.object({
-    email: z.string({ message: "Email is required" }),
+    email: z.string().email({ message: "Email is required" }),
   })
 
   type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>
@@ -32,10 +27,8 @@ export const ForgotPasswordForm = (props: ForgotPasswordFormProps) => {
   const {
     register,
     handleSubmit,
-    setValue,
     getValues,
     formState: { errors },
-    control,
   } = useForm<ForgotPasswordValues>()
 
   const onSubmit = handleSubmit(async () => {

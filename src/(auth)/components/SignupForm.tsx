@@ -18,18 +18,16 @@ type SignupFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof signup>) => void
 }
 
-export const SignupForm = (props: SignupFormProps) => {
+export const SignupForm = (_props: SignupFormProps) => {
   const [signupMutation] = useMutation(signup)
   const router = useRouter()
 
-  const [show, setShow] = useState(false)
   const [formError, setFormError] = useState("")
-  const handleClick = () => setShow(!show)
 
   const signupformSchema = z.object({
-    name: z.string({ message: "Name is required" }),
-    email: z.string({ message: "Email is required" }),
-    password: z.string({ message: "Password is required" }),
+    name: z.string().min(1, { message: "Name is required" }),
+    email: z.string().email({ message: "Email is required" }),
+    password: z.string().min(1, { message: "Password is required" }),
   })
 
   type SignupFormValues = z.infer<typeof signupformSchema>
@@ -37,10 +35,8 @@ export const SignupForm = (props: SignupFormProps) => {
   const {
     register,
     handleSubmit,
-    setValue,
     getValues,
     formState: { errors },
-    control,
   } = useForm<SignupFormValues>()
 
   const onSubmit = handleSubmit(async () => {

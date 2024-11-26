@@ -18,17 +18,15 @@ type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
 }
 
-export const LoginForm = (props: LoginFormProps) => {
+export const LoginForm = (_props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
   const router = useRouter()
 
-  const [show, setShow] = useState(false)
   const [formError, setFormError] = useState("")
-  const handleClick = () => setShow(!show)
 
   const loginformSchema = z.object({
-    email: z.string({ message: "Email is required" }),
-    password: z.string({ message: "Password is required" }),
+    email: z.string().email({ message: "Email is required" }),
+    password: z.string().min(1, { message: "Password is required" }),
   })
 
   type LoginFormValues = z.infer<typeof loginformSchema>
@@ -36,10 +34,8 @@ export const LoginForm = (props: LoginFormProps) => {
   const {
     register,
     handleSubmit,
-    setValue,
     getValues,
     formState: { errors },
-    control,
   } = useForm<LoginFormValues>()
 
   const onSubmit = handleSubmit(async () => {
