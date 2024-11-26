@@ -11,6 +11,8 @@ import { PasswordInput } from "src/components/ui/password-input"
 import Header from "src/core/components/Header"
 import { z } from "zod"
 import signup from "../mutations/signup"
+import { GoogleLogin } from "./GoogleLogin"
+import { OrDivider } from "./OrDivider"
 
 type SignupFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof signup>) => void
