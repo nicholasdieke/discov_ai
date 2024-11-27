@@ -1,4 +1,5 @@
 "use client"
+import Footer from "@/core/components/Footer"
 import { BlitzPage } from "@blitzjs/next"
 import { Box, Flex, Heading, Text, VStack } from "@chakra-ui/react"
 import mixpanel from "mixpanel-browser"
@@ -63,7 +64,7 @@ const Home: BlitzPage = () => {
             src="https://www.dropbox.com/scl/fi/uxqo4kgk4ka9fw4hq8ck9/production_id_4328789-720p.mp4?rlkey=1rxw10i0ntxhh0f5v25c3cwc6&raw=1"
           />
         </Box>
-        <Box h="100%" minH="100vh" px={{ base: "1.5rem", lg: "6rem" }} bgColor="#00000033">
+        <Box h="100%" minH="110vh" px={{ base: "1.5rem", lg: "6rem" }} bgColor="#00000033">
           <Header />
           <Flex alignItems={"center"} w="100%" flexDir={{ base: "column", md: "row" }} minH="90vh">
             <VStack
@@ -110,6 +111,7 @@ const Home: BlitzPage = () => {
               <TripForm />
             </VStack>
           </Flex>
+          <Footer />
         </Box>
       </Box>
     </Box>

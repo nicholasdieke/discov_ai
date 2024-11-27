@@ -1,23 +1,10 @@
-import {
-  DialogActionTrigger,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  DialogTrigger,
-  Flex,
-  Text,
-  Textarea,
-  useDisclosure,
-} from "@chakra-ui/react"
+import { Routes } from "@blitzjs/next"
+import { Flex, HStack, Link, Text, useDisclosure } from "@chakra-ui/react"
 import mixpanel from "mixpanel-browser"
 import { useState } from "react"
-import { Button } from "src/components/ui/button"
 import createFeedback from "../mutations/createFeedback"
 
-function Footer({ theme }) {
+function Footer({ theme = "white" }) {
   mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN)
   const { open, onOpen, onClose } = useDisclosure()
   const [comment, setComment] = useState("")
@@ -39,13 +26,17 @@ function Footer({ theme }) {
     <Flex
       justifyContent="space-between"
       pb={{ base: "0.5rem", md: "1.5rem" }}
-      pt="0.5rem"
-      alignItems="center"
+      pt="1.5rem"
+      alignItems="start"
       color={theme}
     >
-      <Text>© 2024 DiscovAI</Text>
+      <HStack gap="2">
+        <Text>© 2024 DiscovAI</Text>
+        <Text>·</Text>
+        <Link href={Routes.PrivacyPolicyPage().href}>Privacy Policy</Link>
+      </HStack>
 
-      <DialogRoot open={open} onClose={onClose} size="md">
+      {/* <DialogRoot open={open} onClose={onClose} size="md">
         <DialogTrigger>Give Feedback</DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -69,7 +60,7 @@ function Footer({ theme }) {
             </Button>
           </DialogFooter>
         </DialogContent>
-      </DialogRoot>
+      </DialogRoot> */}
     </Flex>
   )
 }
