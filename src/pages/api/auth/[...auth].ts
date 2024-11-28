@@ -9,11 +9,14 @@ export default api(
     errorRedirectUrl: "/",
     strategies: [
       {
+        authenticateOptions: {
+          failureMessage: true,
+        },
         strategy: new GoogleStrategy(
           {
             clientID: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-            callbackURL: "https://www.discovai.com/api/auth/google/callback",
+            callbackURL: "http://localhost:3000/api/auth/google/callback",
             //"http://localhost:3000/api/auth/google/callback",
             scope: "email profile",
           },
