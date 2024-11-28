@@ -15,7 +15,7 @@ export default api(
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
             callbackURL: "https://www.discovai.com/api/auth/google/callback",
             //"http://localhost:3000/api/auth/google/callback",
-            scope: "openid email profile",
+            scope: "email profile",
           },
           async function verify(_issuer, profile, cb) {
             try {
