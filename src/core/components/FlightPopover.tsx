@@ -1,14 +1,5 @@
-import {
-  Flex,
-  IconButton,
-  Input,
-  PopoverArrow,
-  PopoverBody,
-  PopoverContent,
-  PopoverRoot,
-  PopoverTitle,
-  PopoverTrigger,
-} from "@chakra-ui/react"
+import { Field } from "@/components/ui/field"
+import { Box, Collapsible, Flex, IconButton, Input } from "@chakra-ui/react"
 import { faChevronRight, faLocationDot, faPlaneDeparture } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import mixpanel from "mixpanel-browser"
@@ -128,38 +119,40 @@ const FlightPopover = ({ myTrip, latLong }) => {
   }, [])
 
   return (
-    <PopoverRoot
-      open={open}
-      onOpenChange={(e) => setOpen(e.open)}
-      placement="bottom"
-      closeOnInteractOutside={false}
-    >
-      <PopoverTrigger>
-        <Button onClick={() => mixpanel.track("Opened Flights")}>
+    <Collapsible.Root>
+      {/* @ts-ignore */}
+
+      <Collapsible.Trigger asChild>
+        <Button w="full" onClick={() => mixpanel.track("Opened Flights")}>
           <FontAwesomeIcon icon={faPlaneDeparture} height="16px" />
           See Flights
           <FontAwesomeIcon icon={faChevronRight} height="16px" />
         </Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverBody>
-          <PopoverTitle>Departure city or airport</PopoverTitle>
+      </Collapsible.Trigger>
+      <Collapsible.Content>
+        <Box padding="4" borderWidth="1px">
           <Flex alignItems="flex-end">
-            <InputGroup startElement={<FontAwesomeIcon icon={faLocationDot} height="20px" />}>
-              <Input
-                id="destination"
-                name="destination"
-                type="text"
-                placeholder="City or State"
-                value={origin}
-                onChange={(e) => setOrigin(e.target.value)}
-                ref={inputRef}
-              />
-            </InputGroup>
+            <Field label="Departure city or airport">
+              <InputGroup
+                w="full"
+                startElement={<FontAwesomeIcon icon={faLocationDot} height="20px" />}
+              >
+                <Input
+                  id="destination"
+                  name="destination"
+                  type="text"
+                  placeholder="City or State"
+                  value={origin}
+                  variant="subtle"
+                  onChange={(e) => setOrigin(e.target.value)}
+                  ref={inputRef}
+                />
+              </InputGroup>
+            </Field>
             <IconButton
               aria-label="Search Flights"
               disabled={!origin}
+              ml="0.5rem"
               onClick={() =>
                 window.open(
                   !origin
@@ -181,9 +174,9 @@ const FlightPopover = ({ myTrip, latLong }) => {
               <FontAwesomeIcon icon={faPlaneDeparture} height="20px" />
             </IconButton>
           </Flex>
-        </PopoverBody>
-      </PopoverContent>
-    </PopoverRoot>
+        </Box>
+      </Collapsible.Content>
+    </Collapsible.Root>
   )
 }
 

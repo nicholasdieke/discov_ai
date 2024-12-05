@@ -11,6 +11,7 @@ export default api(
       {
         authenticateOptions: {
           failureMessage: true,
+          successMessage: true,
         },
         strategy: new GoogleStrategy(
           {

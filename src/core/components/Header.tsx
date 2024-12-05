@@ -1,10 +1,29 @@
 "use client"
 
-import { MenuContent, MenuItem, MenuRoot, MenuSeparator, MenuTrigger } from "@/components/ui/menu"
+import {
+  DrawerBackdrop,
+  DrawerBody,
+  DrawerCloseTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerRoot,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 import { useSession } from "@blitzjs/auth"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
-import { Box, Button, Flex, HStack, IconButton, Show, Text } from "@chakra-ui/react"
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  IconButton,
+  Separator,
+  Show,
+  Stack,
+  Text,
+} from "@chakra-ui/react"
 import { faBars } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import mixpanel from "mixpanel-browser"
@@ -12,9 +31,15 @@ import { useRouter } from "next/router"
 import { LuLogIn, LuLogOut, LuLuggage, LuUserPlus } from "react-icons/lu"
 import logout from "src/(auth)/mutations/logout"
 import useIsMobile from "../hooks/useIsMobile"
+import ShareButton from "./ShareButton"
 import UserMenu from "./UserMenu"
 
-export default function Header({ theme = "white", showAuth = true }) {
+export default function Header({
+  theme = "white",
+  showAuth = true,
+  showMenu = true,
+  destination = "",
+}) {
   const router = useRouter()
   const currentRoute = router.pathname
   const isMobile = useIsMobile()
@@ -29,7 +54,7 @@ export default function Header({ theme = "white", showAuth = true }) {
     <Flex
       justifyContent="space-between"
       pb={{ base: "0.5rem", md: "1.5rem" }}
-      pt="1.5rem"
+      pt="1rem"
       alignItems="center"
       color={theme}
       w="full"
@@ -40,6 +65,7 @@ export default function Header({ theme = "white", showAuth = true }) {
           router.push(Routes.Home()).catch((e) => console.log(e))
         }}
         className="logo-text"
+        fontSize={{ base: "16px", md: "20px" }}
       >
         DiscovAI
       </Text>
@@ -64,63 +90,65 @@ export default function Header({ theme = "white", showAuth = true }) {
           {showAuth && <UserMenu />}
         </HStack>
       </Show>
-      <Show when={isMobile}>
-        <MenuRoot>
-          <MenuTrigger>
+      <Show when={isMobile && showMenu}>
+        <DrawerRoot size="xs">
+          <DrawerBackdrop />
+          {/* @ts-ignore */}
+          <DrawerTrigger asChild>
             <IconButton aria-label="Options" variant="ghost">
               <FontAwesomeIcon icon={faBars} height="24px" />
             </IconButton>
-          </MenuTrigger>
+          </DrawerTrigger>
           {/* @ts-ignore */}
-          <MenuContent>
-            {/* @ts-ignore */}
-            <MenuItem value="Itineraries" asChild>
-              <a href={Routes.Home().href}>Itineraries</a>
-            </MenuItem>
-            {/* @ts-ignore */}
-            <MenuItem value="Destinations" asChild>
-              <a href={Routes.DestinationPage().href}>Destinations</a>
-            </MenuItem>
-            <MenuSeparator />
-            <Show when={!session.userId}>
-              {/* @ts-ignore */}
-              <MenuItem asChild value="Log In">
-                <a href={Routes.LoginPage().href}>
-                  <LuLogIn />
-                  Log In
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>DiscovAI</DrawerTitle>
+            </DrawerHeader>
+            <DrawerBody zIndex="100">
+              <Stack gap={5}>
+                <a className="menuOption" href={Routes.Home().href}>
+                  Itineraries
                 </a>
-              </MenuItem>
-              {/* @ts-ignore */}
-              <MenuItem asChild value="Sign Up">
-                <a href={Routes.SignUpPage().href}>
-                  <LuUserPlus />
-                  Sign Up
+
+                <a className="menuOption" href={Routes.DestinationPage().href}>
+                  Destinations
                 </a>
-              </MenuItem>
-            </Show>
-            <Show when={session.userId}>
-              {/* @ts-ignore */}
-              <MenuItem asChild value="My Trips">
-                <a href={Routes.MyTripsPage().href}>
-                  <LuLuggage />
-                  My Trips
-                </a>
-              </MenuItem>
-              {/* @ts-ignore */}
-              <MenuItem asChild value="Log Out">
-                <Box
-                  onClick={async () => {
-                    await logoutMutation()
-                    router.reload()
-                  }}
-                >
-                  <LuLogOut />
-                  Log Out
-                </Box>
-              </MenuItem>
-            </Show>
-          </MenuContent>
-        </MenuRoot>
+                <Separator />
+                <Show when={!session.userId}>
+                  <a className="menuOption" href={Routes.LoginPage().href}>
+                    <LuLogIn />
+                    Log In
+                  </a>
+                  <a className="menuOption" href={Routes.SignUpPage().href}>
+                    <LuUserPlus />
+                    Sign Up
+                  </a>
+                </Show>
+                <Show when={session.userId}>
+                  <a className="menuOption" href={Routes.MyTripsPage().href}>
+                    <LuLuggage />
+                    My Trips
+                  </a>
+                  <Box
+                    className="menuOption"
+                    onClick={async () => {
+                      await logoutMutation()
+                      router.reload()
+                    }}
+                  >
+                    <LuLogOut />
+                    Log Out
+                  </Box>
+                </Show>
+              </Stack>
+            </DrawerBody>
+            <DrawerCloseTrigger />
+          </DrawerContent>
+        </DrawerRoot>
+      </Show>
+
+      <Show when={isMobile && !showMenu}>
+        <ShareButton isMobile={isMobile} destination={destination} theme="black" />
       </Show>
     </Flex>
   )

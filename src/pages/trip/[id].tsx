@@ -1,13 +1,13 @@
+import { EmptyState } from "@/components/ui/empty-state"
+import ItineraryDrawer from "@/core/components/ItineraryDrawer"
 import { BlitzPage, Routes } from "@blitzjs/next"
 import { invoke } from "@blitzjs/rpc"
-import "mapbox-gl/dist/mapbox-gl.css"
-
-import { EmptyState } from "@/components/ui/empty-state"
 import { Box, Flex, Group, Show, Spinner, Text } from "@chakra-ui/react"
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Trip } from "db"
 import mapboxgl from "mapbox-gl"
+import "mapbox-gl/dist/mapbox-gl.css"
 import mixpanel from "mixpanel-browser"
 import Head from "next/head"
 import { useRouter } from "next/router"
@@ -68,7 +68,7 @@ const TripPage: BlitzPage = () => {
   var markers: mapboxgl.Marker[] = []
 
   const showMapPin = (lat, lng) => {
-    map.flyTo({ center: [lng, lat], zoom: Math.max(map.getZoom(), 13), duration: 750 })
+    map.flyTo({ center: [lng, lat - 0.01], zoom: Math.max(map.getZoom(), 13), duration: 750 })
 
     if (map) {
       const marker = markers.find(
@@ -169,13 +169,11 @@ const TripPage: BlitzPage = () => {
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/streets-v11",
-        center: [latLong[1], latLong[0]],
-        zoom: myTrip?.destination.includes(",") ? 12 : 6,
+        center: [latLong[1], (latLong[0]! as number) - 0.03],
+        zoom: myTrip?.destination.includes(",") ? 11 : 6,
       })
 
       map.on("load", function () {
-        map.addControl(new mapboxgl.NavigationControl())
-        map.addControl(new mapboxgl.FullscreenControl())
         map.resize()
         createMarkers(map, pins)
       })
@@ -195,13 +193,8 @@ const TripPage: BlitzPage = () => {
     }, [pins])
 
     return (
-      <Box
-        h={isMobile ? "225px" : "100vh"}
-        w={isMobile ? "100%" : "40%"}
-        borderRadius={isMobile ? "7px" : "0px"}
-        overflow="hidden"
-      >
-        <div style={{ height: "100%" }} ref={mapContainerRef} />
+      <Box h="100vh" w={isMobile ? "100%" : "40%"} borderRadius="0px" overflow="hidden">
+        <div style={{ height: "100%", pointerEvents: "auto" }} ref={mapContainerRef} />
       </Box>
     )
   }
@@ -236,18 +229,10 @@ const TripPage: BlitzPage = () => {
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <Script src={script} />
-      <Flex
-        bg="#1E1E1E"
-        minH="100vh"
-        w="100vw"
-        maxW="100vw"
-        overflowX="hidden"
-        color="primary"
-        flexDir="row"
-      >
+      <Flex className="trip-body">
         <Show when={!loading && !!myTrip}>
           <Show when={isMobile}>
-            <Itinerary
+            <ItineraryDrawer
               trip={myTrip}
               map={<MapboxMap />}
               latLong={latLong}

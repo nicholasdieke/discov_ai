@@ -7,18 +7,7 @@ import {
   AccordionItemTrigger,
   AccordionRoot,
 } from "@/components/ui/accordion"
-import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "@/components/ui/menu"
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Heading,
-  IconButton,
-  Show,
-  Text,
-  VStack,
-} from "@chakra-ui/react"
+import { Box, Button, Flex, HStack, Heading, Show, Text, VStack } from "@chakra-ui/react"
 import {
   faBed,
   faCalendarDays,
@@ -26,7 +15,6 @@ import {
   faChevronRight,
   faCircleInfo,
   faMapPin,
-  faShareNodes,
   faSun,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -34,9 +22,9 @@ import mixpanel from "mixpanel-browser"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import "react-datepicker/dist/react-datepicker.css"
-import { LuClipboard, LuMailOpen, LuMessageCircle } from "react-icons/lu"
 import FlightPopover from "./FlightPopover"
 import GeneralInfo from "./GeneralInfo"
+import ShareButton from "./ShareButton"
 import WeatherInfo from "./WeatherInfo"
 
 const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
@@ -46,10 +34,6 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
   const [showItinerary, setShowItinerary] = useState(true)
 
   const router = useRouter()
-
-  const shareMessage = `Check out the trip to ${
-    trip?.destination.split(", ")[0]
-  } I made on DiscovAI! www.discovai.com${router.asPath}`
 
   const getWeather = (destination, fromDate, toDate) => {
     fetch(
@@ -74,13 +58,6 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
     day: "2-digit",
     month: "short",
     year: "numeric",
-  }
-  function copyURI(evt) {
-    evt.preventDefault()
-    navigator.clipboard.writeText(shareMessage).then(
-      () => {},
-      () => {}
-    )
   }
 
   const getCountryInfo = (country) => {
@@ -213,70 +190,7 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
               </Text>
             </Flex>
             <Flex pos="absolute" top="1rem" right="1rem">
-              <MenuRoot>
-                <Show when={isMobile}>
-                  {/* @ts-ignore */}
-                  <MenuTrigger asChild>
-                    <IconButton _focus={{ boxShadow: "outline" }}>
-                      <FontAwesomeIcon icon={faShareNodes} height="18px" />
-                    </IconButton>
-                  </MenuTrigger>
-                </Show>
-                <Show when={!isMobile}>
-                  {/* @ts-ignore */}
-                  <MenuTrigger asChild>
-                    <Button _focus={{ boxShadow: "outline" }}>
-                      <FontAwesomeIcon icon={faShareNodes} height="18px" />
-                      Share
-                    </Button>
-                  </MenuTrigger>
-                </Show>
-                {/* @ts-ignore */}
-                <MenuContent>
-                  {/* @ts-ignore */}
-                  <MenuItem value="whatsapp" asChild>
-                    <a
-                      href={`whatsapp://send?text=${shareMessage}`}
-                      data-action="share/whatsapp/share"
-                      onClick={() => mixpanel.track("Shared Trip", { platform: "WhatsApp" })}
-                    >
-                      <LuMessageCircle />
-                      <Box flex="1">Whatsapp</Box>
-                    </a>
-                  </MenuItem>
-                  {/* @ts-ignore */}
-                  <MenuItem value="email" asChild>
-                    <a
-                      href={`mailto:?body=${shareMessage}body&subject=${
-                        trip.destination.split(",")[0]
-                      } Trip | DiscovAI`}
-                      onClick={() => mixpanel.track("Shared Trip", { platform: "Email" })}
-                    >
-                      <LuMailOpen />
-                      <Box flex="1">Email</Box>
-                    </a>
-                  </MenuItem>
-
-                  <Show when={!!navigator.clipboard}>
-                    {/* @ts-ignore */}
-                    <MenuItem value="clipboard" asChild>
-                      <Box
-                        onClick={(e) => {
-                          copyURI(e)
-                          /* toaster.create({
-                            description: "File saved successfully",
-                            type: "info",
-                          }) */
-                          mixpanel.track("Shared Trip", { platform: "Clipboard" })
-                        }}
-                      >
-                        <LuClipboard />
-                        <Box flex="1">Clipboard</Box>
-                      </Box>
-                    </MenuItem>
-                  </Show>
-                </MenuContent>
-              </MenuRoot>
+              <ShareButton isMobile={isMobile} destination={trip.destination} />
             </Flex>
 
             <VStack gap="0.5rem" color="primary" alignItems="flex-start">
