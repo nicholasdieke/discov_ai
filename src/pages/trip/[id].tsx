@@ -169,7 +169,7 @@ const TripPage: BlitzPage = () => {
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/mapbox/streets-v11",
-        center: [latLong[1], (latLong[0]! as number) - 0.03],
+        center: [parseFloat(latLong[1] || "0"), parseFloat(latLong[0] || "0") - 0.03],
         zoom: myTrip?.destination.includes(",") ? 11 : 6,
       })
 
