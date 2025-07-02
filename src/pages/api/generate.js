@@ -14,7 +14,7 @@ export default async function (req, res) {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [{ role: "user", content: req.body }],
       temperature: 0.6,
       max_completion_tokens: 4096,

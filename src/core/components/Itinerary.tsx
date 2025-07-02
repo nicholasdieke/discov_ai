@@ -178,7 +178,7 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
             bgColor="rgb(0,0,0,0.5)"
             w="100%"
           >
-            <Flex pos="absolute" top="1rem" left="1rem">
+            <Flex pos="absolute" top="1rem" left="1rem" color="white">
               <Text
                 onClick={() => {
                   mixpanel.track("Clicked Logo")
@@ -193,7 +193,7 @@ const Itinerary = ({ trip, latLong, showMapPin, map, isMobile = false }) => {
               <ShareButton isMobile={isMobile} destination={trip.destination} />
             </Flex>
 
-            <VStack gap="0.5rem" color="primary" alignItems="flex-start">
+            <VStack gap="0.5rem" color="white" alignItems="flex-start">
               <Heading fontSize={{ base: "25px", md: "35px", lg: "45px" }}>
                 {trip.destination}
               </Heading>

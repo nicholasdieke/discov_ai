@@ -34,6 +34,7 @@ function TripForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [startDate, endDate] = dateRange
+  const [error, setError] = useState<string | null>(null)
 
   const dateDiffInDays = (a, b) => {
     const _MS_PER_DAY = 1000 * 60 * 60 * 24
@@ -146,6 +147,7 @@ function TripForm() {
     const values = getValues()
     scrollToTop()
     setIsLoading(true)
+    setError(null)
     const days = Math.max(dateDiffInDays(values.daterange[0], values.daterange[1]), 1)
     let prompt =
       "Create a personalised itinerary for a " +
@@ -207,6 +209,13 @@ function TripForm() {
     })
       .then((response) => response.json())
       .then(async (response) => {
+        if (!response.result) {
+          setIsLoading(false)
+          setError(
+            "Sorry, we couldn't generate an itinerary. Please try again or change your request."
+          )
+          return
+        }
         var imageUrl = undefined
 
         await fetch("/api/getDestPhoto?destination=" + values.destination)
@@ -228,7 +237,11 @@ function TripForm() {
           .then((trip) => router.push(Routes.TripPage({ id: trip.id })))
           .catch((e) => console.log(e))
       })
-      .catch((e) => console.log(e))
+      .catch((e) => {
+        setIsLoading(false)
+        setError("Sorry, something went wrong. Please try again.")
+        console.log(e)
+      })
   })
 
   useEffect(() => {
@@ -280,6 +293,11 @@ function TripForm() {
     <Box className="tripform" w={{ base: "100%", sm: "350px" }}>
       <script src={script} onLoad={() => setLoaded(true)} />
       <Show when={!isLoading}>
+        {error && (
+          <Box color="red.300" mb={3} textAlign="center" fontWeight="bold">
+            {error}
+          </Box>
+        )}
         <form onSubmit={onSubmit}>
           <VStack gap="0.75rem" color="white">
             <Field
