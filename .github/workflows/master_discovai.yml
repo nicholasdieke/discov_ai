@@ -1,9 +1,7 @@
-name: Build and Deploy to Azure
+name: Build and Deploy to Azure Container App
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -12,9 +10,15 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.set-tag.outputs.tag }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Set image tag
+        id: set-tag
+        run: echo "tag=discovai_app:${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: Log in to Azure Container Registry (ACR)
         uses: azure/docker-login@v1
@@ -25,8 +29,8 @@ jobs:
 
       - name: Build and push Docker image to ACR
         run: |
-          docker build -t discovairegistry.azurecr.io/discovai_app:latest .  --platform=linux/amd64 --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} --build-arg SESSION_SECRET_KEY=${{ secrets.SESSION_SECRET_KEY }} --build-arg OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} --build-arg NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }} --build-arg UNSPLASH_API_KEY=${{ secrets.UNSPLASH_API_KEY }} --build-arg WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }} --build-arg NEXT_PUBLIC_MIXPANEL_TOKEN=${{ secrets.NEXT_PUBLIC_MIXPANEL_TOKEN }} --build-arg NEXT_PUBLIC_MAPBOX_TOKEN=${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }} --build-arg GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} --build-arg GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-          docker push discovairegistry.azurecr.io/discovai_app:latest
+          docker build . -t discovairegistry.azurecr.io/${{ steps.set-tag.outputs.tag }} --platform=linux/amd64 --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }} --build-arg SESSION_SECRET_KEY=${{ secrets.SESSION_SECRET_KEY }} --build-arg OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} --build-arg NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }} --build-arg UNSPLASH_API_KEY=${{ secrets.UNSPLASH_API_KEY }} --build-arg WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }} --build-arg NEXT_PUBLIC_MIXPANEL_TOKEN=${{ secrets.NEXT_PUBLIC_MIXPANEL_TOKEN }} --build-arg NEXT_PUBLIC_MAPBOX_TOKEN=${{ secrets.NEXT_PUBLIC_MAPBOX_TOKEN }} --build-arg GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} --build-arg GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          docker push discovairegistry.azurecr.io/${{ steps.set-tag.outputs.tag }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -39,9 +43,10 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: "Deploy to Azure Web App"
-        uses: azure/webapps-deploy@v3
+      - name: Build and deploy Container App
+        uses: azure/container-apps-deploy-action@v1
         with:
-          app-name: "DiscovAi"
-          slot-name: "production"
-          images: "discovairegistry.azurecr.io/discovai_app:latest"
+          acrName: DiscovAIRegistry
+          containerAppName: discovai-container-app
+          resourceGroup: DiscovAI
+          imageToDeploy: discovairegistry.azurecr.io/${{ needs.build.outputs.image_tag }}
